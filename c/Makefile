@@ -1,17 +1,23 @@
-wasm: out/ray.wasm
+# A .html .js and .wasm are all generated from
+# this name
+BASE_NAME=dis
 
+HTML_OUT=out/$(BASE_NAME).html
+WASM_OUT=out/$(BASE_NAME).wasm
+
+JS_TEMPLATE_FILE = template/pre.js
+
+
+all: wasm
+
+wasm: $(WASM_OUT)
+
+
+WASM_MAIN=src/main.cpp
 
 HPP_FILES =
 
 CPP_FILES =
-
-WASM_MAIN=src/main.cpp
-
-# A .html .js and .wasm are all generated from
-# this name
-HTML_OUT=out/dis.html
-
-JS_TEMPLATE_FILE = template/pre.js
 
 # WASM only cpp files
 WASM_CPP_FILES =
@@ -46,7 +52,7 @@ endif
 
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
-out/ray.wasm: $(WASM_MAIN) $(CPP_FILES) $(HPP_FILES) $(WASM_CPP_FILES) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+$(WASM_OUT): $(WASM_MAIN) $(CPP_FILES) $(HPP_FILES) $(WASM_CPP_FILES) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
 	emcc $(WASM_MAIN) $(WASM_CPP_FILES) $(CPP_FILES) -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
