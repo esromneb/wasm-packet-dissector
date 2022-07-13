@@ -60,5 +60,5 @@ typedef size_t nstime_t;
 #define WS_INET_ADDRSTRLEN      16
 #define WS_INET6_ADDRSTRLEN     46
 
-#define COL_PROTOCOL 0
-#define COL_INFO 1
+// #define COL_PROTOCOL 0
+// #define COL_INFO 1
