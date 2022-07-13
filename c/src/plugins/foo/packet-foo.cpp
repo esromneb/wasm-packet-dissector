@@ -38,7 +38,6 @@ static int hf_foo_priorityflag = -1;
 
 #include <epan/proto.h>
 
-#if 0
 void
 proto_register_foo(void)
 {
@@ -112,46 +111,48 @@ proto_register_foo(void)
     // printf("hf_foo_initialip : %d\n", hf_foo_initialip);
 }
 
+#include "epan/packet_info.h"
 
 static int
 dissect_foo(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void *data)
 {
     (void)tree;
     (void)data;
-    col_set_str(pinfo->cinfo, COL_PROTOCOL, "FOO");
+    // col_set_str(pinfo->cinfo, COL_PROTOCOL, "FOO");
     
-    // Clear out stuff in the info column
-    col_clear(pinfo->cinfo, COL_INFO); 
+    // // Clear out stuff in the info column
+    // col_clear(pinfo->cinfo, COL_INFO); 
 
-    // do we need to construct this thing every run?
-    static int* const bits[] = {
-        &hf_foo_startflag,
-        &hf_foo_endflag,
-        &hf_foo_priorityflag,
-        NULL
-    };
+    // // do we need to construct this thing every run?
+    // static int* const bits[] = {
+    //     &hf_foo_startflag,
+    //     &hf_foo_endflag,
+    //     &hf_foo_priorityflag,
+    //     NULL
+    // };
 
-    gint offset = 0;
+    // gint offset = 0;
 
-    proto_item *ti = proto_tree_add_item(tree, proto_foo, tvb, 0, -1, ENC_NA);
-    proto_tree *foo_tree = proto_item_add_subtree(ti, ett_foo);
-    proto_tree_add_item(foo_tree, hf_foo_pdu_type, tvb, offset, 1, ENC_BIG_ENDIAN);
-    offset += 1;
+    // proto_item *ti = proto_tree_add_item(tree, proto_foo, tvb, 0, -1, ENC_NA);
+    // proto_tree *foo_tree = proto_item_add_subtree(ti, ett_foo);
+    // proto_tree_add_item(foo_tree, hf_foo_pdu_type, tvb, offset, 1, ENC_BIG_ENDIAN);
+    // offset += 1;
 
-    // this gets removed
-    // proto_tree_add_item(foo_tree, hf_foo_flags, tvb, offset, 1, ENC_BIG_ENDIAN);
-    // replaced by bitfield parser
-    proto_tree_add_bitmask(foo_tree, tvb, offset, hf_foo_flags, ett_foo, bits, ENC_BIG_ENDIAN);
-    offset += 1;
+    // // this gets removed
+    // // proto_tree_add_item(foo_tree, hf_foo_flags, tvb, offset, 1, ENC_BIG_ENDIAN);
+    // // replaced by bitfield parser
+    // proto_tree_add_bitmask(foo_tree, tvb, offset, hf_foo_flags, ett_foo, bits, ENC_BIG_ENDIAN);
+    // offset += 1;
 
-    proto_tree_add_item(foo_tree, hf_foo_sequenceno, tvb, offset, 2, ENC_BIG_ENDIAN);
-    offset += 2;
-    proto_tree_add_item(foo_tree, hf_foo_initialip, tvb, offset, 4, ENC_BIG_ENDIAN);
-    offset += 4;
+    // proto_tree_add_item(foo_tree, hf_foo_sequenceno, tvb, offset, 2, ENC_BIG_ENDIAN);
+    // offset += 2;
+    // proto_tree_add_item(foo_tree, hf_foo_initialip, tvb, offset, 4, ENC_BIG_ENDIAN);
+    // offset += 4;
 
 
     return tvb_captured_length(tvb);
 }
+#if 0
 
 void
 proto_reg_handoff_foo(void)

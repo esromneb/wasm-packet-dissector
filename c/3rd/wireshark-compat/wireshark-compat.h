@@ -47,3 +47,18 @@ typedef size_t gsize;
 
 // make an assumtion about wasm here
 #define G_BYTE_ORDER G_LITTLE_ENDIAN
+
+
+/* Useful when you have an array whose size you can tell at compile-time */
+#define array_length(x)	(sizeof x / sizeof x[0])
+
+
+// fixme use nstime and remove this
+typedef size_t nstime_t;
+
+
+#define WS_INET_ADDRSTRLEN      16
+#define WS_INET6_ADDRSTRLEN     46
+
+#define COL_PROTOCOL 0
+#define COL_INFO 1
