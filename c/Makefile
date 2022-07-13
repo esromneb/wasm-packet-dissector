@@ -7,9 +7,11 @@ CPP_FILES =
 
 WASM_MAIN=src/main.cpp
 
-HTML_OUT=out/ray.html
+# A .html .js and .wasm are all generated from
+# this name
+HTML_OUT=out/dis.html
 
-JS_TEMPLATE_FILE = template/pre.ray.js
+JS_TEMPLATE_FILE = template/pre.js
 
 # WASM only cpp files
 WASM_CPP_FILES =

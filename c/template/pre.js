@@ -1,8 +1,8 @@
-// This file (pre.ray.js)
-// gets appended to the top of ray.js
+// This file (pre.js)
+// gets appended to the top of dis.js
 ////////////////////////////////////////
 
 
 
 ////////////////////////////////////////
-// end of pre.ray.js
+// end of pre.js
