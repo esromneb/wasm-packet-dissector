@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    
+    "module": "commonjs",
+    "target": "es6",
+    
+    "strict": true,
+    "declaration": true,
+    "noImplicitAny":false,
+    "strictNullChecks":true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictFunctionTypes":true,
+    "strictBindCallApply":true,
+    "noImplicitThis":true,
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
