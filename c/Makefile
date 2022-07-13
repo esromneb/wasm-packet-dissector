@@ -50,16 +50,66 @@ ifdef OPT3
   CLANG_O_FLAG = '-O3'
 endif
 
+INCLUDE = \
+-I./src \
+-I./3rd/wireshark
+
+# Fix warning with
+# https://stackoverflow.com/questions/64588986/how-to-solve-extra-exported-runtime-methods-exception-when-cmake-used-with-emscr
+
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
-$(WASM_OUT): $(WASM_MAIN) $(CPP_FILES) $(HPP_FILES) $(WASM_CPP_FILES) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
-	emcc $(WASM_MAIN) $(WASM_CPP_FILES) $(CPP_FILES) -s WASM=1 -o $(HTML_OUT) \
+# $(WASM_OUT): build/main.o build/wireshark.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+# 	emcc -s WASM=1 -o $(HTML_OUT) \
+# 	-s ALLOW_MEMORY_GROWTH=1 \
+# 	--pre-js $(JS_TEMPLATE_FILE) \
+# 	-s EXPORTED_FUNCTIONS='[$(EXPORT_STRING) "_main"]' \
+# 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+# 	build/wireshark.o build/main.o \
+# 	-sLLD_REPORT_UNDEFINED \
+# 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+$(WASM_OUT): build/main.o build/wireshark.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+	emcc -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
-	-s EXPORTED_FUNCTIONS='[$(EXPORT_STRING) "_main"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
-	'-std=c++2a' $(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+	-sLLD_REPORT_UNDEFINED \
+	build/main.o build/wireshark.a
 
+# $(WASM_OUT): build/main.o build/wireshark.a $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+# 	emcc \
+# 	$(INCLUDE) \
+# 	build/main.o build/wireshark.a
+
+# $(WASM_OUT): build/main.o build/wireshark.a $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+# 	emcc \
+# 	$(INCLUDE) \
+# 	src/main.cpp build/wireshark.a
+
+build/main.o:
+	emcc src/main.cpp -c -o build/main.o \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	-s EXPORTED_FUNCTIONS='[$(EXPORT_STRING) "_main"]' \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/wireshark.o:
+	emcc 3rd/wireshark/wireshark.cpp -c -o build/wireshark.o \
+	$(INCLUDE) \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/wireshark.a: build/wireshark.o
+	emar cr build/wireshark.a build/wireshark.o 
+
+# build/wireshark.a:
+# 	emcc 3rd/wireshark/wireshark.c -c -o build/wireshark.a \
+# 	-s EXPORTED_FUNCTIONS='["_wireshark_shared"]' \
+# 	$(INCLUDE) \
+# 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 clean:
+	rm -rf build/*
 	rm -rf out/*
+
+# 	-sERROR_ON_UNDEFINED_SYMBOLS=0 \

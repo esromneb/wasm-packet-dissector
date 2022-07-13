@@ -17,13 +17,26 @@
 #include <emscripten.h>
 #endif
 
+
+#include "wireshark.h"
+
 using namespace std;
+
+extern "C" {
+void wrapper(void) {
+    int val = _wireshark_shared(0);
+
+    cout << "Wireshark link says" << val << "\n";
+}
+}
 
 int main(int argc, char ** argv) {
     (void)argc;
     (void)argv;
 
     cout << "Hello World\n";
+     wrapper();
+
 
     return 0;
 }
