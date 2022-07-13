@@ -153,7 +153,6 @@ dissect_foo(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void *data)
 
     return tvb_captured_length(tvb);
 }
-#if 0
 
 void
 proto_reg_handoff_foo(void)
@@ -163,5 +162,3 @@ proto_reg_handoff_foo(void)
     foo_handle = create_dissector_handle(dissect_foo, proto_foo);
     dissector_add_uint("udp.port", FOO_PORT, foo_handle);
 }
-
-#endif
