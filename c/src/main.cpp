@@ -24,7 +24,7 @@ using namespace std;
 
 extern "C" {
 void wrapper(void) {
-    int val = _wireshark_shared(0);
+    int val = wireshark_shared(0);
 
     cout << "Wireshark link says" << val << "\n";
 }

@@ -1,3 +1,3 @@
 #pragma once
 
-int _wireshark_shared(const int x);
+int wireshark_shared(const int x);
