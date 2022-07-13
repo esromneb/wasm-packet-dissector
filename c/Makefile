@@ -59,7 +59,7 @@ INCLUDE = \
 
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
-$(WASM_OUT): build/main.o build/wireshark.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+$(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
 	emcc -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
@@ -67,16 +67,24 @@ $(WASM_OUT): build/main.o build/wireshark.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE)
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-sLLD_REPORT_UNDEFINED \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
-	build/main.o build/wireshark.o
+	build/main.o build/wireshark.o build/packet-foo.o
 
-build/main.o:
+build/main.o: src/main.cpp
 	emcc src/main.cpp -c -o build/main.o \
 	$(INCLUDE) \
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/wireshark.o:
+build/wireshark.o: 3rd/wireshark/wireshark.cpp 3rd/wireshark/wireshark.h
 	emcc 3rd/wireshark/wireshark.cpp -c -o build/wireshark.o \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+
+
+build/packet-foo.o: src/plugins/foo/packet-foo.cpp
+	emcc src/plugins/foo/packet-foo.cpp -c -o build/packet-foo.o \
 	$(INCLUDE) \
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
