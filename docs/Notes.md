@@ -4,7 +4,8 @@ Trying:
 * `docker run -dit --name emsdk3 -v ~/work:/src emscripten/emsdk:3.1.15 bash`
 * `docker run -dit --name emsdk3 -v ~/work:/src -u $(id -u):$(id -g) emscripten/emsdk:3.1.15 bash`
 
-
+* Shows how to run docker with --rm
+  * https://hub.docker.com/r/emscripten/emsdk
 
 
 # Serve
