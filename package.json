@@ -1,0 +1,44 @@
+{
+  "name": "wasm-packet-dissector",
+  "version": "0.0.1",
+  "description": "WASM Packet Dissector imitating Wireshark",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --config jestconfig.json"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esromneb/wasm-packet-dissector.git"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "keywords": [
+    "packet dissector",
+    "wireshark packet dissector",
+    "packet inspector",
+    "wireshark",
+    "wasm packet dissector",
+    "wasm packet inspector",
+    "wasm"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^28.1.5",
+    "@types/node": "^18.0.3",
+    "jest": "^28.1.2",
+    "ts-jest": "^28.0.5",
+    "typescript": "^4.7.4"
+  },
+  "author": "Benjamin Morse",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/esromneb/wasm-packet-dissector/issues"
+  },
+  "homepage": "https://github.com/esromneb/wasm-packet-dissector#readme"
+}
