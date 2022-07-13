@@ -15,6 +15,8 @@ static int hf_foo_flags = -1;
 static int hf_foo_sequenceno = -1;
 static int hf_foo_initialip = -1;
 
+#if 0
+
 static const value_string packettypenames[] = {
     { 1, "Initialise" },
     { 2, "Terminate" },
@@ -153,3 +155,4 @@ proto_reg_handoff_foo(void)
     dissector_add_uint("udp.port", FOO_PORT, foo_handle);
 }
 
+#endif
