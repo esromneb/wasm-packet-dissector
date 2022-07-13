@@ -52,7 +52,8 @@ endif
 
 INCLUDE = \
 -I./src \
--I./3rd/wireshark
+-I./3rd/wireshark \
+-I./3rd/wireshark-compat
 
 # Fix warning with
 # https://stackoverflow.com/questions/64588986/how-to-solve-extra-exported-runtime-methods-exception-when-cmake-used-with-emscr
