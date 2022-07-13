@@ -15,7 +15,9 @@ static int hf_foo_flags = -1;
 static int hf_foo_sequenceno = -1;
 static int hf_foo_initialip = -1;
 
-#if 0
+// #include "ws_symbol_export.h"
+// #include "ws_compiler_tests.h"
+#include <epan/value_string.h>
 
 static const value_string packettypenames[] = {
     { 1, "Initialise" },
@@ -32,6 +34,7 @@ static int hf_foo_startflag = -1;
 static int hf_foo_endflag = -1;
 static int hf_foo_priorityflag = -1;
 
+#if 0
 
 void
 proto_register_foo(void)
