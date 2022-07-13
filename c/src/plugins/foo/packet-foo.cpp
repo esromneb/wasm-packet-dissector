@@ -34,8 +34,11 @@ static int hf_foo_startflag = -1;
 static int hf_foo_endflag = -1;
 static int hf_foo_priorityflag = -1;
 
-#if 0
+#include <epan/ftypes/ftypes.h>
 
+#include <epan/proto.h>
+
+#if 0
 void
 proto_register_foo(void)
 {
@@ -108,6 +111,7 @@ proto_register_foo(void)
     // printf("hf_foo_sequenceno : %d\n", hf_foo_sequenceno);
     // printf("hf_foo_initialip : %d\n", hf_foo_initialip);
 }
+
 
 static int
 dissect_foo(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void *data)
