@@ -21,3 +21,10 @@ python3 -m http.server
 cd /src/wasm-packet-dissector/c
 NOOPT=1 make
 ```
+
+# linking against glib
+on node 14, I can run this:
+
+```bash
+node --experimental-wasm-threads ./node_modules/jest/bin/jest.js --runInBand --no-cache src/test/test_basic.ts
+```

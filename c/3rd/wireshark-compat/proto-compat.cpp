@@ -58,20 +58,42 @@ int proto_register_protocol(const char *name, const char *short_name, const char
     return 0;
 }
 
+protocol_t *
+find_protocol_by_id(const int proto_id)
+{
+    // protocol_t* q;
+    // q = &*(protocols[0]);
+
+    return &*(protocols[0]);
+
+    // return protocols[0];
+    // header_field_info *hfinfo;
+
+    // if (proto_id < 0)
+    //     return NULL;
+
+    // PROTO_REGISTRAR_GET_NTH(proto_id, hfinfo);
+    // if (hfinfo->type != FT_PROTOCOL) {
+    //     DISSECTOR_ASSERT(hfinfo->display & BASE_PROTOCOL_INFO);
+    // }
+    // return (protocol_t *)hfinfo->strings;
+}
+
+
 /* for use with static arrays only, since we don't allocate our own copies
 of the header_field_info struct contained within the hf_register_info struct */
 void
 proto_register_field_array(const int parent, hf_register_info *hf, const int num_records)
 {
-//    hf_register_info *ptr = hf;
-//    protocol_t   *proto;
-//    int       i;
-//
-//    proto = find_protocol_by_id(parent);
-//
-//    if (proto->fields == NULL) {
-//        proto->fields = g_ptr_array_sized_new(num_records);
-//    }
+   hf_register_info *ptr = hf;
+   protocol_t   *proto;
+   int       i;
+
+   proto = find_protocol_by_id(parent);
+
+   if (proto->fields == NULL) {
+       proto->fields = g_ptr_array_sized_new(num_records);
+   }
 //
 //    for (i = 0; i < num_records; i++, ptr++) {
 //        /*

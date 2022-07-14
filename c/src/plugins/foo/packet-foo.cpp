@@ -102,6 +102,8 @@ proto_register_foo(void)
         "foo"       /* abbrev     */
         );
 
+    printf("Before proto_register_field_array()\n");
+
     proto_register_field_array(proto_foo, hf, array_length(hf));
 #if 0
     proto_register_subtree_array(ett, array_length(ett));
