@@ -21,3 +21,5 @@ un tar and then:
   mv target zlib-glib-ffi
 ```
 
+# References
+* see https://github.com/emscripten-core/emscripten/issues/11066

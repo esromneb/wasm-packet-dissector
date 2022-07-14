@@ -21,7 +21,7 @@
 #ifndef __TVBUFF_H__
 #define __TVBUFF_H__
 
-// #include <glib.h>
+#include <glib.h>
 #include <epan/guid-utils.h>
 // #include <epan/wmem/wmem.h>
 // #include <epan/ipv6.h>

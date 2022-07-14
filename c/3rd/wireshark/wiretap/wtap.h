@@ -9,12 +9,12 @@
 #ifndef __WTAP_H__
 #define __WTAP_H__
 
-// #include <glib.h>
+#include <glib.h>
 #include <time.h>
-// #include <wsutil/buffer.h>
+#include <wsutil/buffer.h>
 // #include <wsutil/nstime.h>
 // #include <wsutil/inet_addr.h>
-// #include "wtap_opttypes.h"
+#include "wtap_opttypes.h"
 #include "ws_symbol_export.h"
 // #include "ws_attributes.h"
 #ifdef HAVE_PLUGINS
@@ -1399,7 +1399,7 @@ typedef struct {
      * We use a Buffer so that we don't have to allocate and free
      * a buffer for the options for each record.
      */
-    // Buffer    options_buf;      /* file-type specific data */
+    Buffer    options_buf;      /* file-type specific data */
 } wtap_rec;
 
 /*
@@ -1450,7 +1450,7 @@ typedef struct wtapng_section_mandatory_s {
  *  represending IDB of one per interface.
  */
 typedef struct wtapng_iface_descriptions_s {
-    // GArray *interface_data;
+    GArray *interface_data;
 } wtapng_iface_descriptions_t;
 
 /**
@@ -1464,8 +1464,8 @@ typedef struct wtapng_if_descr_mandatory_s {
     guint32                snap_len;
 
     guint8                 num_stat_entries;
-    //GArray                *interface_statistics;  /**< An array holding the interface statistics from
-    //                                               *     pcapng ISB:s or equivalent(?)*/
+    GArray                *interface_statistics;  /**< An array holding the interface statistics from
+                                                   *     pcapng ISB:s or equivalent(?)*/
 } wtapng_if_descr_mandatory_t;
 
 /**
@@ -1517,8 +1517,8 @@ typedef struct hashipv6 {
  *  Used when writing name resoultion blocks (NRB)
  */
 typedef struct addrinfo_lists {
-    // GList      *ipv4_addr_list; /**< A list of resolved hashipv4_t*/
-    // GList      *ipv6_addr_list; /**< A list of resolved hashipv6_t*/
+    GList      *ipv4_addr_list; /**< A list of resolved hashipv4_t*/
+    GList      *ipv6_addr_list; /**< A list of resolved hashipv6_t*/
 } addrinfo_lists_t;
 
 /**
@@ -1538,13 +1538,13 @@ typedef struct addrinfo_lists {
 typedef struct wtap_dump_params {
     int         encap;                      /**< Per-file packet encapsulation, or WTAP_ENCAP_PER_PACKET */
     int         snaplen;                    /**< Per-file snapshot length (what if it's per-interface?) */
-    // GArray     *shb_hdrs;                   /**< The section header block(s) information, or NULL. */
+    GArray     *shb_hdrs;                   /**< The section header block(s) information, or NULL. */
     wtapng_iface_descriptions_t *idb_inf;   /**< The interface description information, or NULL. */
-    // GArray     *nrb_hdrs;                   /**< The name resolution blocks(s) comment/custom_opts information, or NULL. */
-    // GArray     *dsbs_initial;               /**< The initial Decryption Secrets Block(s) to be written, or NULL. */
-    // const GArray *dsbs_growing;             /**< DSBs that will be written while writing packets, or NULL.
-                                                 // This array may grow since the dumper was opened and will subsequently
-                                                 // be written before newer packets are written in wtap_dump. */
+    GArray     *nrb_hdrs;                   /**< The name resolution blocks(s) comment/custom_opts information, or NULL. */
+    GArray     *dsbs_initial;               /**< The initial Decryption Secrets Block(s) to be written, or NULL. */
+    const GArray *dsbs_growing;             /**< DSBs that will be written while writing packets, or NULL.
+                                                 This array may grow since the dumper was opened and will subsequently
+                                                 be written before newer packets are written in wtap_dump. */
 } wtap_dump_params;
 
 /* Zero-initializer for wtap_dump_params. */

@@ -11,7 +11,7 @@
 #ifndef __COLUMN_UTILS_H__
 #define __COLUMN_UTILS_H__
 
-// #include <glib.h>
+#include <glib.h>
 
 #include "packet_info.h"
 #include "ws_symbol_export.h"

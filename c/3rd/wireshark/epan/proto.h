@@ -786,11 +786,11 @@ typedef struct
 /** One of these exists for the entire protocol tree. Each proto_node
  * in the protocol tree points to the same copy. */
 typedef struct {
-    // GHashTable          *interesting_hfids;
-    // gboolean             visible;
-    // gboolean             fake_protocols;
-    // gint                 count;
-    // struct _packet_info *pinfo;
+    GHashTable          *interesting_hfids;
+    gboolean             visible;
+    gboolean             fake_protocols;
+    gint                 count;
+    struct _packet_info *pinfo;
 } tree_data_t;
 
 /** Each proto_tree, proto_item is one of these. */
