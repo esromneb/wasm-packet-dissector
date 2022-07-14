@@ -116,7 +116,7 @@ typedef struct _protocol protocol_t;
  *
  * @param format format string to use for the message
  */
-WS_DLL_PUBLIC WS_NORETURN
+// WS_DLL_PUBLIC WS_NORETURN
 void proto_report_dissector_bug(const char *format, ...)
     G_GNUC_PRINTF(1, 2);
 

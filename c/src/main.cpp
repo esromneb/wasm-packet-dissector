@@ -34,7 +34,7 @@ void registerName(const std::string n) {
     registered.push_back(n);
 
     if (n == "foo") {
-        // proto_register_foo();
+        proto_register_foo();
     }
 
 }

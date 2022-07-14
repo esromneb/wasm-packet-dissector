@@ -102,9 +102,10 @@ proto_register_foo(void)
         "foo"       /* abbrev     */
         );
 
+#if 0
     proto_register_field_array(proto_foo, hf, array_length(hf));
     proto_register_subtree_array(ett, array_length(ett));
-
+#endif
     // printf("End of proto_register_foo()\n");
     // printf("hf_foo_pdu_type : %d\n", hf_foo_pdu_type);
     // printf("hf_foo_sequenceno : %d\n", hf_foo_sequenceno);

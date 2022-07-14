@@ -39,11 +39,11 @@
 #define G_GNUC_WARN_UNUSED_RESULT
 #define WS_NORETURN
 
-#define G_GNUC_PRINTF(...)
-#define proto_report_dissector_bug(...)
+// #define G_GNUC_PRINTF(...)
+// #define proto_report_dissector_bug(...)
 
-#define G_LITTLE_ENDIAN (1234)
-#define G_BIG_ENDIAN (4321)
+// #define G_LITTLE_ENDIAN (1234)
+// #define G_BIG_ENDIAN (4321)
 
 // make an assumtion about wasm here
 #define G_BYTE_ORDER G_LITTLE_ENDIAN

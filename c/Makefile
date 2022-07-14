@@ -56,6 +56,7 @@ endif
 INCLUDE = \
 -I./src \
 -I./3rd/wireshark \
+-I./3rd/wireshark/epan \
 -I./3rd/wireshark-compat \
 -I./3rd/zlib-glib-ffi/include/glib-2.0 \
 -I./3rd/zlib-glib-ffi/lib/glib-2.0/include
@@ -67,7 +68,7 @@ INCLUDE = \
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
 # 	-s USE_PTHREADS=1 -s PROXY_TO_PTHREAD=1 -s ALLOW_BLOCKING_ON_MAIN_THREAD=0
-$(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+$(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o build/proto.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
 	emcc -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
@@ -76,7 +77,7 @@ $(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o $(TEMPLATE_FILE) 
 	-sLLD_REPORT_UNDEFINED \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
-	build/main.o build/wireshark.o build/packet-foo.o
+	build/main.o build/wireshark.o build/packet-foo.o build/proto.o
 
 build/main.o: src/main.cpp
 	emcc src/main.cpp -c -o build/main.o \
@@ -90,10 +91,23 @@ build/wireshark.o: 3rd/wireshark/wireshark.cpp 3rd/wireshark/wireshark.h
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-
-
 build/packet-foo.o: src/plugins/foo/packet-foo.cpp
 	emcc src/plugins/foo/packet-foo.cpp -c -o build/packet-foo.o \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+
+# build/proto.o: 3rd/wireshark/epan/proto.c 3rd/wireshark/epan/proto.h
+# 	emcc -x c++ \
+# 	3rd/wireshark/epan/proto.c -c -o build/proto.o \
+# 	$(INCLUDE) \
+# 	'-std=c++2a' \
+# 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
+	emcc \
+	3rd/wireshark-compat/proto-compat.cpp -c -o build/proto.o \
 	$(INCLUDE) \
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
