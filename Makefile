@@ -12,7 +12,7 @@ dev:
 start:
 	npm run start
 
-test: jestc
+test:
 	npm run test
 
 jestc:

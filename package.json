@@ -6,7 +6,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "jest --config jestconfig.json",
+    "test": "jest --config jest.config.js",
+    "jestc": "jest --clearCache",
     "clean": "rimraf lib/*"
   },
   "directories": {

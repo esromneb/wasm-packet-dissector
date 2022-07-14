@@ -63,12 +63,13 @@ INCLUDE = \
 
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
+# 	-s USE_PTHREADS=1 -s PROXY_TO_PTHREAD=1 -s ALLOW_BLOCKING_ON_MAIN_THREAD=0
 $(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
 	emcc -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
 	-s EXPORTED_FUNCTIONS='[$(EXPORT_STRING) "_main"]' \
-	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "callMain"]' \
 	-sLLD_REPORT_UNDEFINED \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
