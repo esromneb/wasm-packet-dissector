@@ -38,5 +38,5 @@ jobs:
 
     - name: Show Builds
       run: |
-        ls c/out
-        ls lib
+        find c/out
+        find lib
