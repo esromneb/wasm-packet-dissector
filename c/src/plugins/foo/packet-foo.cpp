@@ -94,7 +94,7 @@ proto_register_foo(void)
         &ett_foo
     };
 
-
+    printf("proto_register_foo() middle\n");
 
     proto_foo = proto_register_protocol (
         "FOO Protocol", /* name       */

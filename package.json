@@ -8,6 +8,7 @@
     "build": "tsc",
     "test": "jest --config jest.config.js",
     "jestc": "jest --clearCache",
+    "jestw": "jest --watch --runInBand --detectOpenHandles",
     "clean": "rimraf lib/*"
   },
   "directories": {

@@ -28,6 +28,8 @@ WASM_CPP_FILES =
 # the version here has a prepended underscore
 # ALL lines (including final) must have trailing comma
 EXPORT_STRING = \
+"_registerName", \
+"_registerAll", \
 "_printAThing", \
 "_wrapper_wireshark_shared",
 

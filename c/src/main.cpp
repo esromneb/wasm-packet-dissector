@@ -22,6 +22,38 @@
 
 using namespace std;
 
+
+
+std::vector<std::string> registered;
+
+void proto_register_foo(void);
+
+extern "C" {
+
+void registerName(const std::string n) {
+    registered.push_back(n);
+
+    if (n == "foo") {
+        // proto_register_foo();
+    }
+
+}
+
+void registerAll(void) {
+    registerName("foo");
+    // int val = wireshark_shared(x);
+
+    // cout << "Wireshark link says " << val << "\n";
+}
+
+}
+
+
+
+
+
+
+
 extern "C" {
 void wrapper_wireshark_shared(const int x) {
     int val = wireshark_shared(x);
@@ -56,6 +88,7 @@ void printAThing(void) {
 
 
 } // extern C
+
 
 
 
