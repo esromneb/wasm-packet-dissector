@@ -1,9 +1,78 @@
 #include "wireshark-compat.h"
 #include <proto.h>
+#include <expert.h>
 
 #include <iostream>
 #include <vector>
 #include <memory>
+
+
+/* Structure stored for deregistered g_slice */
+struct g_slice_data {
+    gsize    block_size;
+    gpointer mem_block;
+};
+
+/* Deregistered fields */
+static GPtrArray *deregistered_fields = NULL;
+static GPtrArray *deregistered_data = NULL;
+static GPtrArray *deregistered_slice = NULL;
+
+/* indexed by prefix, contains initializers */
+static GHashTable* prefixes = NULL;
+
+/* Contains information about a field when a dissector calls
+ * proto_tree_add_item.  */
+#define FIELD_INFO_NEW(pool, fi)  fi = wmem_new(pool, field_info)
+#define FIELD_INFO_FREE(pool, fi) wmem_free(pool, fi)
+
+/* Contains the space for proto_nodes. */
+#define PROTO_NODE_INIT(node)           \
+    node->first_child = NULL;       \
+    node->last_child = NULL;        \
+    node->next = NULL;
+
+#define PROTO_NODE_FREE(pool, node)         \
+    wmem_free(pool, node)
+
+/* String space for protocol and field items for the GUI */
+#define ITEM_LABEL_NEW(pool, il)            \
+    il = wmem_new(pool, item_label_t);
+#define ITEM_LABEL_FREE(pool, il)           \
+    wmem_free(pool, il);
+
+#define PROTO_REGISTRAR_GET_NTH(hfindex, hfinfo)                        \
+    if((guint)hfindex >= gpa_hfinfo.len && wireshark_abort_on_dissector_bug)    \
+        g_error("Unregistered hf! index=%d", hfindex);                  \
+    DISSECTOR_ASSERT_HINT((guint)hfindex < gpa_hfinfo.len, "Unregistered hf!"); \
+    DISSECTOR_ASSERT_HINT(gpa_hfinfo.hfi[hfindex] != NULL, "Unregistered hf!"); \
+    hfinfo = gpa_hfinfo.hfi[hfindex];
+
+/* List which stores protocols and fields that have been registered */
+typedef struct _gpa_hfinfo_t {
+    guint32             len;
+    guint32             allocated_len;
+    header_field_info **hfi;
+} gpa_hfinfo_t;
+
+static gpa_hfinfo_t gpa_hfinfo;
+
+/* Hash table of abbreviations and IDs */
+static GHashTable *gpa_name_map = NULL;
+static header_field_info *same_name_hfinfo;
+
+/* Hash table protocol aliases. const char * -> const char * */
+static GHashTable *gpa_protocol_aliases = NULL;
+
+/*
+ * We're called repeatedly with the same field name when sorting a column.
+ * Cache our last gpa_name_map hit for faster lookups.
+ */
+static char *last_field_name = NULL;
+static header_field_info *last_hfinfo;
+
+
+
 
 /* Structure for information about a protocol */
 struct _protocol {
@@ -94,8 +163,8 @@ proto_register_field_array(const int parent, hf_register_info *hf, const int num
    if (proto->fields == NULL) {
        proto->fields = g_ptr_array_sized_new(num_records);
    }
-//
-//    for (i = 0; i < num_records; i++, ptr++) {
+
+   for (i = 0; i < num_records; i++, ptr++) {
 //        /*
 //         * Make sure we haven't registered this yet.
 //         * Most fields have variables associated with them
@@ -104,13 +173,110 @@ proto_register_field_array(const int parent, hf_register_info *hf, const int num
 //         * 0 (which is unlikely to be the field ID we get back
 //         * from "proto_register_field_init()").
 //         */
-//        if (*ptr->p_id != -1 && *ptr->p_id != 0) {
-//            fprintf(stderr,
-//                "Duplicate field detected in call to proto_register_field_array: %s is already registered\n",
-//                ptr->hfinfo.abbrev);
-//            return;
-//        }
-//
+       if (*ptr->p_id != -1 && *ptr->p_id != 0) {
+           fprintf(stderr,
+               "Duplicate field detected in call to proto_register_field_array: %s is already registered\n",
+               ptr->hfinfo.abbrev);
+           return;
+       }
+
 //        *ptr->p_id = proto_register_field_common(proto, &ptr->hfinfo, parent);
-//    }
+   }
 }
+
+
+
+// how big is this, and what do we realistically use?
+// #define PROTO_PRE_ALLOC_HF_FIELDS_MEM (220000+PRE_ALLOC_EXPERT_FIELDS_MEM)
+#define PROTO_PRE_ALLOC_HF_FIELDS_MEM (1000+PRE_ALLOC_EXPERT_FIELDS_MEM)
+static int
+proto_register_field_init(header_field_info *hfinfo, const int parent)
+{
+
+    // tmp_fld_check_assert(hfinfo);
+
+    hfinfo->parent         = parent;
+    hfinfo->same_name_next = NULL;
+    hfinfo->same_name_prev_id = -1;
+
+    /* if we always add and never delete, then id == len - 1 is correct */
+    if (gpa_hfinfo.len >= gpa_hfinfo.allocated_len) {
+        if (!gpa_hfinfo.hfi) {
+            gpa_hfinfo.allocated_len = PROTO_PRE_ALLOC_HF_FIELDS_MEM;
+            gpa_hfinfo.hfi = (header_field_info **)g_malloc(sizeof(header_field_info *)*PROTO_PRE_ALLOC_HF_FIELDS_MEM);
+        } else {
+            gpa_hfinfo.allocated_len += 1000;
+            gpa_hfinfo.hfi = (header_field_info **)g_realloc(gpa_hfinfo.hfi,
+                           sizeof(header_field_info *)*gpa_hfinfo.allocated_len);
+            /*g_warning("gpa_hfinfo.allocated_len %u", gpa_hfinfo.allocated_len);*/
+        }
+    }
+    gpa_hfinfo.hfi[gpa_hfinfo.len] = hfinfo;
+    gpa_hfinfo.len++;
+    hfinfo->id = gpa_hfinfo.len - 1;
+
+    /* if we have real names, enter this field in the name tree */
+    if ((hfinfo->name[0] != 0) && (hfinfo->abbrev[0] != 0 )) {
+
+        header_field_info *same_name_next_hfinfo;
+        guchar c;
+
+        /* Check that the filter name (abbreviation) is legal;
+         * it must contain only alphanumerics, '-', "_", and ".". */
+        c = proto_check_field_name(hfinfo->abbrev);
+        if (c) {
+            if (c == '.') {
+                fprintf(stderr, "Invalid leading, duplicated or trailing '.' found in filter name '%s'\n", hfinfo->abbrev);
+            } else if (g_ascii_isprint(c)) {
+                fprintf(stderr, "Invalid character '%c' in filter name '%s'\n", c, hfinfo->abbrev);
+            } else {
+                fprintf(stderr, "Invalid byte \\%03o in filter name '%s'\n", c, hfinfo->abbrev);
+            }
+            DISSECTOR_ASSERT_NOT_REACHED();
+        }
+
+        /* We allow multiple hfinfo's to be registered under the same
+         * abbreviation. This was done for X.25, as, depending
+         * on whether it's modulo-8 or modulo-128 operation,
+         * some bitfield fields may be in different bits of
+         * a byte, and we want to be able to refer to that field
+         * with one name regardless of whether the packets
+         * are modulo-8 or modulo-128 packets. */
+
+        same_name_hfinfo = NULL;
+
+        g_hash_table_insert(gpa_name_map, (gpointer) (hfinfo->abbrev), hfinfo);
+        /* GLIB 2.x - if it is already present
+         * the previous hfinfo with the same name is saved
+         * to same_name_hfinfo by value destroy callback */
+        if (same_name_hfinfo) {
+            /* There's already a field with this name.
+             * Put the current field *before* that field
+             * in the list of fields with this name, Thus,
+             * we end up with an effectively
+             * doubly-linked-list of same-named hfinfo's,
+             * with the head of the list (stored in the
+             * hash) being the last seen hfinfo.
+             */
+            same_name_next_hfinfo =
+                same_name_hfinfo->same_name_next;
+
+            hfinfo->same_name_next = same_name_next_hfinfo;
+            if (same_name_next_hfinfo)
+                same_name_next_hfinfo->same_name_prev_id = hfinfo->id;
+
+            same_name_hfinfo->same_name_next = hfinfo;
+            hfinfo->same_name_prev_id = same_name_hfinfo->id;
+#ifdef ENABLE_CHECK_FILTER
+            while (same_name_hfinfo) {
+                if (_ftype_common(hfinfo->type) != _ftype_common(same_name_hfinfo->type))
+                    fprintf(stderr, "'%s' exists multiple times with NOT compatible types: %s and %s\n", hfinfo->abbrev, ftype_name(hfinfo->type), ftype_name(same_name_hfinfo->type));
+                same_name_hfinfo = same_name_hfinfo->same_name_next;
+            }
+#endif
+        }
+    }
+
+    return hfinfo->id;
+}
+
