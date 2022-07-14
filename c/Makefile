@@ -53,7 +53,10 @@ endif
 INCLUDE = \
 -I./src \
 -I./3rd/wireshark \
--I./3rd/wireshark-compat
+-I./3rd/wireshark-compat \
+-I./3rd/zlib-glib-ffi/include/glib-2.0 \
+-I./3rd/zlib-glib-ffi/lib/glib-2.0/include
+
 
 # Fix warning with
 # https://stackoverflow.com/questions/64588986/how-to-solve-extra-exported-runtime-methods-exception-when-cmake-used-with-emscr
@@ -68,6 +71,7 @@ $(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o $(TEMPLATE_FILE) 
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-sLLD_REPORT_UNDEFINED \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
+	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
 	build/main.o build/wireshark.o build/packet-foo.o
 
 build/main.o: src/main.cpp

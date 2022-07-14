@@ -25,7 +25,7 @@
 
 #include <stdarg.h>
 
-// #include <glib.h>
+#include <glib.h>
 
 // #include <epan/wmem/wmem.h>
 
@@ -3197,11 +3197,11 @@ proto_check_field_name(const gchar *field_name);
  @param result the buffer to fill with the field string
  @param expr the filter expression
  @param size the size of the string buffer */
-// const gchar *
-// proto_custom_set(proto_tree* tree, GSList *field_id,
-//                              gint occurrence,
-//                              gchar *result,
-//                              gchar *expr, const int size );
+const gchar *
+proto_custom_set(proto_tree* tree, GSList *field_id,
+                             gint occurrence,
+                             gchar *result,
+                             gchar *expr, const int size );
 
 /* #define HAVE_HFI_SECTION_INIT */
 

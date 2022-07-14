@@ -4,28 +4,28 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef int gint;
-typedef unsigned guint;
-typedef char gchar;
-typedef unsigned char guchar;
-typedef float gfloat;
-typedef double gdouble;
+// typedef int gint;
+// typedef unsigned guint;
+// typedef char gchar;
+// typedef unsigned char guchar;
+// typedef float gfloat;
+// typedef double gdouble;
 
-typedef uint8_t guint8;
-typedef int8_t gint8;
+// typedef uint8_t guint8;
+// typedef int8_t gint8;
 
-typedef uint16_t guint16;
-typedef int16_t gint16;
+// typedef uint16_t guint16;
+// typedef int16_t gint16;
 
-typedef uint32_t guint32;
-typedef int32_t gint32;
+// typedef uint32_t guint32;
+// typedef int32_t gint32;
 
-typedef bool gboolean;
+// typedef bool gboolean;
 
-typedef uint64_t guint64;
-typedef int64_t gint64;
+// typedef uint64_t guint64;
+// typedef int64_t gint64;
 
-typedef size_t gsize;
+// typedef size_t gsize;
 
 
 
