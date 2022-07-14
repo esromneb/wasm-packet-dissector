@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Build inside docker
+    - name: Build C/C++ inside docker
       run: make wasm
 
     - name: Use Node.js ${{ matrix.node-version }}
@@ -24,12 +24,19 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build
+    - name: NPM Install
       run: |
         npm install
+
+    - name: Run Jest tests
+      run: |
+        make test
+
+    - name: Build js module from TS into lib/
+      run: |
         make build
 
-    - name: Show Build
+    - name: Show Builds
       run: |
         ls c/out
         ls lib
