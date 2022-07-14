@@ -23,10 +23,10 @@
 using namespace std;
 
 extern "C" {
-void wrapper(void) {
-    int val = wireshark_shared(0);
+void wrapper_wireshark_shared(const int x) {
+    int val = wireshark_shared(x);
 
-    cout << "Wireshark link says" << val << "\n";
+    cout << "Wireshark link says " << val << "\n";
 }
 }
 
@@ -35,7 +35,7 @@ int main(int argc, char ** argv) {
     (void)argv;
 
     cout << "Hello World\n";
-     wrapper();
+     wrapper_wireshark_shared(0);
 
 
     return 0;
@@ -53,6 +53,7 @@ extern "C" {
 void printAThing(void) {
     cout << "a thing\n";
 }
+
 
 } // extern C
 
