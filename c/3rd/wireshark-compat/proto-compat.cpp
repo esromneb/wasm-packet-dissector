@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 
+gboolean wireshark_abort_on_dissector_bug = false;
 
 /* Structure stored for deregistered g_slice */
 struct g_slice_data {
@@ -92,6 +93,78 @@ struct _protocol {
 };
 
 
+
+/* chars allowed in field abbrev: alphanumerics, '-', "_", and ".". */
+static
+const guint8 fld_abbrev_chars[256] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x00-0x0F */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x10-0x1F */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, /* 0x20-0x2F '-', '.'      */
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, /* 0x30-0x3F '0'-'9'       */
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 0x40-0x4F 'A'-'O'       */
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, /* 0x50-0x5F 'P'-'Z', '_' */
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 0x60-0x6F 'a'-'o'       */
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, /* 0x70-0x7F 'p'-'z'       */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x80-0x8F */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0x90-0x9F */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0xA0-0xAF */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0xB0-0xBF */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0xC0-0xCF */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0xD0-0xDF */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0xE0-0xEF */
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0xF0-0xFF */
+};
+
+
+
+void proto_report_dissector_bug(const char *format, ...)
+{
+    va_list args;
+
+    if (wireshark_abort_on_dissector_bug) {
+        /*
+         * Try to have the error message show up in the crash
+         * information.
+         */
+        // va_start(args, format);
+        // ws_vadd_crash_info(format, args);
+        // va_end(args);
+
+        /*
+         * Print the error message.
+         */
+        va_start(args, format);
+        vfprintf(stderr, format, args);
+        va_end(args);
+        putc('\n', stderr);
+
+        /*
+         * And crash.
+         */
+        abort();
+    } else {
+        // va_start(args, format);
+        // VTHROW_FORMATTED(DissectorError, format, args);
+        // va_end(args);
+
+        // va_start(args, format);
+        // ws_vadd_crash_info(format, args);
+        // va_end(args);
+
+        /*
+         * Print the error message.
+         */
+        va_start(args, format);
+        vfprintf(stderr, format, args);
+        va_end(args);
+        putc('\n', stderr);
+    }
+}
+
+
+
+
+
 using namespace::std;
 
 // consider https://stackoverflow.com/questions/22120413/using-a-vector-of-unique-pointers-to-an-employee-vector
@@ -149,40 +222,7 @@ find_protocol_by_id(const int proto_id)
 }
 
 
-/* for use with static arrays only, since we don't allocate our own copies
-of the header_field_info struct contained within the hf_register_info struct */
-void
-proto_register_field_array(const int parent, hf_register_info *hf, const int num_records)
-{
-   hf_register_info *ptr = hf;
-   protocol_t   *proto;
-   int       i;
 
-   proto = find_protocol_by_id(parent);
-
-   if (proto->fields == NULL) {
-       proto->fields = g_ptr_array_sized_new(num_records);
-   }
-
-   for (i = 0; i < num_records; i++, ptr++) {
-//        /*
-//         * Make sure we haven't registered this yet.
-//         * Most fields have variables associated with them
-//         * that are initialized to -1; some have array elements,
-//         * or possibly uninitialized variables, so we also allow
-//         * 0 (which is unlikely to be the field ID we get back
-//         * from "proto_register_field_init()").
-//         */
-       if (*ptr->p_id != -1 && *ptr->p_id != 0) {
-           fprintf(stderr,
-               "Duplicate field detected in call to proto_register_field_array: %s is already registered\n",
-               ptr->hfinfo.abbrev);
-           return;
-       }
-
-//        *ptr->p_id = proto_register_field_common(proto, &ptr->hfinfo, parent);
-   }
-}
 
 
 
@@ -280,3 +320,74 @@ proto_register_field_init(header_field_info *hfinfo, const int parent)
     return hfinfo->id;
 }
 
+
+
+
+
+static int
+proto_register_field_common(protocol_t *proto, header_field_info *hfi, const int parent)
+{
+    if (proto != NULL) {
+        g_ptr_array_add(proto->fields, hfi);
+    }
+
+    return proto_register_field_init(hfi, parent);
+}
+
+/* for use with static arrays only, since we don't allocate our own copies
+of the header_field_info struct contained within the hf_register_info struct */
+void
+proto_register_field_array(const int parent, hf_register_info *hf, const int num_records)
+{
+   hf_register_info *ptr = hf;
+   protocol_t   *proto;
+   int       i;
+
+   proto = find_protocol_by_id(parent);
+
+   if (proto->fields == NULL) {
+       proto->fields = g_ptr_array_sized_new(num_records);
+   }
+
+   for (i = 0; i < num_records; i++, ptr++) {
+//        /*
+//         * Make sure we haven't registered this yet.
+//         * Most fields have variables associated with them
+//         * that are initialized to -1; some have array elements,
+//         * or possibly uninitialized variables, so we also allow
+//         * 0 (which is unlikely to be the field ID we get back
+//         * from "proto_register_field_init()").
+//         */
+       if (*ptr->p_id != -1 && *ptr->p_id != 0) {
+           fprintf(stderr,
+               "Duplicate field detected in call to proto_register_field_array: %s is already registered\n",
+               ptr->hfinfo.abbrev);
+           return;
+       }
+
+       *ptr->p_id = proto_register_field_common(proto, &ptr->hfinfo, parent);
+   }
+}
+
+
+guchar
+proto_check_field_name(const gchar *field_name)
+{
+    const char *p = field_name;
+    guchar c = '.', lastc;
+
+    do {
+        lastc = c;
+        c = *(p++);
+        /* Leading '.' or substring ".." are disallowed. */
+        if (c == '.' && lastc == '.') {
+            break;
+        }
+    } while (fld_abbrev_chars[c]);
+
+    /* Trailing '.' is disallowed. */
+    if (lastc == '.') {
+        return '.';
+    }
+    return c;
+}
