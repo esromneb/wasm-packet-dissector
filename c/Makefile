@@ -39,6 +39,8 @@ CLANG_WARN_FLAGS = \
 -Wall -Wextra \
 -Wno-ignored-qualifiers \
 -Wundef \
+-Wno-unused-parameter \
+-Wno-unused-variable \
 -Werror=return-type
 # -Wconversion
 # -Wshadow

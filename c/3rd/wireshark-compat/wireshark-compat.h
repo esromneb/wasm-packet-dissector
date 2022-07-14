@@ -36,8 +36,8 @@
 #define FALSE false
 #define TRUE true
 
-#define G_GNUC_WARN_UNUSED_RESULT
-#define WS_NORETURN
+// #define G_GNUC_WARN_UNUSED_RESULT
+// #define WS_NORETURN
 
 // #define G_GNUC_PRINTF(...)
 // #define proto_report_dissector_bug(...)
