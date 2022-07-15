@@ -232,6 +232,7 @@ find_protocol_by_id(const int proto_id)
 static int
 proto_register_field_init(header_field_info *hfinfo, const int parent)
 {
+    return 0;
 
     // tmp_fld_check_assert(hfinfo);
 
