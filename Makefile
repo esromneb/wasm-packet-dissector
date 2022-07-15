@@ -1,4 +1,4 @@
-.PHONY: build buildw dev start test jestc ctest pretest lint clean cleanall
+.PHONY: build buildw dev start test jestc ctest pretest lint clean cleanall jestw
 
 build:
 	npm run build
@@ -12,11 +12,14 @@ dev:
 start:
 	npm run start
 
-test: jestc
+test:
 	npm run test
 
 jestc:
 	npm run jestc
+
+jestw:
+	npm run jestw
 
 # jest with cache
 ctest:
