@@ -1,0 +1,1 @@
+-I/src/wireshark/epan/wmem -I/src/wireshark/epan/wmem/.. -I/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include -I/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include/glib-2.0 -I/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/lib/glib-2.0/include -I/src/wireshark 

@@ -28,3 +28,7 @@ on node 14, I can run this:
 ```bash
 node --experimental-wasm-threads ./node_modules/jest/bin/jest.js --runInBand --no-cache src/test/test_basic.ts
 ```
+
+# Linking against anything
+If there are things I can link outright to, that just work from wireshark I should
+I should only hand edit the "important files" and hand build them myself from inside the wasm
