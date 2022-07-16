@@ -79,6 +79,10 @@ OBJS3 = \
 except.o \
 tvbuff_real.o \
 tvbuff.o \
+tvbparse.o \
+time_util.o \
+unicode-utils.o \
+ws_mempbrk.o \
 to_str.o \
 oids.o \
 osi-utils.o \
@@ -87,7 +91,9 @@ strutil.o \
 address_types.o \
 addr_resolv.o \
 inet_addr.o \
+charsets.o \
 
+# strptime.o \
 
 OBJS3_A = $(addprefix build/,$(OBJS3))
 
