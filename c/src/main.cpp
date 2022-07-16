@@ -17,7 +17,8 @@
 #include <emscripten.h>
 #endif
 
-
+#include "wireshark-compat.h"
+#include "epan.h"
 #include "wireshark.h"
 
 using namespace std;
@@ -29,6 +30,15 @@ std::vector<std::string> registered;
 void proto_register_foo(void);
 
 extern "C" {
+
+void doCall(const unsigned i) {
+    if( i == 0 ) {
+        // epan_init(NULL, NULL, NULL);
+    }
+    if( i == 1 ) {
+        foo_bar_waz();
+    }
+}
 
 void registerName(const std::string n) {
     registered.push_back(n);

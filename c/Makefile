@@ -31,6 +31,7 @@ EXPORT_STRING = \
 "_registerName", \
 "_registerAll", \
 "_printAThing", \
+"_doCall", \
 "_wrapper_wireshark_shared",
 
 
@@ -71,7 +72,7 @@ INCLUDE = \
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
 # 	-s USE_PTHREADS=1 -s PROXY_TO_PTHREAD=1 -s ALLOW_BLOCKING_ON_MAIN_THREAD=0
-$(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o build/proto.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+$(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o build/proto.o build/epan.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
 	emcc -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
@@ -81,7 +82,7 @@ $(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o build/proto.o $(T
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
 	-L./3rd/ -lwmem \
-	build/main.o build/wireshark.o build/packet-foo.o build/proto.o
+	build/main.o build/wireshark.o build/packet-foo.o build/proto.o build/epan.o
 
 build/main.o: src/main.cpp
 	emcc src/main.cpp -c -o build/main.o \

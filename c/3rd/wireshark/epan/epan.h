@@ -10,6 +10,8 @@
 #ifndef __EPAN_H__
 #define __EPAN_H__
 
+void foo_bar_waz();
+
 #include <glib.h>
 
 #include <epan/tvbuff.h>

@@ -44,6 +44,7 @@
 // #include "show_exception.h"
 // #include "in_cksum.h"
 #include "register-int.h"
+#include "epan.h"
 
 
 
@@ -63,7 +64,7 @@ typedef struct __subtree_lvl {
     proto_tree *tree;
 } subtree_lvl;
 
-gboolean wireshark_abort_on_dissector_bug = false;
+// gboolean wireshark_abort_on_dissector_bug = false;
 
 
 

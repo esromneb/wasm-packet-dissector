@@ -7,6 +7,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
+
 #include "config.h"
 
 #include <stdarg.h>
@@ -881,3 +882,7 @@ epan_get_runtime_version_info(GString *str)
  * vi: set shiftwidth=8 tabstop=8 noexpandtab:
  * :indentSize=8:tabSize=8:noTabs=false:
  */
+
+void foo_bar_waz() {
+	int a;
+}

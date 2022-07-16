@@ -4,12 +4,14 @@ const dis = require('../../c/out/dis.js');
 let printAThing;
 let wiresharkShared;
 let registerAll;
+let doCall;
 
 // fixme find a nice way to get the binds
 function setupBinds() {
   printAThing = dis.cwrap('printAThing', 'void');
   wiresharkShared = dis.cwrap('wrapper_wireshark_shared', 'void', ['number']);
   registerAll = dis.cwrap('registerAll', 'void');
+  doCall = dis.cwrap('doCall', 'void', ['number']);
 }
 
 
@@ -45,7 +47,11 @@ test('sync test', () => {
 
   console.log('------------------------------');
 
-  registerAll();
+  // crashes
+  // registerAll();
+
+  doCall(1);
+
 
   
 });
