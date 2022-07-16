@@ -33,10 +33,10 @@ extern "C" {
 
 void doCall(const unsigned i) {
     if( i == 0 ) {
-        epan_init(NULL, NULL, NULL);
+        // epan_init(NULL, NULL, NULL);
     }
     if( i == 1 ) {
-        foo_bar_waz();
+        // foo_bar_waz();
     }
 }
 

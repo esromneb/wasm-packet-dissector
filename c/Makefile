@@ -92,7 +92,6 @@ $(WASM_OUT): $(OBJS) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) $(BUILDA) Makefile
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
 	-L./3rd/ -lwmem \
-	$(BUILDA) \
 	$(OBJS)
 
 
