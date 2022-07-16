@@ -78,7 +78,7 @@ $(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o build/proto.o $(T
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "callMain"]' \
 	-sLLD_REPORT_UNDEFINED \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
-	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
+	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 -lwmem \
 	build/main.o build/wireshark.o build/packet-foo.o build/proto.o
 
 build/main.o: src/main.cpp

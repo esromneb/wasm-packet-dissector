@@ -6,7 +6,333 @@
 #include <vector>
 #include <memory>
 
+#include "register.h"
+
+
+
+#include <stdio.h>
+#include <string.h>
+#include <glib.h>
+#include <float.h>
+#include <errno.h>
+
+// #include <wsutil/bits_ctz.h>
+// #include <wsutil/bits_count_ones.h>
+// #include <wsutil/sign_ext.h>
+// #include <wsutil/utf8_entities.h>
+// #include <wsutil/json_dumper.h>
+
+// #include <ftypes/ftypes-int.h>
+
+// #include "packet.h"
+// #include "exceptions.h"
+// #include "ptvcursor.h"
+// #include "strutil.h"
+// #include "addr_resolv.h"
+#include "address_types.h"
+// #include "oids.h"
+// #include "proto.h"
+// #include "epan_dissect.h"
+// #include "tvbuff.h"
+// #include "wmem/wmem.h"
+// #include "charsets.h"
+// #include "column-utils.h"
+// #include "to_str-int.h"
+// #include "to_str.h"
+// #include "osi-utils.h"
+// #include "expert.h"
+// #include "show_exception.h"
+// #include "in_cksum.h"
+#include "register-int.h"
+
+
+
+
+/* Ptvcursor limits */
+#define SUBTREE_ONCE_ALLOCATION_NUMBER 8
+#define SUBTREE_MAX_LEVELS 256
+
+/* Throw an exception if our tree exceeds these. */
+/* XXX - These should probably be preferences */
+#define MAX_TREE_ITEMS (1 * 1000 * 1000)
+#define MAX_TREE_LEVELS (5 * 100)
+
+typedef struct __subtree_lvl {
+    gint        cursor_offset;
+    proto_item *it;
+    proto_tree *tree;
+} subtree_lvl;
+
 gboolean wireshark_abort_on_dissector_bug = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static void proto_cleanup_base(void);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static int proto_register_field_init(header_field_info *hfinfo, const int parent);
+
+/* special-case header field used within proto.c */
+static header_field_info hfi_text_only =
+    { "Text item",  "text", FT_NONE, BASE_NONE, NULL, 0x0, NULL, HFILL };
+int hf_text_only = -1;
+
+/* Structure for information about a protocol */
+struct _protocol {
+    const char *name;               /* long description */
+    const char *short_name;         /* short description */
+    const char *filter_name;        /* name of this protocol in filters */
+    GPtrArray  *fields;             /* fields for this protocol */
+    int         proto_id;           /* field ID for this protocol */
+    gboolean    is_enabled;         /* TRUE if protocol is enabled */
+    gboolean    enabled_by_default; /* TRUE if protocol is enabled by default */
+    gboolean    can_toggle;         /* TRUE if is_enabled can be changed */
+    int         parent_proto_id;    /* Used to identify "pino"s (Protocol In Name Only).
+                                       For dissectors that need a protocol name so they
+                                       can be added to a dissector table, but use the
+                                       parent_proto_id for things like enable/disable */
+    GList      *heur_list;          /* Heuristic dissectors associated with this protocol */
+};
+
+/* List of all protocols */
+// static GList *protocols = NULL;
 
 /* Structure stored for deregistered g_slice */
 struct g_slice_data {
@@ -72,25 +398,246 @@ static GHashTable *gpa_protocol_aliases = NULL;
 static char *last_field_name = NULL;
 static header_field_info *last_hfinfo;
 
+static void save_same_name_hfinfo(gpointer data)
+{
+    same_name_hfinfo = (header_field_info*)data;
+}
+
+/* Points to the first element of an array of bits, indexed by
+   a subtree item type; that array element is TRUE if subtrees of
+   an item of that type are to be expanded. */
+static guint32 *tree_is_expanded;
+
+/* Number of elements in that array. */
+int     num_tree_types;
+
+/* Name hashtables for fast detection of duplicate names */
+static GHashTable* proto_names        = NULL;
+static GHashTable* proto_short_names  = NULL;
+static GHashTable* proto_filter_names = NULL;
+
+static gint
+proto_compare_name(gconstpointer p1_arg, gconstpointer p2_arg)
+{
+    const protocol_t *p1 = (const protocol_t *)p1_arg;
+    const protocol_t *p2 = (const protocol_t *)p2_arg;
+
+    return g_ascii_strcasecmp(p1->short_name, p2->short_name);
+}
+
+#ifdef HAVE_PLUGINS
+static GSList *dissector_plugins = NULL;
+
+void
+proto_register_plugin(const proto_plugin *plug)
+{
+    if (!plug) {
+        /* XXX print useful warning */
+        return;
+    }
+    dissector_plugins = g_slist_prepend(dissector_plugins, (proto_plugin *)plug);
+}
+
+static void
+call_plugin_register_protoinfo(gpointer data, gpointer user_data _U_)
+{
+    proto_plugin *plug = (proto_plugin *)data;
+
+    if (plug->register_protoinfo) {
+        plug->register_protoinfo();
+    }
+}
+
+static void
+call_plugin_register_handoff(gpointer data, gpointer user_data _U_)
+{
+    proto_plugin *plug = (proto_plugin *)data;
+
+    if (plug->register_handoff) {
+        plug->register_handoff();
+    }
+}
+#endif /* HAVE_PLUGINS */
 
 
+/* initialize data structures and register protocols and fields */
+void
+proto_init(GSList *register_all_plugin_protocols_list,
+       GSList *register_all_plugin_handoffs_list,
+       register_cb cb,
+       gpointer client_data)
+{
+    proto_cleanup_base();
 
-/* Structure for information about a protocol */
-struct _protocol {
-    const char *name;               /* long description */
-    const char *short_name;         /* short description */
-    const char *filter_name;        /* name of this protocol in filters */
-    GPtrArray  *fields;             /* fields for this protocol */
-    int         proto_id;           /* field ID for this protocol */
-    gboolean    is_enabled;         /* TRUE if protocol is enabled */
-    gboolean    enabled_by_default; /* TRUE if protocol is enabled by default */
-    gboolean    can_toggle;         /* TRUE if is_enabled can be changed */
-    int         parent_proto_id;    /* Used to identify "pino"s (Protocol In Name Only).
-                                       For dissectors that need a protocol name so they
-                                       can be added to a dissector table, but use the
-                                       parent_proto_id for things like enable/disable */
-    GList      *heur_list;          /* Heuristic dissectors associated with this protocol */
-};
+    proto_names        = g_hash_table_new(g_str_hash, g_str_equal);
+    proto_short_names  = g_hash_table_new(g_str_hash, g_str_equal);
+    proto_filter_names = g_hash_table_new(g_str_hash, g_str_equal);
+
+    gpa_hfinfo.len           = 0;
+    gpa_hfinfo.allocated_len = 0;
+    gpa_hfinfo.hfi           = NULL;
+    gpa_name_map             = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, save_same_name_hfinfo);
+    gpa_protocol_aliases     = g_hash_table_new(g_str_hash, g_str_equal);
+    deregistered_fields      = g_ptr_array_new();
+    deregistered_data        = g_ptr_array_new();
+    deregistered_slice       = g_ptr_array_new();
+
+    /* Initialize the ftype subsystem */
+    ftypes_initialize();
+
+    /* Initialize the addres type subsystem */
+    address_types_initialize();
+
+    /* Register one special-case FT_TEXT_ONLY field for use when
+       converting wireshark to new-style proto_tree. These fields
+       are merely strings on the GUI tree; they are not filterable */
+    hf_text_only = proto_register_field_init(&hfi_text_only, -1);
+
+    /* Register the pseudo-protocols used for exceptions. */
+    // register_show_exception();
+    // register_type_length_mismatch();
+    // register_number_string_decoding_error();
+    // register_string_errors();
+
+    /* Have each built-in dissector register its protocols, fields,
+       dissector tables, and dissectors to be called through a
+       handle, and do whatever one-time initialization it needs to
+       do. */
+    register_all_protocols(cb, client_data);
+
+    /* Now call the registration routines for all epan plugins. */
+    for (GSList *l = register_all_plugin_protocols_list; l != NULL; l = l->next) {
+        ((void (*)(register_cb, gpointer))l->data)(cb, client_data);
+    }
+
+#ifdef HAVE_PLUGINS
+    /* Now call the registration routines for all dissector plugins. */
+    if (cb)
+        (*cb)(RA_PLUGIN_REGISTER, NULL, client_data);
+    g_slist_foreach(dissector_plugins, call_plugin_register_protoinfo, NULL);
+#endif
+
+    /* Now call the "handoff registration" routines of all built-in
+       dissectors; those routines register the dissector in other
+       dissectors' handoff tables, and fetch any dissector handles
+       they need. */
+    register_all_protocol_handoffs(cb, client_data);
+
+    /* Now do the same with epan plugins. */
+    for (GSList *l = register_all_plugin_handoffs_list; l != NULL; l = l->next) {
+        ((void (*)(register_cb, gpointer))l->data)(cb, client_data);
+    }
+
+#ifdef HAVE_PLUGINS
+    /* Now do the same with dissector plugins. */
+    if (cb)
+        (*cb)(RA_PLUGIN_HANDOFF, NULL, client_data);
+    g_slist_foreach(dissector_plugins, call_plugin_register_handoff, NULL);
+#endif
+
+    /* sort the protocols by protocol name */
+    protocols = g_list_sort(protocols, proto_compare_name);
+
+    /* We've assigned all the subtree type values; allocate the array
+       for them, and zero it out. */
+    tree_is_expanded = g_new0(guint32, (num_tree_types/32)+1);
+}
+
+static void
+proto_cleanup_base(void)
+{
+    protocol_t *protocol;
+    header_field_info *hfinfo;
+
+    /* Free the abbrev/ID hash table */
+    if (gpa_name_map) {
+        g_hash_table_destroy(gpa_name_map);
+        gpa_name_map = NULL;
+    }
+    if (gpa_protocol_aliases) {
+        g_hash_table_destroy(gpa_protocol_aliases);
+        gpa_protocol_aliases = NULL;
+    }
+    g_free(last_field_name);
+    last_field_name = NULL;
+
+    while (protocols) {
+        protocol = (protocol_t *)protocols->data;
+        PROTO_REGISTRAR_GET_NTH(protocol->proto_id, hfinfo);
+        DISSECTOR_ASSERT(protocol->proto_id == hfinfo->id);
+
+        g_slice_free(header_field_info, hfinfo);
+        if (protocol->parent_proto_id != -1) {
+            // pino protocol
+            DISSECTOR_ASSERT(protocol->fields == NULL); //helpers should not have any registered fields
+            DISSECTOR_ASSERT(protocol->heur_list == NULL); //helpers should not have a heuristic list
+        } else {
+            if (protocol->fields) {
+                g_ptr_array_free(protocol->fields, TRUE);
+            }
+            g_list_free(protocol->heur_list);
+        }
+        protocols = g_list_remove(protocols, protocol);
+        g_free(protocol);
+    }
+
+    if (proto_names) {
+        g_hash_table_destroy(proto_names);
+        proto_names = NULL;
+    }
+
+    if (proto_short_names) {
+        g_hash_table_destroy(proto_short_names);
+        proto_short_names = NULL;
+    }
+
+    if (proto_filter_names) {
+        g_hash_table_destroy(proto_filter_names);
+        proto_filter_names = NULL;
+    }
+
+    if (gpa_hfinfo.allocated_len) {
+        gpa_hfinfo.len           = 0;
+        gpa_hfinfo.allocated_len = 0;
+        g_free(gpa_hfinfo.hfi);
+        gpa_hfinfo.hfi           = NULL;
+    }
+
+    if (deregistered_fields) {
+        g_ptr_array_free(deregistered_fields, TRUE);
+        deregistered_fields = NULL;
+    }
+
+    if (deregistered_data) {
+        g_ptr_array_free(deregistered_data, TRUE);
+        deregistered_data = NULL;
+    }
+
+    if (deregistered_slice) {
+        g_ptr_array_free(deregistered_slice, TRUE);
+        deregistered_slice = NULL;
+    }
+
+    g_free(tree_is_expanded);
+    tree_is_expanded = NULL;
+
+    if (prefixes)
+        g_hash_table_destroy(prefixes);
+}
+
+void
+proto_cleanup(void)
+{
+    proto_free_deregistered_fields();
+    proto_cleanup_base();
+
+#ifdef HAVE_PLUGINS
+    g_slist_free(dissector_plugins);
+    dissector_plugins = NULL;
+#endif
+}
+
+
 
 
 
@@ -232,13 +779,16 @@ find_protocol_by_id(const int proto_id)
 static int
 proto_register_field_init(header_field_info *hfinfo, const int parent)
 {
-    return 0;
+    // return 0;
 
     // tmp_fld_check_assert(hfinfo);
 
     hfinfo->parent         = parent;
     hfinfo->same_name_next = NULL;
     hfinfo->same_name_prev_id = -1;
+
+    cout << gpa_hfinfo.len << "\n";
+    cout << gpa_hfinfo.allocated_len << "\n";
 
     /* if we always add and never delete, then id == len - 1 is correct */
     if (gpa_hfinfo.len >= gpa_hfinfo.allocated_len) {
