@@ -37,7 +37,7 @@
 // #include "tfs.h"
 #include "packet_info.h"
 #include "ftypes/ftypes.h"
-// #include "register.h"
+#include "register.h"
 #include "ws_symbol_export.h"
 #include "ws_attributes.h"
 // #ifdef HAVE_PLUGINS
