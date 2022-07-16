@@ -70,6 +70,8 @@ build/main.o \
 build/wireshark.o \
 build/packet-foo.o \
 build/proto.o \
+build/strutil.o \
+build/to_str.o \
 build/epan.o
 
 BUILDA = \
@@ -118,6 +120,18 @@ build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
 	'-std=c++2a' \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/strutil.o: 3rd/wireshark/epan/strutil.c 3rd/wireshark/epan/strutil.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+ 	'-std=c++2a' -x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/to_str.o: 3rd/wireshark/epan/to_str.c 3rd/wireshark/epan/to_str.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+ 	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 # build/ftypes.o: 3rd/wireshark/epan/ftypes/ftypes.c 3rd/wireshark/epan/ftypes/ftypes.h
