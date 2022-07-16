@@ -55,6 +55,7 @@ set_source_files_properties(
 	${FTYPE_FILES}
 	PROPERTIES
 	COMPILE_FLAGS "${WERROR_COMMON_FLAGS}"
+	LANGUAGE CXX
 )
 
 add_library(ftypes STATIC
@@ -63,6 +64,8 @@ add_library(ftypes STATIC
 
 	${FTYPE_FILES}
 )
+
+set_target_properties(ftypes PROPERTIES LINKER_LANGUAGE CXX)
 
 set_target_properties(ftypes PROPERTIES
 	FOLDER "Libs/epan/ftypes"
