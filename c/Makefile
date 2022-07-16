@@ -169,7 +169,7 @@ build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 
-3rd/wireshark/epan/ftypes/build/libftypes.a:
+3rd/wireshark/epan/ftypes/build/libftypes.a: $(wildcard 3rd/wireshark/epan/ftypes/*)
 	mkdir -p 3rd/wireshark/epan/ftypes/build && cd 3rd/wireshark/epan/ftypes/build && emcmake cmake .. && make
 
 clean:
