@@ -8,15 +8,21 @@
 #
 
 include_directories(
-	${CMAKE_CURRENT_BINARY_DIR}
+	# ${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_SOURCE_DIR}/../epan
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include/glib-2.0/
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/lib/glib-2.0/include
-	/src/wasm-packet-dissector/c/3rd/wireshark
-	/src/wasm-packet-dissector/c/3rd/wireshark/epan
-	/src/wasm-packet-dissector/c/3rd/wireshark-compat
+	# ${CMAKE_SOURCE_DIR}/../epan
+	../../../zlib-glib-ffi/include
+	# /src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include
+	../../../zlib-glib-ffi/include/glib-2.0/
+	# /src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include/glib-2.0/
+	../../../zlib-glib-ffi/lib/glib-2.0/include
+	# /src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/lib/glib-2.0/include
+	../../../wireshark
+	# /src/wasm-packet-dissector/c/3rd/wireshark
+	../../../wireshark/epan
+	# /src/wasm-packet-dissector/c/3rd/wireshark/epan
+	../../../wireshark-compat
+	# /src/wasm-packet-dissector/c/3rd/wireshark-compat
 )
 
 set(FTYPE_PUBLIC_HEADERS
@@ -49,7 +55,6 @@ set_source_files_properties(
 	${FTYPE_FILES}
 	PROPERTIES
 	COMPILE_FLAGS "${WERROR_COMMON_FLAGS}"
-	LANGUAGE CXX
 )
 
 add_library(ftypes STATIC
@@ -58,8 +63,6 @@ add_library(ftypes STATIC
 
 	${FTYPE_FILES}
 )
-
-set_target_properties(ftypes PROPERTIES LINKER_LANGUAGE CXX)
 
 set_target_properties(ftypes PROPERTIES
 	FOLDER "Libs/epan/ftypes"
