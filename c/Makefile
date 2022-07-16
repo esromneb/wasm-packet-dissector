@@ -70,13 +70,52 @@ build/main.o \
 build/wireshark.o \
 build/packet-foo.o \
 build/proto.o \
-build/strutil.o \
-build/to_str.o \
-build/oids.o \
-build/osi-utils.o \
-build/addr_and_mask.o \
-build/addr_resolv.o \
 build/epan.o
+
+
+
+
+OBJS3 = \
+except.o \
+tvbuff_real.o \
+tvbuff.o \
+to_str.o \
+oids.o \
+osi-utils.o \
+addr_and_mask.o \
+strutil.o \
+address_types.o \
+addr_resolv.o \
+inet_addr.o \
+
+
+OBJS3_A = $(addprefix build/,$(OBJS3))
+
+
+# EPAN_SRCS = \
+# except.c \
+# tvbuff_real.c \
+
+# EPAN_SRCS2 = $(addprefix 3rd/wireshark/epan/,$(EPAN_SRCS))
+# EPAN_OBJS = $(addprefix build/,$(EPAN_SRCS:.c=.o))
+
+# foo:
+# 	@echo ${EPAN_SRCS}
+# 	@echo ---
+# 	@echo ${EPAN_SRCS2}
+# 	@echo ---
+# 	@echo ${EPAN_OBJS}
+# 	@echo ---
+# 	@echo ${OBJS3}
+# 	@echo ---
+# 	@echo ${OBJS3_A}
+
+# EPAN_OBJS = \
+# except.o \
+# tvbuff_real.o \
+
+
+
 
 BUILDA = \
 3rd/wireshark/epan/ftypes/build/libftypes.a
@@ -88,7 +127,7 @@ BUILDA = \
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
 # 	-s USE_PTHREADS=1 -s PROXY_TO_PTHREAD=1 -s ALLOW_BLOCKING_ON_MAIN_THREAD=0
-$(WASM_OUT): $(OBJS) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) $(BUILDA) Makefile
+$(WASM_OUT): $(OBJS) $(OBJS3_A) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) $(BUILDA) Makefile
 	emcc -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
@@ -99,7 +138,8 @@ $(WASM_OUT): $(OBJS) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) $(BUILDA) Makefile
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
 	-L./3rd/ -lwmem \
 	$(BUILDA) \
-	$(OBJS)
+	$(OBJS) \
+	$(OBJS3_A)
 
 
 build/main.o: src/main.cpp
@@ -126,47 +166,80 @@ build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/strutil.o: 3rd/wireshark/epan/strutil.c 3rd/wireshark/epan/strutil.h
+
+
+
+# ok so these two rules both match from build
+# but they look in different places
+# this will work great unless we have multiple files with the same name
+# in different dirs
+# IF we do do that, we can make 2 build dirs and solve it
+
+build/%.o: 3rd/wireshark/epan/%.c
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
- 	'-std=c++2a' -x c++ \
+	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+	echo "epan match"
 
-build/to_str.o: 3rd/wireshark/epan/to_str.c 3rd/wireshark/epan/to_str.h
+
+build/%.o: 3rd/wireshark/wsutil/%.c
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
- 	-x c++ \
+	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+	echo "ws util match"
 
-build/oids.o: 3rd/wireshark/epan/oids.c 3rd/wireshark/epan/oids.h
-	emcc $< -c -o $@ \
-	$(INCLUDE) \
- 	-x c++ \
-	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/osi-utils.o: 3rd/wireshark/epan/osi-utils.c 3rd/wireshark/epan/osi-utils.h
-	emcc $< -c -o $@ \
-	$(INCLUDE) \
- 	-x c++ \
-	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/addr_and_mask.o: 3rd/wireshark/epan/addr_and_mask.c 3rd/wireshark/epan/addr_and_mask.h
-	emcc $< -c -o $@ \
-	$(INCLUDE) \
- 	-x c++ \
-	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/addr_resolv.o: 3rd/wireshark/epan/addr_resolv.c 3rd/wireshark/epan/addr_resolv.h
-	emcc $< -c -o $@ \
-	$(INCLUDE) \
- 	-x c++ \
-	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+# %.o: $$(addprefix 3rd/wireshark/epan/,%.c)
+# 	@echo $^
 
-# build/ftypes.o: 3rd/wireshark/epan/ftypes/ftypes.c 3rd/wireshark/epan/ftypes/ftypes.h
+# $(EPAN_OBJS): $(EPAN_SRCS2)
+# 	@echo $*
+# 	@echo -------
+# 	@echo $<
+# 	@echo -------
+# 	@echo $@
+# 	@echo -------
+# 	@echo $?
+# 	@echo -------
+# 	@echo $^
+# 	@echo -------
+# 	@echo $(<F)
+
+
+# $(EPAN_OBJS): $(SRCS2)
+# 	emcc $(addprefix 3rd/wireshark/epan/,$*).c -c -o $@ \
+#  	-x c++ \
+# 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+# %.o : %.c
+# 	emcc -c \
+# 	$(INCLUDE) \
+#  	-x c++ \
+# 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
+# 	$< -o $(BUILD_DIR)/$@
+
+
+
+# @for objj in $(EPAN_OBJS); do \
+# 	$(MAKE) -C $$dir/test all || exit $?; \
+# done
+
+# $(addprefix build/,$(EPAN_OBJS)): 3rd/wireshark/epan/%.c
+# 	echo $@
+# 	echo $(subst .o,.c,$@)
+# 	touch $@
 # 	emcc $< -c -o $@ \
 # 	$(INCLUDE) \
-# 	'-std=c++2a' -x c++ \
+# 	-x c++ \
 # 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+
+
+
 
 # build/proto.o: 3rd/wireshark/epan/proto.c 3rd/wireshark/epan/proto.h
 # 	emcc -x c++ \
