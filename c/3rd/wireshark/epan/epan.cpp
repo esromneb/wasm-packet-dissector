@@ -18,10 +18,6 @@
 #endif /* HAVE_LIBGNUTLS */
 
 #include <glib.h>
-// #include </src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include/glib-2.0/glib/gslist.h>
-
-// GSList*  g_slist_prepend                 (GSList           *list,
-// 					  gpointer          data);
 
 #include <version_info.h>
 #include <wsutil/report_message.h>
