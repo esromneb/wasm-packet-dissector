@@ -23,11 +23,11 @@
 
 #include <glib.h>
 #include <epan/guid-utils.h>
-// #include <epan/wmem/wmem.h>
-// #include <epan/ipv6.h>
+#include <epan/wmem/wmem.h>
+#include <epan/ipv6.h>
 
-// #include <wsutil/nstime.h>
-// #include "wsutil/ws_mempbrk.h"
+#include <wsutil/nstime.h>
+#include "wsutil/ws_mempbrk.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -375,9 +375,9 @@ WS_DLL_PUBLIC gdouble tvb_get_ieee_double(tvbuff_t *tvb, const gint offset, cons
  * a single byte: ENC_ASCII, ENC_UTF_8, ENC_ISO_8859_*, etc. It does NOT work
  * for purely multi-byte encodings such as ENC_UTF_16, ENC_UCS_*, etc.
  */
-// WS_DLL_PUBLIC
-// nstime_t* tvb_get_string_time(tvbuff_t *tvb, const gint offset, const gint length,
-                              // const guint encoding, nstime_t* ns, gint *endoff);
+WS_DLL_PUBLIC
+nstime_t* tvb_get_string_time(tvbuff_t *tvb, const gint offset, const gint length,
+                              const guint encoding, nstime_t* ns, gint *endoff);
 
 /* Similar to above, but returns a GByteArray based on the case-insensitive
  * hex-char strings with optional separators, and with optional leading spaces.
@@ -387,9 +387,9 @@ WS_DLL_PUBLIC gdouble tvb_get_ieee_double(tvbuff_t *tvb, const gint offset, cons
  * value or NULL on error. The GByteArray bytes must be pre-constructed with
  * g_byte_array_new().
  */
-// WS_DLL_PUBLIC
-// GByteArray* tvb_get_string_bytes(tvbuff_t *tvb, const gint offset, const gint length,
-                                 // const guint encoding, GByteArray* bytes, gint *endoff);
+WS_DLL_PUBLIC
+GByteArray* tvb_get_string_bytes(tvbuff_t *tvb, const gint offset, const gint length,
+                                 const guint encoding, GByteArray* bytes, gint *endoff);
 
 /**
  * Fetch an IPv4 address, in network byte order.
@@ -398,8 +398,8 @@ WS_DLL_PUBLIC gdouble tvb_get_ieee_double(tvbuff_t *tvb, const gint offset, cons
 WS_DLL_PUBLIC guint32 tvb_get_ipv4(tvbuff_t *tvb, const gint offset);
 
 /* Fetch an IPv6 address. */
-// WS_DLL_PUBLIC void tvb_get_ipv6(tvbuff_t *tvb, const gint offset,
-    // ws_in6_addr *addr);
+WS_DLL_PUBLIC void tvb_get_ipv6(tvbuff_t *tvb, const gint offset,
+    ws_in6_addr *addr);
 
 /* Fetch a GUID. */
 WS_DLL_PUBLIC void tvb_get_ntohguid(tvbuff_t *tvb, const gint offset,
@@ -457,8 +457,8 @@ WS_DLL_PUBLIC void *tvb_memcpy(tvbuff_t *tvb, void *target, const gint offset,
  * the memory allocated. Otherwise memory is automatically freed when the
  * scope lifetime is reached.
  */
-// WS_DLL_PUBLIC void *tvb_memdup(wmem_allocator_t *scope, tvbuff_t *tvb,
-//     const gint offset, size_t length);
+WS_DLL_PUBLIC void *tvb_memdup(wmem_allocator_t *scope, tvbuff_t *tvb,
+    const gint offset, size_t length);
 
 /** WARNING! This function is possibly expensive, temporarily allocating
  * another copy of the packet data. Furthermore, it's dangerous because once
@@ -510,8 +510,8 @@ WS_DLL_PUBLIC gint tvb_find_guint16(tvbuff_t *tvb, const gint offset,
  * Will not throw an exception, even if
  * maxlength exceeds boundary of tvbuff; in that case, -1 will be returned if
  * the boundary is reached before finding needle. */
-// WS_DLL_PUBLIC gint tvb_ws_mempbrk_pattern_guint8(tvbuff_t *tvb, const gint offset,
-//     const gint maxlength, const ws_mempbrk_pattern* pattern, guchar *found_needle);
+WS_DLL_PUBLIC gint tvb_ws_mempbrk_pattern_guint8(tvbuff_t *tvb, const gint offset,
+    const gint maxlength, const ws_mempbrk_pattern* pattern, guchar *found_needle);
 
 
 /** Find size of stringz (NUL-terminated string) by looking for terminating
@@ -547,8 +547,8 @@ WS_DLL_PUBLIC gchar *tvb_format_text(tvbuff_t *tvb, const gint offset,
  * Like "tvb_format_text()", but for 'wsp'; don't show
  * the characters as C-style escapes.
  */
-// WS_DLL_PUBLIC gchar *tvb_format_text_wsp(wmem_allocator_t* allocator, tvbuff_t *tvb, const gint offset,
-//     const gint size);
+WS_DLL_PUBLIC gchar *tvb_format_text_wsp(wmem_allocator_t* allocator, tvbuff_t *tvb, const gint offset,
+    const gint size);
 
 /**
  * Like "tvb_format_text()", but for null-padded strings; don't show
@@ -562,8 +562,8 @@ extern gchar *tvb_format_stringzpad(tvbuff_t *tvb, const gint offset,
  * Like "tvb_format_text_wsp()", but for null-padded strings; don't show
  * the null padding characters as "\000".
  */
-// extern gchar *tvb_format_stringzpad_wsp(wmem_allocator_t* allocator, tvbuff_t *tvb, const gint offset,
-//     const gint size);
+extern gchar *tvb_format_stringzpad_wsp(wmem_allocator_t* allocator, tvbuff_t *tvb, const gint offset,
+    const gint size);
 
 /**
  * Given an allocator scope, a tvbuff, a byte offset, a byte length, and
@@ -585,8 +585,8 @@ extern gchar *tvb_format_stringzpad(tvbuff_t *tvb, const gint offset,
  * the memory allocated. Otherwise memory is automatically freed when the
  * scope lifetime is reached.
  */
-// WS_DLL_PUBLIC guint8 *tvb_get_string_enc(wmem_allocator_t *scope,
-    // tvbuff_t *tvb, const gint offset, const gint length, const guint encoding);
+WS_DLL_PUBLIC guint8 *tvb_get_string_enc(wmem_allocator_t *scope,
+    tvbuff_t *tvb, const gint offset, const gint length, const guint encoding);
 
 /**
  * Given an allocator scope, a tvbuff, a bit offset, and a length in
@@ -608,8 +608,8 @@ extern gchar *tvb_format_stringzpad(tvbuff_t *tvb, const gint offset,
  * the memory allocated. Otherwise memory is automatically freed when the
  * scope lifetime is reached.
  */
-// WS_DLL_PUBLIC gchar *tvb_get_ts_23_038_7bits_string(wmem_allocator_t *scope,
-    // tvbuff_t *tvb, const gint bit_offset, gint no_of_chars);
+WS_DLL_PUBLIC gchar *tvb_get_ts_23_038_7bits_string(wmem_allocator_t *scope,
+    tvbuff_t *tvb, const gint bit_offset, gint no_of_chars);
 
 /**
  * Given an allocator scope, a tvbuff, a bit offset, and a length in
@@ -631,8 +631,8 @@ extern gchar *tvb_format_stringzpad(tvbuff_t *tvb, const gint offset,
  * the memory allocated. Otherwise memory is automatically freed when the
  * scope lifetime is reached.
  */
-// WS_DLL_PUBLIC gchar *tvb_get_ascii_7bits_string(wmem_allocator_t *scope,
-    // tvbuff_t *tvb, const gint bit_offset, gint no_of_chars);
+WS_DLL_PUBLIC gchar *tvb_get_ascii_7bits_string(wmem_allocator_t *scope,
+    tvbuff_t *tvb, const gint bit_offset, gint no_of_chars);
 
 /**
  * Given an allocator scope, a tvbuff, a byte offset, a byte length, and
@@ -654,8 +654,8 @@ extern gchar *tvb_format_stringzpad(tvbuff_t *tvb, const gint offset,
  * the memory allocated. Otherwise memory is automatically freed when the
  * scope lifetime is reached.
  */
-// WS_DLL_PUBLIC guint8 *tvb_get_stringzpad(wmem_allocator_t *scope,
-    // tvbuff_t *tvb, const gint offset, const gint length, const guint encoding);
+WS_DLL_PUBLIC guint8 *tvb_get_stringzpad(wmem_allocator_t *scope,
+    tvbuff_t *tvb, const gint offset, const gint length, const guint encoding);
 
 /**
  * Given an allocator scope, a tvbuff, a byte offset, a pointer to a
@@ -683,8 +683,8 @@ extern gchar *tvb_format_stringzpad(tvbuff_t *tvb, const gint offset,
  * the memory allocated. Otherwise memory is automatically freed when the
  * scope lifetime is reached.
  */
-// WS_DLL_PUBLIC guint8 *tvb_get_stringz_enc(wmem_allocator_t *scope,
-//     tvbuff_t *tvb, const gint offset, gint *lengthp, const guint encoding);
+WS_DLL_PUBLIC guint8 *tvb_get_stringz_enc(wmem_allocator_t *scope,
+    tvbuff_t *tvb, const gint offset, gint *lengthp, const guint encoding);
 
 /**
  * Given a tvbuff and an offset, with the offset assumed to refer to
@@ -860,15 +860,15 @@ WS_DLL_PUBLIC gint tvb_memeql(tvbuff_t *tvb, const gint offset,
  * to the string with the formatted data, with "punct" as a byte
  * separator.
  */
-// WS_DLL_PUBLIC gchar *tvb_bytes_to_str_punct(wmem_allocator_t *scope, tvbuff_t *tvb, const gint offset,
-    // const gint len, const gchar punct);
+WS_DLL_PUBLIC gchar *tvb_bytes_to_str_punct(wmem_allocator_t *scope, tvbuff_t *tvb, const gint offset,
+    const gint len, const gchar punct);
 
 /**
  * Format a bunch of data from a tvbuff as bytes, returning a pointer
  * to the string with the formatted data.
  */
-// WS_DLL_PUBLIC gchar *tvb_bytes_to_str(wmem_allocator_t *allocator, tvbuff_t *tvb,
-    // const gint offset, const gint len);
+WS_DLL_PUBLIC gchar *tvb_bytes_to_str(wmem_allocator_t *allocator, tvbuff_t *tvb,
+    const gint offset, const gint len);
 
 /**
  * Given a tvbuff, an offset into the tvbuff, and a length that starts

@@ -23,7 +23,7 @@
 #define VERSION_FLAVOR ""
 
 /* Build wsutil with SIMD optimization */
-#define HAVE_SSE4_2 1
+// #define HAVE_SSE4_2 1
 
 /* Define to 1 if we want to enable plugins */
 #define HAVE_PLUGINS 1
