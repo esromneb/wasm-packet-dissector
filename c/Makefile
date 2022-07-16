@@ -74,6 +74,8 @@ build/strutil.o \
 build/to_str.o \
 build/oids.o \
 build/osi-utils.o \
+build/addr_and_mask.o \
+build/addr_resolv.o \
 build/epan.o
 
 BUILDA = \
@@ -143,6 +145,18 @@ build/oids.o: 3rd/wireshark/epan/oids.c 3rd/wireshark/epan/oids.h
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 build/osi-utils.o: 3rd/wireshark/epan/osi-utils.c 3rd/wireshark/epan/osi-utils.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+ 	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/addr_and_mask.o: 3rd/wireshark/epan/addr_and_mask.c 3rd/wireshark/epan/addr_and_mask.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+ 	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/addr_resolv.o: 3rd/wireshark/epan/addr_resolv.c 3rd/wireshark/epan/addr_resolv.h
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
  	-x c++ \

@@ -51,15 +51,15 @@ val_from_unparsed(fvalue_t *fv, const char *s, gboolean allow_partial_value _U_,
 		addr_str = s;
 	}
 
-	if (!get_host_ipaddr(addr_str, &addr)) {
-		if (err_msg != NULL) {
-			*err_msg = g_strdup_printf("\"%s\" is not a valid hostname or IPv4 address.",
-			    addr_str);
-		}
-		if (addr_str_to_free)
-			wmem_free(NULL, addr_str_to_free);
-		return FALSE;
-	}
+	// if (!get_host_ipaddr(addr_str, &addr)) {
+	// 	if (err_msg != NULL) {
+	// 		*err_msg = g_strdup_printf("\"%s\" is not a valid hostname or IPv4 address.",
+	// 		    addr_str);
+	// 	}
+	// 	if (addr_str_to_free)
+	// 		wmem_free(NULL, addr_str_to_free);
+	// 	return FALSE;
+	// }
 
 	if (addr_str_to_free)
 		wmem_free(NULL, addr_str_to_free);
