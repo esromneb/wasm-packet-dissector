@@ -70,8 +70,10 @@ build/main.o \
 build/wireshark.o \
 build/packet-foo.o \
 build/proto.o \
-build/ftypes.o \
 build/epan.o
+
+BUILDA = \
+3rd/wireshark/epan/ftypes/build/libftypes.a
 
 
 # Fix warning with
@@ -80,7 +82,7 @@ build/epan.o
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
 # 	-s USE_PTHREADS=1 -s PROXY_TO_PTHREAD=1 -s ALLOW_BLOCKING_ON_MAIN_THREAD=0
-$(WASM_OUT): $(OBJS) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+$(WASM_OUT): $(OBJS) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) $(BUILDA) Makefile
 	emcc -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
@@ -90,6 +92,7 @@ $(WASM_OUT): $(OBJS) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
 	-L./3rd/ -lwmem \
+	$(BUILDA) \
 	$(OBJS)
 
 
@@ -117,11 +120,11 @@ build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/ftypes.o: 3rd/wireshark/epan/ftypes/ftypes.c 3rd/wireshark/epan/ftypes/ftypes.h
-	emcc $< -c -o $@ \
-	$(INCLUDE) \
-	'-std=c++2a' -x c++ \
-	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+# build/ftypes.o: 3rd/wireshark/epan/ftypes/ftypes.c 3rd/wireshark/epan/ftypes/ftypes.h
+# 	emcc $< -c -o $@ \
+# 	$(INCLUDE) \
+# 	'-std=c++2a' -x c++ \
+# 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 # build/proto.o: 3rd/wireshark/epan/proto.c 3rd/wireshark/epan/proto.h
 # 	emcc -x c++ \
@@ -137,8 +140,13 @@ build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
+
+3rd/wireshark/epan/ftypes/build/libftypes.a:
+	mkdir -p 3rd/wireshark/epan/ftypes/build && cd 3rd/wireshark/epan/ftypes/build && emcmake cmake .. && make
+
 clean:
 	rm -rf build/*
 	rm -rf out/*
+	rm -rf 3rd/wireshark/epan/ftypes/build
 
 # 	-sERROR_ON_UNDEFINED_SYMBOLS=0 \

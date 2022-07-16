@@ -1,0 +1,3 @@
+/src/wasm-packet-dissector/c/3rd/wireshark/epan/ftypes/build/CMakeFiles/rebuild_cache.dir
+/src/wasm-packet-dissector/c/3rd/wireshark/epan/ftypes/build/CMakeFiles/edit_cache.dir
+/src/wasm-packet-dissector/c/3rd/wireshark/epan/ftypes/build/CMakeFiles/ftypes.dir
