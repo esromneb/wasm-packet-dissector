@@ -8,15 +8,21 @@
 #
 
 include_directories(
-	${CMAKE_CURRENT_BINARY_DIR}
+	# ${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_SOURCE_DIR}/../epan
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include/glib-2.0/
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/lib/glib-2.0/include
-	/src/wasm-packet-dissector/c/3rd/wireshark
-	/src/wasm-packet-dissector/c/3rd/wireshark/epan
-	/src/wasm-packet-dissector/c/3rd/wireshark-compat
+	# ${CMAKE_SOURCE_DIR}/../epan
+	../../../zlib-glib-ffi/include
+	# /src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include
+	../../../zlib-glib-ffi/include/glib-2.0/
+	# /src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include/glib-2.0/
+	../../../zlib-glib-ffi/lib/glib-2.0/include
+	# /src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/lib/glib-2.0/include
+	../../../wireshark
+	# /src/wasm-packet-dissector/c/3rd/wireshark
+	../../../wireshark/epan
+	# /src/wasm-packet-dissector/c/3rd/wireshark/epan
+	../../../wireshark-compat
+	# /src/wasm-packet-dissector/c/3rd/wireshark-compat
 )
 
 set(FTYPE_PUBLIC_HEADERS
