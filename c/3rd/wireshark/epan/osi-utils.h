@@ -10,6 +10,8 @@
 #ifndef __OSI_UTILS_H__
 #define __OSI_UTILS_H__
 
+#include "wmem/wmem.h"
+
 /* OSI Global defines, common for all OSI protocols */
 
 #define MAX_NSAP_LEN          30
