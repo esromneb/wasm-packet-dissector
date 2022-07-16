@@ -38,7 +38,7 @@ cleanall: clean clean-wasm
 
 
 EMSDK_DOCKER=emscripten/emsdk:3.1.15
-DOCKER_RUN=docker run --rm  -v $(PWD):/src -u $(id -u):$(id -g) $(EMSDK_DOCKER)
+DOCKER_RUN=docker run --rm  -v $(PWD):/src -u `id -u`:`id -g` $(EMSDK_DOCKER)
 
 .PHONY: wasm noopt-wasm clean-wasm wasm-noopt
 wasm:
