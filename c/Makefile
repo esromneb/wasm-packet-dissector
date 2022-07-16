@@ -92,6 +92,8 @@ address_types.o \
 addr_resolv.o \
 inet_addr.o \
 charsets.o \
+register.o \
+guid-utils.o \
 
 # strptime.o \
 

@@ -198,7 +198,7 @@ gboolean
 epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 {
 	volatile gboolean status = TRUE;
-
+#if 0
 	/* Get the value of some environment variables and set corresponding globals for performance reasons*/
 	/* If the WIRESHARK_ABORT_ON_DISSECTOR_BUG environment variable is set,
 	 * it will call abort(), instead, to make it easier to get a stack trace.
@@ -304,6 +304,7 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 		status = FALSE;
 	}
 	ENDTRY;
+#endif
 	return status;
 }
 
