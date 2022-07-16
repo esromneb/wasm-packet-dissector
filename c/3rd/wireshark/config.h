@@ -47,7 +47,7 @@
 #define HAVE_BPF_IMAGE 1
 
 /* Define to use c-ares library */
-#define HAVE_C_ARES 1
+// #define HAVE_C_ARES 1
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
@@ -101,13 +101,13 @@
 /* #undef HAVE_ISSETUGID */
 
 /* Define to use kerberos */
-#define HAVE_KERBEROS 1
+// #define HAVE_KERBEROS 1
 
 /* Define to use nghttp2 */
 /* #undef HAVE_NGHTTP2 */
 
 /* Define to use the libcap library */
-#define HAVE_LIBCAP 1
+// #define HAVE_LIBCAP 1
 
 /* Define to use GnuTLS library */
 /* #undef HAVE_LIBGNUTLS */
@@ -116,7 +116,7 @@
 /* #undef HAVE_GNUTLS_PKCS11 */
 
 /* Enable libnl support */
-#define HAVE_LIBNL 1
+// #define HAVE_LIBNL 1
 
 /* libnl version 1 */
 /* #undef HAVE_LIBNL1 */
@@ -125,13 +125,13 @@
 /* #undef HAVE_LIBNL2 */
 
 /* libnl version 3 */
-#define HAVE_LIBNL3 1
+// #define HAVE_LIBNL3 1
 
 /* Define to use libpcap library */
-#define HAVE_LIBPCAP 1
+// #define HAVE_LIBPCAP 1
 
 /* Define to 1 if you have the `smi' library (-lsmi). */
-#define HAVE_LIBSMI 1
+// #define HAVE_LIBSMI 1
 
 /* Define to use zlib library */
 #define HAVE_ZLIB 1
@@ -143,28 +143,29 @@
 /* #undef HAVE_MZCOMPAT_DOS_DATE */
 
 /* Define to use brotli library */
-#define HAVE_BROTLI 1
+// #define HAVE_BROTLI 1
 
 /* Define to use lz4 library */
-#define HAVE_LZ4 1
+// #define HAVE_LZ4 1
 
 /* Check for lz4frame */
-#define HAVE_LZ4FRAME_H 1
+// #define HAVE_LZ4FRAME_H 1
 
 /* Define to use snappy library */
-#define HAVE_SNAPPY 1
+// #define HAVE_SNAPPY 1
 
 /* Define to use zstd library */
 /* #undef HAVE_ZSTD */
 
 /* Define to 1 if you have the <linux/sockios.h> header file. */
-#define HAVE_LINUX_SOCKIOS_H 1
+// #define HAVE_LINUX_SOCKIOS_H 1
 
 /* Define to 1 if you have the <linux/if_bonding.h> header file. */
-#define HAVE_LINUX_IF_BONDING_H 1
+// #define HAVE_LINUX_IF_BONDING_H 1
 
 /* Define to use Lua */
-#define HAVE_LUA 1
+// FIXME re-examine
+// #define HAVE_LUA 1
 
 /* Define to 1 if you have the <lua.h> header file. */
 /* #undef HAVE_LUA_H */
@@ -288,7 +289,7 @@
 /* #undef HAVE_SPEEXDSP */
 
 /* Define to 1 if you have the lixbml2 library. */
-#define HAVE_LIBXML2 1
+// #define HAVE_LIBXML2 1
 
 /* Define to 1 if you have the `setresgid' function. */
 #define HAVE_SETRESGID 1

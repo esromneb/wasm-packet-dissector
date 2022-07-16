@@ -59,7 +59,7 @@ void     g_slist_free_full               (GSList           *list,
 GLIB_AVAILABLE_IN_ALL
 GSList*  g_slist_append                  (GSList           *list,
 					  gpointer          data) G_GNUC_WARN_UNUSED_RESULT;
-GLIB_AVAILABLE_IN_ALL
+
 GSList*  g_slist_prepend                 (GSList           *list,
 					  gpointer          data) G_GNUC_WARN_UNUSED_RESULT;
 GLIB_AVAILABLE_IN_ALL

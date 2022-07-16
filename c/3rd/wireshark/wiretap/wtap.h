@@ -12,7 +12,7 @@
 #include <glib.h>
 #include <time.h>
 #include <wsutil/buffer.h>
-// #include <wsutil/nstime.h>
+#include <wsutil/nstime.h>
 // #include <wsutil/inet_addr.h>
 #include "wtap_opttypes.h"
 #include "ws_symbol_export.h"

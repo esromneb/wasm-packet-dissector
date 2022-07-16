@@ -61,7 +61,8 @@ INCLUDE = \
 -I./3rd/wireshark/epan \
 -I./3rd/wireshark-compat \
 -I./3rd/zlib-glib-ffi/include/glib-2.0 \
--I./3rd/zlib-glib-ffi/lib/glib-2.0/include
+-I./3rd/zlib-glib-ffi/lib/glib-2.0/include \
+-I./3rd/zlib-glib-ffi/include/glib-2.0/glib
 
 
 # Fix warning with
@@ -100,6 +101,11 @@ build/packet-foo.o: src/plugins/foo/packet-foo.cpp
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
+build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 # build/proto.o: 3rd/wireshark/epan/proto.c 3rd/wireshark/epan/proto.h
 # 	emcc -x c++ \

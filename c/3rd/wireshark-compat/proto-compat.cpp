@@ -907,6 +907,7 @@ of the header_field_info struct contained within the hf_register_info struct */
 void
 proto_register_field_array(const int parent, hf_register_info *hf, const int num_records)
 {
+    cout << "proto_register_field_array()\n";
    hf_register_info *ptr = hf;
    protocol_t   *proto;
    int       i;
@@ -1079,6 +1080,9 @@ proto_register_protocol(const char *name, const char *short_name,
     protocol_t *protocol;
     header_field_info *hfinfo;
 
+    cout << "proto_register_protocol()\n";
+
+
     /*
      * Make sure there's not already a protocol with any of those
      * names.  Crash if there is, as that's an error in the code
@@ -1087,6 +1091,7 @@ proto_register_protocol(const char *name, const char *short_name,
      * protocol with the same name.
      */
 
+    cout << "AAAAAA" << std::endl;
     if (g_hash_table_lookup(proto_names, name)) {
         /* g_error will terminate the program */
         g_error("Duplicate protocol name \"%s\"!"

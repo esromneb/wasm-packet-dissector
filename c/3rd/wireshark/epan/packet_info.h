@@ -13,7 +13,7 @@
 
 #include "frame_data.h"
 #include "tvbuff.h"
-// #include "address.h"
+#include "address.h"
 
 struct endpoint;
 
@@ -42,8 +42,6 @@ struct endpoint;
 #define PINFO_HAS_TS            0x00000001  /**< time stamp */
 
 
-#if 1
-
 typedef struct _packet_info {
   const char *current_proto;        /**< name of protocol currently being dissected */
   struct epan_column_info *cinfo;   /**< Column formatting information */
@@ -54,13 +52,13 @@ typedef struct _packet_info {
   frame_data *fd;
   union wtap_pseudo_header *pseudo_header;
   wtap_rec *rec;                    /**< Record metadata */
-  // GSList *data_src;                 /**< Frame data sources */
-  // address dl_src;                   /**< link-layer source address */
-  // address dl_dst;                   /**< link-layer destination address */
-  // address net_src;                  /**< network-layer source address */
-  // address net_dst;                  /**< network-layer destination address */
-  // address src;                      /**< source address (net if present, DL otherwise )*/
-  // address dst;                      /**< destination address (net if present, DL otherwise )*/
+  GSList *data_src;                 /**< Frame data sources */
+  address dl_src;                   /**< link-layer source address */
+  address dl_dst;                   /**< link-layer destination address */
+  address net_src;                  /**< network-layer source address */
+  address net_dst;                  /**< network-layer destination address */
+  address src;                      /**< source address (net if present, DL otherwise )*/
+  address dst;                      /**< destination address (net if present, DL otherwise )*/
   guint32 vlan_id;                  /**< First encountered VLAN Id if present otherwise 0 */
   const char *noreassembly_reason;  /**< reason why reassembly wasn't done, if any */
   gboolean fragmented;              /**< TRUE if the protocol is only a fragment */
@@ -68,7 +66,7 @@ typedef struct _packet_info {
     guint32 in_error_pkt:1;         /**< TRUE if we're inside an {ICMP,CLNP,...} error packet */
     guint32 in_gre_pkt:1;           /**< TRUE if we're encapsulated inside a GRE packet */
   } flags;
-  // port_type ptype;                  /**< type of the following two port numbers */
+  port_type ptype;                  /**< type of the following two port numbers */
   guint32 srcport;                  /**< source port */
   guint32 destport;                 /**< destination port */
   guint32 match_uint;               /**< matched uint for calling subdissector from table */
@@ -133,9 +131,9 @@ typedef struct _packet_info {
                                        inbound (P2P_DIR_RECV)
                                        unknown (P2P_DIR_UNKNOWN) */
 
-  // GHashTable *private_table;    /**< a hash table passed from one dissector to another */
+  GHashTable *private_table;    /**< a hash table passed from one dissector to another */
 
-  // wmem_list_t *layers;      /**< layers of each protocol */
+  wmem_list_t *layers;      /**< layers of each protocol */
   guint8 curr_layer_num;       /**< The current "depth" or layer number in the current frame */
   guint16 link_number;
 
@@ -144,20 +142,19 @@ typedef struct _packet_info {
 
   int link_dir;                 /**< 3GPP messages are sometime different UP link(UL) or Downlink(DL) */
 
-  // GSList* proto_data;          /**< Per packet proto data */
+  GSList* proto_data;          /**< Per packet proto data */
 
-  // GSList* dependent_frames;     /**< A list of frames which this one depends on */
+  GSList* dependent_frames;     /**< A list of frames which this one depends on */
 
-  // GSList* frame_end_routines;
+  GSList* frame_end_routines;
 
-  // wmem_allocator_t *pool;      /**< Memory pool scoped to the pinfo struct */
+  wmem_allocator_t *pool;      /**< Memory pool scoped to the pinfo struct */
   struct epan_session *epan;
   const gchar *heur_list_name;    /**< name of heur list if this packet is being heuristically dissected */
 } packet_info;
 
 /** @} */
 
-#endif // if 0
 
 #endif /* __PACKET_INFO_H__ */
 

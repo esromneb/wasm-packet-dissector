@@ -30,16 +30,16 @@
 // #include <epan/wmem/wmem.h>
 
 // #include "ipv4.h"
-// #include "wsutil/nstime.h"
+#include "wsutil/nstime.h"
 // #include "time_fmt.h"
 // #include "tvbuff.h"
 #include "value_string.h"
 // #include "tfs.h"
-// #include "packet_info.h"
+#include "packet_info.h"
 #include "ftypes/ftypes.h"
 // #include "register.h"
 #include "ws_symbol_export.h"
-// #include "ws_attributes.h"
+#include "ws_attributes.h"
 // #ifdef HAVE_PLUGINS
 // #include "wsutil/plugins.h"
 // #endif
@@ -960,14 +960,14 @@ static inline void proto_item_set_url(proto_item *ti) {
 }
 #define PROTO_ITEM_SET_URL(ti) proto_item_set_url((ti))
 
-// typedef void (*proto_tree_foreach_func)(proto_node *, gpointer);
-// typedef gboolean (*proto_tree_traverse_func)(proto_node *, gpointer);
+typedef void (*proto_tree_foreach_func)(proto_node *, gpointer);
+typedef gboolean (*proto_tree_traverse_func)(proto_node *, gpointer);
 
-// extern gboolean proto_tree_traverse_post_order(proto_tree *tree,
-//     proto_tree_traverse_func func, gpointer data);
+extern gboolean proto_tree_traverse_post_order(proto_tree *tree,
+    proto_tree_traverse_func func, gpointer data);
 
-// WS_DLL_PUBLIC void proto_tree_children_foreach(proto_tree *tree,
-//     proto_tree_foreach_func func, gpointer data);
+WS_DLL_PUBLIC void proto_tree_children_foreach(proto_tree *tree,
+    proto_tree_foreach_func func, gpointer data);
 
 #ifdef HAVE_PLUGINS
 typedef struct {
@@ -980,8 +980,8 @@ WS_DLL_PUBLIC void proto_register_plugin(const proto_plugin *plugin);
 #endif
 
 /** Sets up memory used by proto routines. Called at program startup */
-// void proto_init(GSList *register_all_plugin_protocols_list,
-    // GSList *register_all_plugin_handoffs_list, register_cb cb, void *client_data);
+void proto_init(GSList *register_all_plugin_protocols_list,
+    GSList *register_all_plugin_handoffs_list, register_cb cb, void *client_data);
 
 /** Frees memory used by proto routines. Called at program shutdown */
 extern void proto_cleanup(void);
@@ -1253,10 +1253,10 @@ string value
 @return the newly created item, *retval is set to the decoded value,
 and *lenretval is set to the item length
 */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_item_ret_string_and_length(proto_tree *tree, int hfindex,
-//     tvbuff_t *tvb, const gint start, gint length, const guint encoding,
-    // wmem_allocator_t *scope, const guint8 **retval, gint *lenretval);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_item_ret_string_and_length(proto_tree *tree, int hfindex,
+    tvbuff_t *tvb, const gint start, gint length, const guint encoding,
+    wmem_allocator_t *scope, const guint8 **retval, gint *lenretval);
 
 /** Add an string item to a proto_tree, using the text label registered to
 that item.
@@ -1285,10 +1285,10 @@ This function accepts string encodings.
 string value
 @return the newly created item, and *retval is set to the decoded value
 */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_item_ret_string(proto_tree *tree, int hfindex, tvbuff_t *tvb,
-//     const gint start, gint length, const guint encoding,
-//     wmem_allocator_t *scope, const guint8 **retval);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_item_ret_string(proto_tree *tree, int hfindex, tvbuff_t *tvb,
+    const gint start, gint length, const guint encoding,
+    wmem_allocator_t *scope, const guint8 **retval);
 
 /** Add an string or byte array item to a proto_tree, using the
 text label registered to that item.
@@ -1310,11 +1310,11 @@ string value
 @return the newly created item, *retval is set to the display string,
 and *lenretval is set to the item length
 */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_item_ret_display_string_and_length(proto_tree *tree, int hfindex,
-//     tvbuff_t *tvb,
-//     const gint start, gint length, const guint encoding,
-//     wmem_allocator_t *scope, char **retval, gint *lenretval);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_item_ret_display_string_and_length(proto_tree *tree, int hfindex,
+    tvbuff_t *tvb,
+    const gint start, gint length, const guint encoding,
+    wmem_allocator_t *scope, char **retval, gint *lenretval);
 
 /** Add an string or byte array item to a proto_tree, using the
 text label registered to that item.
@@ -1333,11 +1333,11 @@ similar to what proto_tree_add_item_ret_string() does.
 string value
 @return the newly created item, *retval is set to the display string
 */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_item_ret_display_string(proto_tree *tree, int hfindex,
-//     tvbuff_t *tvb,
-//     const gint start, gint length, const guint encoding,
-//     wmem_allocator_t *scope, char **retval);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_item_ret_display_string(proto_tree *tree, int hfindex,
+    tvbuff_t *tvb,
+    const gint start, gint length, const guint encoding,
+    wmem_allocator_t *scope, char **retval);
 
 /** Add a time item to a proto_tree, using thetext label registered to that item.
 
@@ -1354,11 +1354,11 @@ This provides a string that is a display representation of the time value
 string value
 @return the newly created item, *retval is set to the display string
 */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_item_ret_time_string(proto_tree *tree, int hfindex,
-// 	tvbuff_t *tvb,
-// 	const gint start, gint length, const guint encoding,
-// 	wmem_allocator_t *scope, char **retval);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_item_ret_time_string(proto_tree *tree, int hfindex,
+	tvbuff_t *tvb,
+	const gint start, gint length, const guint encoding,
+	wmem_allocator_t *scope, char **retval);
 
 /** (INTERNAL USE ONLY) Add a text-only node to a proto_tree.
  @param tree the tree to append this item to
@@ -1504,10 +1504,10 @@ proto_tree_add_bytes_with_length(proto_tree *tree, int hfindex, tvbuff_t *tvb, g
  @param[in,out] err if not NULL, gets set to 0 if no failure, else the errno code (e.g., EDOM, ERANGE).
  @return the newly created item, and retval is set to the decoded value
  */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_bytes_item(proto_tree *tree, int hfindex, tvbuff_t *tvb,
-//     const gint start, gint length, const guint encoding,
-//     GByteArray *retval, gint *endoff, gint *err);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_bytes_item(proto_tree *tree, int hfindex, tvbuff_t *tvb,
+    const gint start, gint length, const guint encoding,
+    GByteArray *retval, gint *endoff, gint *err);
 
 /** Add a formatted FT_BYTES to a proto_tree, with the format generating
     the string for the value and with the field name being included
@@ -1549,9 +1549,9 @@ proto_tree_add_bytes_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint s
  @param length length of data in tvb
  @param value_ptr pointer to the data to display
  @return the newly created item */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_time(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint start,
-//     gint length, const nstime_t* value_ptr);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_time(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint start,
+    gint length, const nstime_t* value_ptr);
 
 /** Get and add a FT_ABSOLUTE_TIME or FT_RELATIVE_TIME to a proto_tree.
  The item is extracted from the tvbuff handed to it, based on the ENC_* passed
@@ -1583,10 +1583,10 @@ proto_tree_add_bytes_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint s
  @param[in,out] err if not NULL, gets set to 0 if no failure, else the errno code (e.g., EDOM, ERANGE).
  @return the newly created item, and retval is set to the decoded value
  */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_time_item(proto_tree *tree, int hfindex, tvbuff_t *tvb,
-//     const gint start, gint length, const guint encoding,
-//     nstime_t *retval, gint *endoff, gint *err);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_time_item(proto_tree *tree, int hfindex, tvbuff_t *tvb,
+    const gint start, gint length, const guint encoding,
+    nstime_t *retval, gint *endoff, gint *err);
 
 
 /** Add a formatted FT_ABSOLUTE_TIME or FT_RELATIVE_TIME to a proto_tree, with
@@ -1601,10 +1601,10 @@ proto_tree_add_bytes_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint s
  @param format printf like format string
  @param ... printf like parameters
  @return the newly created item */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_time_format_value(proto_tree *tree, int hfindex, tvbuff_t *tvb,
-//     gint start, gint length, nstime_t* value_ptr, const char *format, ...)
-//     G_GNUC_PRINTF(7,8);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_time_format_value(proto_tree *tree, int hfindex, tvbuff_t *tvb,
+    gint start, gint length, nstime_t* value_ptr, const char *format, ...)
+    G_GNUC_PRINTF(7,8);
 
 /** Add a formatted FT_ABSOLUTE_TIME or FT_RELATIVE_TIME to a proto_tree, with
     the format generating the entire string for the entry, including any field
@@ -1618,9 +1618,9 @@ proto_tree_add_bytes_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint s
  @param format printf like format string
  @param ... printf like parameters
  @return the newly created item */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_time_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint start,
-//     gint length, nstime_t* value_ptr, const char *format, ...) G_GNUC_PRINTF(7,8);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_time_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint start,
+    gint length, nstime_t* value_ptr, const char *format, ...) G_GNUC_PRINTF(7,8);
 
 /** Add a FT_IPXNET to a proto_tree.
  @param tree the tree to append this item to
@@ -1718,9 +1718,9 @@ proto_tree_add_ipv4_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint st
  @param length length of data in tvb
  @param value_ptr data to display
  @return the newly created item */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_ipv6(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint start,
-//     gint length, const ws_in6_addr *value_ptr);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_ipv6(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint start,
+    gint length, const ws_in6_addr *value_ptr);
 
 /** Add a formatted FT_IPv6 to a proto_tree, with the format generating
     the string for the value and with the field name being included
@@ -1734,10 +1734,10 @@ proto_tree_add_ipv4_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint st
  @param format printf like format string
  @param ... printf like parameters
  @return the newly created item */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_ipv6_format_value(proto_tree *tree, int hfindex, tvbuff_t *tvb,
-//     gint start, gint length, const ws_in6_addr *value_ptr, const char *format,
-//     ...) G_GNUC_PRINTF(7,8);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_ipv6_format_value(proto_tree *tree, int hfindex, tvbuff_t *tvb,
+    gint start, gint length, const ws_in6_addr *value_ptr, const char *format,
+    ...) G_GNUC_PRINTF(7,8);
 
 /** Add a formatted FT_IPv6 to a proto_tree, with the format generating
     the entire string for the entry, including any field name.
@@ -1750,9 +1750,9 @@ proto_tree_add_ipv4_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint st
  @param format printf like format string
  @param ... printf like parameters
  @return the newly created item */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_ipv6_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint start,
-//     gint length, const ws_in6_addr *value_ptr, const char *format, ...) G_GNUC_PRINTF(7,8);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_ipv6_format(proto_tree *tree, int hfindex, tvbuff_t *tvb, gint start,
+    gint length, const ws_in6_addr *value_ptr, const char *format, ...) G_GNUC_PRINTF(7,8);
 
 /** Add a FT_ETHER to a proto_tree.
  @param tree the tree to append this item to
@@ -2386,8 +2386,8 @@ proto_add_deregistered_data (void *data);
 /** Add a memory slice to be freed when deregistered fields are freed.
  @param block_size the size of the block
  @param mem_block a pointer to the block to free */
-// void
-// proto_add_deregistered_slice (gsize block_size, gpointer mem_block);
+void
+proto_add_deregistered_slice (gsize block_size, gpointer mem_block);
 
 /** Free strings in a field.
  @param field_type the field type (one of FT_ values)
@@ -2536,8 +2536,8 @@ extern void proto_add_heuristic_dissector(protocol_t *protocol, const char *shor
  * @param func function to execute on heuristics
  * @param user_data user-specific data for function
  */
-// WS_DLL_PUBLIC void proto_heuristic_dissector_foreach(const protocol_t *protocol, GFunc func,
-//     gpointer user_data);
+WS_DLL_PUBLIC void proto_heuristic_dissector_foreach(const protocol_t *protocol, GFunc func,
+    gpointer user_data);
 
 /** Find commonly-used protocols in a layer list.
  * @param layers Protocol layer list
@@ -2556,16 +2556,16 @@ extern void proto_add_heuristic_dissector(protocol_t *protocol, const char *shor
  * @param is_lte_rlc Set to TRUE if the layer list contains LTE RLC, otherwise
  * unchanged. May be NULL.
  */
-// WS_DLL_PUBLIC void proto_get_frame_protocols(const wmem_list_t *layers,
-//       gboolean *is_ip, gboolean *is_tcp, gboolean *is_udp, gboolean *is_sctp,
-//       gboolean *is_tls, gboolean *is_rtp, gboolean *is_lte_rlc);
+WS_DLL_PUBLIC void proto_get_frame_protocols(const wmem_list_t *layers,
+      gboolean *is_ip, gboolean *is_tcp, gboolean *is_udp, gboolean *is_sctp,
+      gboolean *is_tls, gboolean *is_rtp, gboolean *is_lte_rlc);
 
 /** Check whether a protocol, specified by name, is in a layer list.
  * @param layers Protocol layer list
  * @param proto_name Name of protocol to find
  * @return TRUE if the protocol is found, FALSE if it isn't
  */
-// WS_DLL_PUBLIC gboolean proto_is_frame_protocol(const wmem_list_t *layers, const char* proto_name);
+WS_DLL_PUBLIC gboolean proto_is_frame_protocol(const wmem_list_t *layers, const char* proto_name);
 
 /** Mark protocol with the given item number as disabled by default.
  @param proto_id protocol id (0-indexed) */
@@ -2595,7 +2595,7 @@ extern gboolean proto_check_for_protocol_or_field(const proto_tree* tree, const 
  @param tree tree of interest
  @param hfindex primed hfindex
  @return GPtrArray pointer */
-// WS_DLL_PUBLIC GPtrArray* proto_get_finfo_ptr_array(const proto_tree *tree, const int hfindex);
+WS_DLL_PUBLIC GPtrArray* proto_get_finfo_ptr_array(const proto_tree *tree, const int hfindex);
 
 /** Return whether we're tracking any interesting fields.
     Only works with primed trees, and is fast.
@@ -2609,7 +2609,7 @@ WS_DLL_PUBLIC gboolean proto_tracking_interesting_fields(const proto_tree *tree)
  @param tree tree of interest
  @param hfindex index of field info of interest
  @return GPtrArry pointer */
-// WS_DLL_PUBLIC GPtrArray* proto_find_finfo(proto_tree *tree, const int hfindex);
+WS_DLL_PUBLIC GPtrArray* proto_find_finfo(proto_tree *tree, const int hfindex);
 
 /** Return GPtrArray* of field_info pointer for first hfindex that appear in
 tree. Works with any tree, primed or unprimed, and is slower than
@@ -2617,13 +2617,13 @@ proto_get_finfo_ptr_array because it has to search through the tree.
 @param tree tree of interest
 @param hfindex index of field info of interest
 @return GPtrArry pointer */
-// WS_DLL_PUBLIC GPtrArray* proto_find_first_finfo(proto_tree *tree, const int hfindex);
+WS_DLL_PUBLIC GPtrArray* proto_find_first_finfo(proto_tree *tree, const int hfindex);
 
 /** Return GPtrArray* of field_info pointers containg all hfindexes that appear
     in tree.
  @param tree tree of interest
  @return GPtrArry pointer */
-// WS_DLL_PUBLIC GPtrArray* proto_all_finfos(proto_tree *tree);
+WS_DLL_PUBLIC GPtrArray* proto_all_finfos(proto_tree *tree);
 
 /** Dumps a glossary of the protocol registrations to STDOUT */
 WS_DLL_PUBLIC void proto_registrar_dump_protocols(void);
@@ -3161,10 +3161,10 @@ proto_tree_add_ascii_7bits_item(proto_tree *tree, const int hfindex, tvbuff_t *t
  @param encoding data encoding of checksum from tvb
  @param flags bitmask field of PROTO_CHECKSUM_ options
  @return the newly created item */
-// WS_DLL_PUBLIC proto_item *
-// proto_tree_add_checksum(proto_tree *tree, tvbuff_t *tvb, const guint offset,
-//         const int hf_checksum, const int hf_checksum_status, struct expert_field* bad_checksum_expert,
-//         packet_info *pinfo, guint32 computed_checksum, const guint encoding, const guint flags);
+WS_DLL_PUBLIC proto_item *
+proto_tree_add_checksum(proto_tree *tree, tvbuff_t *tvb, const guint offset,
+        const int hf_checksum, const int hf_checksum_status, struct expert_field* bad_checksum_expert,
+        packet_info *pinfo, guint32 computed_checksum, const guint encoding, const guint flags);
 
 typedef enum
 {

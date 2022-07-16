@@ -54,7 +54,7 @@
 
 
 // fixme use nstime and remove this
-typedef size_t nstime_t;
+// typedef size_t nstime_t;
 
 
 #define WS_INET_ADDRSTRLEN      16
