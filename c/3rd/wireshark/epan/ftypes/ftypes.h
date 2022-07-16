@@ -12,6 +12,8 @@
 #ifndef __FTYPES_H__
 #define __FTYPES_H__
 
+#include <glib.h>
+#include "../wmem/wmem.h"
 #include "ws_symbol_export.h"
 
 #ifdef __cplusplus
@@ -204,13 +206,13 @@ ftype_can_matches(enum ftenum ftype);
 
 /* ---------------- FVALUE ----------------- */
 
-// #include <epan/ipv4.h>
-// #include <epan/ipv6.h>
-// #include <epan/guid-utils.h>
-// 
+#include <epan/ipv4.h>
+#include <epan/ipv6.h>
+#include <epan/guid-utils.h>
+
 #include <epan/tvbuff.h>
-// #include <wsutil/nstime.h>
-// #include <epan/dfilter/drange.h>
+#include <wsutil/nstime.h>
+#include <epan/dfilter/drange.h>
 
 typedef struct _protocol_value_t
 {
@@ -230,13 +232,13 @@ typedef struct _fvalue_t {
 		gdouble			floating;
 		gchar			*string;
 		guchar			*ustring;
-		// GByteArray		*bytes;
-		// ipv4_addr_and_mask	ipv4;
-		// ipv6_addr_and_prefix	ipv6;
+		GByteArray		*bytes;
+		ipv4_addr_and_mask	ipv4;
+		ipv6_addr_and_prefix	ipv6;
 		e_guid_t		guid;
-		// nstime_t		time;
+		nstime_t		time;
 		protocol_value_t 	protocol;
-		// GRegex			*re;
+		GRegex			*re;
 		guint16			sfloat_ieee_11073;
 		guint32			float_ieee_11073;
 	} value;
@@ -247,7 +249,132 @@ typedef struct _fvalue_t {
 
 } fvalue_t;
 
+fvalue_t*
+fvalue_new(ftenum_t ftype);
 
+void
+fvalue_init(fvalue_t *fv, ftenum_t ftype);
+
+WS_DLL_PUBLIC
+fvalue_t*
+fvalue_from_unparsed(ftenum_t ftype, const char *s, gboolean allow_partial_value, gchar **err_msg);
+
+fvalue_t*
+fvalue_from_string(ftenum_t ftype, const char *s, gchar **err_msg);
+
+/* Returns the length of the string required to hold the
+ * string representation of the the field value.
+ *
+ * Returns -1 if the string cannot be represented in the given rtype.
+ *
+ * The length DOES NOT include the terminating NUL. */
+WS_DLL_PUBLIC
+int
+fvalue_string_repr_len(fvalue_t *fv, ftrepr_t rtype, int field_display);
+
+/* Creates the string representation of the field value.
+ * Memory for the buffer is allocated based on wmem allocator
+ * provided.
+ *
+ * field_display parameter should be a BASE_ value (enum field_display_e)
+ * BASE_NONE should be used if field information isn't available.
+ *
+ * Returns NULL if the string cannot be represented in the given rtype.*/
+WS_DLL_PUBLIC char *
+fvalue_to_string_repr(wmem_allocator_t *scope, fvalue_t *fv, ftrepr_t rtype, int field_display);
+
+WS_DLL_PUBLIC ftenum_t
+fvalue_type_ftenum(fvalue_t *fv);
+
+const char*
+fvalue_type_name(fvalue_t *fv);
+
+void
+fvalue_set_byte_array(fvalue_t *fv, GByteArray *value);
+
+void
+fvalue_set_bytes(fvalue_t *fv, const guint8 *value);
+
+void
+fvalue_set_guid(fvalue_t *fv, const e_guid_t *value);
+
+void
+fvalue_set_time(fvalue_t *fv, const nstime_t *value);
+
+void
+fvalue_set_string(fvalue_t *fv, const gchar *value);
+
+void
+fvalue_set_protocol(fvalue_t *fv, tvbuff_t *value, const gchar *name);
+
+void
+fvalue_set_uinteger(fvalue_t *fv, guint32 value);
+
+void
+fvalue_set_sinteger(fvalue_t *fv, gint32 value);
+
+void
+fvalue_set_uinteger64(fvalue_t *fv, guint64 value);
+
+void
+fvalue_set_sinteger64(fvalue_t *fv, gint64 value);
+
+void
+fvalue_set_floating(fvalue_t *fv, gdouble value);
+
+WS_DLL_PUBLIC
+gpointer
+fvalue_get(fvalue_t *fv);
+
+WS_DLL_PUBLIC guint32
+fvalue_get_uinteger(fvalue_t *fv);
+
+WS_DLL_PUBLIC gint32
+fvalue_get_sinteger(fvalue_t *fv);
+
+WS_DLL_PUBLIC
+guint64
+fvalue_get_uinteger64(fvalue_t *fv);
+
+WS_DLL_PUBLIC
+gint64
+fvalue_get_sinteger64(fvalue_t *fv);
+
+WS_DLL_PUBLIC double
+fvalue_get_floating(fvalue_t *fv);
+
+gboolean
+fvalue_eq(const fvalue_t *a, const fvalue_t *b);
+
+gboolean
+fvalue_ne(const fvalue_t *a, const fvalue_t *b);
+
+gboolean
+fvalue_gt(const fvalue_t *a, const fvalue_t *b);
+
+gboolean
+fvalue_ge(const fvalue_t *a, const fvalue_t *b);
+
+gboolean
+fvalue_lt(const fvalue_t *a, const fvalue_t *b);
+
+gboolean
+fvalue_le(const fvalue_t *a, const fvalue_t *b);
+
+gboolean
+fvalue_bitwise_and(const fvalue_t *a, const fvalue_t *b);
+
+gboolean
+fvalue_contains(const fvalue_t *a, const fvalue_t *b);
+
+gboolean
+fvalue_matches(const fvalue_t *a, const fvalue_t *b);
+
+guint
+fvalue_length(fvalue_t *fv);
+
+fvalue_t*
+fvalue_slice(fvalue_t *fv, drange_t *dr);
 
 #ifdef __cplusplus
 }

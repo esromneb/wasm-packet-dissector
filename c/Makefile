@@ -65,6 +65,14 @@ INCLUDE = \
 -I./3rd/zlib-glib-ffi/lib/glib-2.0/include \
 -I./3rd/zlib-glib-ffi/include/glib-2.0/glib
 
+OBJS = \
+build/main.o \
+build/wireshark.o \
+build/packet-foo.o \
+build/proto.o \
+build/ftypes.o \
+build/epan.o
+
 
 # Fix warning with
 # https://stackoverflow.com/questions/64588986/how-to-solve-extra-exported-runtime-methods-exception-when-cmake-used-with-emscr
@@ -72,7 +80,7 @@ INCLUDE = \
 # --shell-file $(TEMPLATE_FILE)
 # 	--proxy-to-worker
 # 	-s USE_PTHREADS=1 -s PROXY_TO_PTHREAD=1 -s ALLOW_BLOCKING_ON_MAIN_THREAD=0
-$(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o build/proto.o build/epan.o $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
+$(WASM_OUT): $(OBJS) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) Makefile
 	emcc -s WASM=1 -o $(HTML_OUT) \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
@@ -82,7 +90,8 @@ $(WASM_OUT): build/main.o build/wireshark.o build/packet-foo.o build/proto.o bui
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
 	-L./3rd/ -lwmem \
-	build/main.o build/wireshark.o build/packet-foo.o build/proto.o build/epan.o
+	$(OBJS)
+
 
 build/main.o: src/main.cpp
 	emcc src/main.cpp -c -o build/main.o \
@@ -106,6 +115,12 @@ build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
 	'-std=c++2a' \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/ftypes.o: 3rd/wireshark/epan/ftypes/ftypes.c 3rd/wireshark/epan/ftypes/ftypes.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	'-std=c++2a' -x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 # build/proto.o: 3rd/wireshark/epan/proto.c 3rd/wireshark/epan/proto.h
