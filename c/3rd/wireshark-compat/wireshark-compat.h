@@ -62,3 +62,7 @@
 
 // #define COL_PROTOCOL 0
 // #define COL_INFO 1
+
+
+
+#define BER_CLASS_ANY   99			/* don't check class nor tag */

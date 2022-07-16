@@ -72,6 +72,7 @@ build/packet-foo.o \
 build/proto.o \
 build/strutil.o \
 build/to_str.o \
+build/oids.o \
 build/epan.o
 
 BUILDA = \
@@ -129,6 +130,12 @@ build/strutil.o: 3rd/wireshark/epan/strutil.c 3rd/wireshark/epan/strutil.h
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 build/to_str.o: 3rd/wireshark/epan/to_str.c 3rd/wireshark/epan/to_str.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+ 	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/oids.o: 3rd/wireshark/epan/oids.c 3rd/wireshark/epan/oids.h
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
  	-x c++ \
