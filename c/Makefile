@@ -151,7 +151,7 @@ $(WASM_OUT): $(OBJS) $(OBJS3_A) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) $(BUILDA) M
 	-s ALLOW_MEMORY_GROWTH=1 \
 	--pre-js $(JS_TEMPLATE_FILE) \
 	-s EXPORTED_FUNCTIONS='[$(EXPORT_STRING) "_main"]' \
-	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "callMain"]' \
+	-s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "callMain"]' \
 	-sLLD_REPORT_UNDEFINED \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \

@@ -36,3 +36,13 @@ I should only hand edit the "important files" and hand build them myself from in
 
 # Keywords
 WWPD - wireshark wasm packet dissector, used for notes aka fixme
+
+
+# Notes about race-condition at startup
+Racecondition between module loading and first test running
+"Another option is to use the MODULARIZE option, using -sMODULARIZE. That puts all of the generated JavaScript into a factory function, which you can call to create an instance of your module. The factory function returns a Promise that resolves with the module instance. The promise is resolved once it’s safe to call the compiled code, i.e. after the compiled code has been downloaded and instantiated. For example, if you build with -sMODULARIZE -s 'EXPORT_NAME="createMyModule"', then you can do this:
+
+createMyModule(/* optional default settings */).then(function(Module) {
+  // this is reached when everything is ready, and you can call methods on Module
+});"
+* https://emscripten.org/docs/getting_started/FAQ.html
