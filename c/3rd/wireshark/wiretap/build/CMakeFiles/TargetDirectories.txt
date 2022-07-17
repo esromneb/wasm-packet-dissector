@@ -1,7 +1,0 @@
-/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/build/CMakeFiles/install/strip.dir
-/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/build/CMakeFiles/install/local.dir
-/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/build/CMakeFiles/install.dir
-/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/build/CMakeFiles/list_install_components.dir
-/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/build/CMakeFiles/rebuild_cache.dir
-/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/build/CMakeFiles/edit_cache.dir
-/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/build/CMakeFiles/wiretap.dir
