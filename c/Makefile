@@ -42,7 +42,8 @@ CLANG_WARN_FLAGS = \
 -Wundef \
 -Wno-unused-parameter \
 -Wno-unused-variable \
--Werror=return-type
+-Werror=return-type \
+-Wno-c++11-narrowing
 # -Wconversion
 # -Wshadow
 
@@ -94,6 +95,7 @@ inet_addr.o \
 charsets.o \
 register.o \
 guid-utils.o \
+expert.o \
 
 # strptime.o \
 

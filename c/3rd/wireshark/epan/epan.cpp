@@ -6,8 +6,8 @@
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
-
-
+#include <iostream>
+using namespace std;
 #include "config.h"
 
 #include <stdarg.h>
@@ -198,7 +198,6 @@ gboolean
 epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 {
 	volatile gboolean status = TRUE;
-#if 0
 	/* Get the value of some environment variables and set corresponding globals for performance reasons*/
 	/* If the WIRESHARK_ABORT_ON_DISSECTOR_BUG environment variable is set,
 	 * it will call abort(), instead, to make it easier to get a stack trace.
@@ -208,6 +207,7 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 	} else {
 		wireshark_abort_on_dissector_bug = FALSE;
 	}
+	cout << "BBBBBB" << std::endl;
 
 	if (getenv("WIRESHARK_ABORT_ON_TOO_MANY_ITEMS") != NULL) {
 		wireshark_abort_on_too_many_items = TRUE;
@@ -225,17 +225,24 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 	/* initialize memory allocation subsystem */
 	wmem_init();
 
+	cout << "CCCCC" << std::endl;
+
 	/* initialize the GUID to name mapping table */
 	guids_init();
+	cout << "DDDDD" << std::endl;
 
 	/* initialize name resolution (addr_resolv.c) */
 	addr_resolv_init();
 
 	except_init();
 
+
 	if (load_plugins) {
 #ifdef HAVE_PLUGINS
-		libwireshark_plugins = plugins_init(WS_PLUGIN_EPAN);
+		// call plugin register at this point
+		// the libwireshark_plugins is just a just a list
+		// that we only use for freeing up memory or whatever
+		// libwireshark_plugins = plugins_init(WS_PLUGIN_EPAN);
 #endif
 	}
 
@@ -258,16 +265,22 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 	// We might receive a SIGPIPE due to maxmind_db.
 	signal(SIGPIPE, SIG_IGN);
 #endif
+	cout << "EEEEE" << std::endl;
+	// cout << "GGGGG" << std::endl;
+	// cout << "HHHHH" << std::endl;
+	// cout << "IIIII" << std::endl;
 
+#if 1
 	TRY {
-		tap_init();
-		prefs_init();
+		// tap_init();
+	cout << "FFFFF" << std::endl;
+		// prefs_init();
 		expert_init();
-		packet_init();
-		secrets_init();
-		conversation_init();
-		capture_dissector_init();
-		reassembly_tables_init();
+		// packet_init();
+		// secrets_init();
+		// conversation_init();
+		// capture_dissector_init();
+		// reassembly_tables_init();
 #ifdef HAVE_PLUGINS
 		g_slist_foreach(epan_plugins, epan_plugin_init, NULL);
 #endif
