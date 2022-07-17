@@ -148,6 +148,7 @@ OBJS3_A = $(addprefix build/,$(OBJS3))
 BUILDA = \
 3rd/wireshark/epan/ftypes/build/libftypes.a \
 3rd/wireshark/wiretap/build/libwiretap.a \
+3rd/wireshark/epan/dfilter/build/libdfilter.a \
 
 
 # Fix warning with
