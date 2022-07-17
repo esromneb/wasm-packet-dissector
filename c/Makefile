@@ -78,6 +78,7 @@ build/sharkd.o \
 build/frame_tvbuff.o \
 build/cfile.o \
 build/sharkd_daemon.o \
+build/sharkd_session.o \
 
 
 
@@ -197,7 +198,14 @@ build/sharkd.o: 3rd/wireshark/sharkd.c 3rd/wireshark/sharkd.h
 	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/sharkd_daemon.o: $(wildcard 3rd/wireshark/sharkd*) 
+build/sharkd_daemon.o: 3rd/wireshark/sharkd_daemon.c
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/sharkd_session.o: 3rd/wireshark/sharkd_session.c
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
 	'-std=c++2a' \

@@ -1214,80 +1214,80 @@ struct sharkd_conv_tap_data
 	gboolean resolve_port;
 };
 
-static gboolean
-sharkd_session_geoip_addr(address *addr, const char *suffix)
-{
-	const mmdb_lookup_t *lookup = NULL;
-	gboolean with_geoip = FALSE;
-	char json_key[64];
+// static gboolean
+// sharkd_session_geoip_addr(address *addr, const char *suffix)
+// {
+// 	const mmdb_lookup_t *lookup = NULL;
+// 	gboolean with_geoip = FALSE;
+// 	char json_key[64];
 
-	if (addr->type == AT_IPv4)
-	{
-		const ws_in4_addr *ip4 = (const ws_in4_addr *) addr->data;
+// 	if (addr->type == AT_IPv4)
+// 	{
+// 		// const ws_in4_addr *ip4 = (const ws_in4_addr *) addr->data;
 
-		lookup = maxmind_db_lookup_ipv4(ip4);
-	}
-	else if (addr->type == AT_IPv6)
-	{
-		const ws_in6_addr *ip6 = (const ws_in6_addr *) addr->data;
+// 		// lookup = maxmind_db_lookup_ipv4(ip4);
+// 	}
+// 	else if (addr->type == AT_IPv6)
+// 	{
+// 		// const ws_in6_addr *ip6 = (const ws_in6_addr *) addr->data;
 
-		lookup = maxmind_db_lookup_ipv6(ip6);
-	}
+// 		// lookup = maxmind_db_lookup_ipv6(ip6);
+// 	}
 
-	if (!lookup || !lookup->found)
-		return FALSE;
+// 	if (!lookup || !lookup->found)
+// 		return FALSE;
 
-	if (lookup->country)
-	{
-		snprintf(json_key, sizeof(json_key), "geoip_country%s", suffix);
-		sharkd_json_value_string(json_key, lookup->country);
-		with_geoip = TRUE;
-	}
+// 	if (lookup->country)
+// 	{
+// 		snprintf(json_key, sizeof(json_key), "geoip_country%s", suffix);
+// 		sharkd_json_value_string(json_key, lookup->country);
+// 		with_geoip = TRUE;
+// 	}
 
-	if (lookup->country_iso)
-	{
-		snprintf(json_key, sizeof(json_key), "geoip_country_iso%s", suffix);
-		sharkd_json_value_string(json_key, lookup->country_iso);
-		with_geoip = TRUE;
-	}
+// 	if (lookup->country_iso)
+// 	{
+// 		snprintf(json_key, sizeof(json_key), "geoip_country_iso%s", suffix);
+// 		sharkd_json_value_string(json_key, lookup->country_iso);
+// 		with_geoip = TRUE;
+// 	}
 
-	if (lookup->city)
-	{
-		snprintf(json_key, sizeof(json_key), "geoip_city%s", suffix);
-		sharkd_json_value_string(json_key, lookup->city);
-		with_geoip = TRUE;
-	}
+// 	if (lookup->city)
+// 	{
+// 		snprintf(json_key, sizeof(json_key), "geoip_city%s", suffix);
+// 		sharkd_json_value_string(json_key, lookup->city);
+// 		with_geoip = TRUE;
+// 	}
 
-	if (lookup->as_org)
-	{
-		snprintf(json_key, sizeof(json_key), "geoip_as_org%s", suffix);
-		sharkd_json_value_string(json_key, lookup->as_org);
-		with_geoip = TRUE;
-	}
+// 	if (lookup->as_org)
+// 	{
+// 		snprintf(json_key, sizeof(json_key), "geoip_as_org%s", suffix);
+// 		sharkd_json_value_string(json_key, lookup->as_org);
+// 		with_geoip = TRUE;
+// 	}
 
-	if (lookup->as_number > 0)
-	{
-		snprintf(json_key, sizeof(json_key), "geoip_as%s", suffix);
-		sharkd_json_value_anyf(json_key, "%u", lookup->as_number);
-		with_geoip = TRUE;
-	}
+// 	if (lookup->as_number > 0)
+// 	{
+// 		snprintf(json_key, sizeof(json_key), "geoip_as%s", suffix);
+// 		sharkd_json_value_anyf(json_key, "%u", lookup->as_number);
+// 		with_geoip = TRUE;
+// 	}
 
-	if (lookup->latitude >= -90.0 && lookup->latitude <= 90.0)
-	{
-		snprintf(json_key, sizeof(json_key), "geoip_lat%s", suffix);
-		sharkd_json_value_anyf(json_key, "%f", lookup->latitude);
-		with_geoip = TRUE;
-	}
+// 	if (lookup->latitude >= -90.0 && lookup->latitude <= 90.0)
+// 	{
+// 		snprintf(json_key, sizeof(json_key), "geoip_lat%s", suffix);
+// 		sharkd_json_value_anyf(json_key, "%f", lookup->latitude);
+// 		with_geoip = TRUE;
+// 	}
 
-	if (lookup->longitude >= -180.0 && lookup->longitude <= 180.0)
-	{
-		snprintf(json_key, sizeof(json_key), "geoip_lon%s", suffix);
-		sharkd_json_value_anyf(json_key, "%f", lookup->longitude);
-		with_geoip = TRUE;
-	}
+// 	if (lookup->longitude >= -180.0 && lookup->longitude <= 180.0)
+// 	{
+// 		snprintf(json_key, sizeof(json_key), "geoip_lon%s", suffix);
+// 		sharkd_json_value_anyf(json_key, "%f", lookup->longitude);
+// 		with_geoip = TRUE;
+// 	}
 
-	return with_geoip;
-}
+// 	return with_geoip;
+// }
 
 struct sharkd_analyse_rtp_items
 {
@@ -1601,10 +1601,10 @@ sharkd_session_process_tap_conv_cb(void *arg)
 			wmem_free(NULL, src_addr);
 			wmem_free(NULL, dst_addr);
 
-			if (sharkd_session_geoip_addr(&(iui->src_address), "1"))
-				with_geoip = 1;
-			if (sharkd_session_geoip_addr(&(iui->dst_address), "2"))
-				with_geoip = 1;
+			// if (sharkd_session_geoip_addr(&(iui->src_address), "1"))
+				// with_geoip = 1;
+			// if (sharkd_session_geoip_addr(&(iui->dst_address), "2"))
+				// with_geoip = 1;
 
 			json_dumper_end_object(&dumper);
 		}
@@ -1643,8 +1643,8 @@ sharkd_session_process_tap_conv_cb(void *arg)
 
 			wmem_free(NULL, host_str);
 
-			if (sharkd_session_geoip_addr(&(host->myaddress), ""))
-				with_geoip = 1;
+			// if (sharkd_session_geoip_addr(&(host->myaddress), ""))
+				// with_geoip = 1;
 			json_dumper_end_object(&dumper);
 		}
 	}
