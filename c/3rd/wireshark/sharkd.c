@@ -68,7 +68,6 @@
 
 #define INIT_FAILED 1
 #define EPAN_INIT_FAIL 2
-#if 0
 capture_file cfile;
 
 static guint32 cum_bytes;
@@ -100,9 +99,9 @@ print_current_user(void) {
 }
 
 int
-main(int argc, char *argv[])
+sharkd_main(int argc, char *argv[])
 {
-  char                *init_progfile_dir_error;
+  // char                *init_progfile_dir_error;
 
   char                *err_msg = NULL;
   e_prefs             *prefs_p;
@@ -122,11 +121,11 @@ main(int argc, char *argv[])
   /*
    * Attempt to get the pathname of the executable file.
    */
-  init_progfile_dir_error = init_progfile_dir(argv[0]);
-  if (init_progfile_dir_error != NULL) {
-    fprintf(stderr, "sharkd: Can't get pathname of sharkd program: %s.\n",
-            init_progfile_dir_error);
-  }
+  // init_progfile_dir_error = init_progfile_dir(argv[0]);
+  // if (init_progfile_dir_error != NULL) {
+    // fprintf(stderr, "sharkd: Can't get pathname of sharkd program: %s.\n",
+            // init_progfile_dir_error);
+  // }
 
   /* Initialize the version information. */
   ws_init_version_info("Sharkd (Wireshark)", NULL,
@@ -193,10 +192,10 @@ clean_exit:
   free_filter_lists();
   codecs_cleanup();
   wtap_cleanup();
-  free_progdirs();
+  // free_progdirs();
   return ret;
 }
-
+#if 0
 static const nstime_t *
 sharkd_get_frame_ts(struct packet_provider_data *prov, guint32 frame_num)
 {
