@@ -96,6 +96,7 @@ charsets.o \
 register.o \
 guid-utils.o \
 expert.o \
+packet.o \
 
 # strptime.o \
 

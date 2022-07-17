@@ -309,9 +309,12 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 		static const char dissector_error_nomsg[] =
 		    "Dissector writer didn't bother saying what the error was";
 
-		report_failure("Dissector bug: %s",
+		    printf("Dissector bug: %s",
 			       exception_message == NULL ?
 				 dissector_error_nomsg : exception_message);
+		// report_failure("Dissector bug: %s",
+			       // exception_message == NULL ?
+				 // dissector_error_nomsg : exception_message);
 		if (getenv("WIRESHARK_ABORT_ON_DISSECTOR_BUG") != NULL)
 			abort();
 		status = FALSE;
