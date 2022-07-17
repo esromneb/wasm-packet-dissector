@@ -346,7 +346,9 @@ epan_load_settings(void)
 	 * Read the files that enable and disable protocols and heuristic
 	 * dissectors.
 	 */
-	read_enabled_and_disabled_lists();
+	// WWPD we can rewrite this
+	// to load protos thru node
+	// read_enabled_and_disabled_lists();
 
 	return prefs_p;
 }

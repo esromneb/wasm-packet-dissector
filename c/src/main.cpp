@@ -28,6 +28,8 @@ using namespace std;
 std::vector<std::string> registered;
 
 void proto_register_foo(void);
+int sharkd_main(int argc, char *argv[]);
+
 
 extern "C" {
 
@@ -37,6 +39,10 @@ void doCall(const unsigned i) {
     }
     if( i == 1 ) {
         foo_bar_waz();
+    }
+    if( i == 2 ) {
+        char sd_argv[16][16] = {"sharkd", "-"};
+        sharkd_main(2,(char**)sd_argv);
     }
 }
 

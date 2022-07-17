@@ -104,6 +104,7 @@ expert.o \
 packet.o \
 str_util.o \
 dissectors.o \
+decode_as.o \
 
 # strptime.o \
 

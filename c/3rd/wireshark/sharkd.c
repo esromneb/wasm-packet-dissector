@@ -106,7 +106,7 @@ sharkd_main(int argc, char *argv[])
   char                *err_msg = NULL;
   e_prefs             *prefs_p;
   int                  ret = EXIT_SUCCESS;
-
+#if 0
   cmdarg_err_init(failure_warning_message, failure_message_cont);
 
   /*
@@ -193,6 +193,7 @@ clean_exit:
   codecs_cleanup();
   wtap_cleanup();
   // free_progdirs();
+#endif
   return ret;
 }
 #if 0
