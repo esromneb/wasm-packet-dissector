@@ -66,16 +66,21 @@ INCLUDE = \
 -I./3rd/zlib-glib-ffi/lib/glib-2.0/include \
 -I./3rd/zlib-glib-ffi/include/glib-2.0/glib
 
+
+# These have a dedicated target below
 OBJS = \
 build/main.o \
 build/wireshark.o \
 build/packet-foo.o \
 build/proto.o \
-build/epan.o
+build/epan.o \
+build/sharkd.o \
+build/frame_tvbuff.o \
+build/cfile.o \
 
 
 
-
+# These use a target with a % below
 OBJS3 = \
 except.o \
 tvbuff_real.o \
@@ -177,6 +182,28 @@ build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
 	'-std=c++2a' \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+
+build/sharkd.o: 3rd/wireshark/sharkd.c 3rd/wireshark/sharkd.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/frame_tvbuff.o: 3rd/wireshark/frame_tvbuff.c 3rd/wireshark/frame_tvbuff.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/cfile.o: 3rd/wireshark/cfile.c 3rd/wireshark/cfile.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 
