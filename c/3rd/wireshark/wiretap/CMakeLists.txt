@@ -9,7 +9,7 @@
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	# ../../zlib-glib-ffi/include
+	../../zlib-glib-ffi/include
 	../../zlib-glib-ffi/include/glib-2.0/
 	../../zlib-glib-ffi/lib/glib-2.0/include
 	../../wireshark
