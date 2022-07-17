@@ -504,7 +504,11 @@ proto_init(GSList *register_all_plugin_protocols_list,
        dissector tables, and dissectors to be called through a
        handle, and do whatever one-time initialization it needs to
        do. */
-    register_all_protocols(cb, client_data);
+
+    // WWPD: this calls a thread under the hood
+    // still not sure if I need this or if i need
+    // what is in wireshark/epan/dissectors/dissectors.c
+    // register_all_protocols(cb, client_data);
 
     /* Now call the registration routines for all epan plugins. */
     for (GSList *l = register_all_plugin_protocols_list; l != NULL; l = l->next) {
@@ -522,7 +526,10 @@ proto_init(GSList *register_all_plugin_protocols_list,
        dissectors; those routines register the dissector in other
        dissectors' handoff tables, and fetch any dissector handles
        they need. */
-    register_all_protocol_handoffs(cb, client_data);
+
+    // WWPD: this calls a thread
+    // not sure if i need this
+    // register_all_protocol_handoffs(cb, client_data);
 
     /* Now do the same with epan plugins. */
     for (GSList *l = register_all_plugin_handoffs_list; l != NULL; l = l->next) {

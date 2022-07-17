@@ -32,3 +32,7 @@ node --experimental-wasm-threads ./node_modules/jest/bin/jest.js --runInBand --n
 # Linking against anything
 If there are things I can link outright to, that just work from wireshark I should
 I should only hand edit the "important files" and hand build them myself from inside the wasm
+
+
+# Keywords
+WWPD - wireshark wasm packet dissector, used for notes aka fixme

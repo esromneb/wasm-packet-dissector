@@ -267,8 +267,6 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 #endif
 	cout << "EEEEE" << std::endl;
 	// cout << "GGGGG" << std::endl;
-	// cout << "HHHHH" << std::endl;
-	// cout << "IIIII" << std::endl;
 
 #if 1
 	TRY {
@@ -276,6 +274,7 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 	cout << "FFFFF" << std::endl;
 		// prefs_init();
 		expert_init();
+	cout << "GGGGG" << std::endl;
 		// packet_init();
 		// secrets_init();
 		// conversation_init();
@@ -284,7 +283,9 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 #ifdef HAVE_PLUGINS
 		g_slist_foreach(epan_plugins, epan_plugin_init, NULL);
 #endif
+	cout << "HHHHH" << std::endl;
 		proto_init(epan_plugin_register_all_procotols, epan_plugin_register_all_handoffs, cb, client_data);
+	cout << "IIIII" << std::endl;
 #ifdef HAVE_PLUGINS
 		g_slist_foreach(epan_plugins, epan_plugin_register_all_tap_listeners, NULL);
 #endif
