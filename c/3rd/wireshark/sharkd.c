@@ -106,8 +106,8 @@ sharkd_main(int argc, char *argv[])
   char                *err_msg = NULL;
   e_prefs             *prefs_p;
   int                  ret = EXIT_SUCCESS;
-#if 0
   cmdarg_err_init(failure_warning_message, failure_message_cont);
+#if 0
 
   /*
    * Get credential information for later use, and drop privileges
@@ -447,6 +447,7 @@ fail:
   return CF_ERROR;
 }
 
+#endif
 /*
  * General errors and warnings are reported with an console message
  * in sharkd.
@@ -458,6 +459,7 @@ failure_warning_message(const char *msg_format, va_list ap)
   vfprintf(stderr, msg_format, ap);
   fprintf(stderr, "\n");
 }
+#if 0
 
 /*
  * Open/create errors are reported with an console message in sharkd.
@@ -489,7 +491,7 @@ write_failure_message(const char *filename, int err)
   cmdarg_err("An error occurred while writing to the file \"%s\": %s.",
           filename, g_strerror(err));
 }
-
+#endif
 /*
  * Report additional information for an error in command-line arguments.
  */
@@ -499,6 +501,7 @@ failure_message_cont(const char *msg_format, va_list ap)
   vfprintf(stderr, msg_format, ap);
   fprintf(stderr, "\n");
 }
+#if 0
 
 cf_status_t
 sharkd_cf_open(const char *fname, unsigned int type, gboolean is_tempfile, int *err)

@@ -105,6 +105,7 @@ packet.o \
 str_util.o \
 dissectors.o \
 decode_as.o \
+cmdarg_err.o \
 
 # strptime.o \
 
@@ -217,6 +218,13 @@ build/cfile.o: 3rd/wireshark/cfile.c 3rd/wireshark/cfile.h
 # in different dirs
 # IF we do do that, we can make 2 build dirs and solve it
 
+build/%.o: 3rd/wireshark/ui/%.c
+	@echo "ui match"
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
 build/%.o: 3rd/wireshark/epan/%.c
 	@echo "epan match"
 	emcc $< -c -o $@ \
@@ -230,7 +238,6 @@ build/%.o: 3rd/wireshark/epan/dissectors/%.c
 	$(INCLUDE) \
 	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
-
 
 build/%.o: 3rd/wireshark/wsutil/%.c
 	@echo "ws util match"
