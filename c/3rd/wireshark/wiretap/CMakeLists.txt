@@ -135,6 +135,7 @@ set_target_properties(wiretap PROPERTIES
 	VERSION "10.0.19" SOVERSION 10
 	FOLDER "DLLs"
 	INSTALL_RPATH "${LIBRARY_INSTALL_RPATH}"
+	LINKER_LANGUAGE CXX
 )
 
 target_link_libraries(wiretap

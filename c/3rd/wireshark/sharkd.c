@@ -178,9 +178,9 @@ sharkd_main(int argc, char *argv[])
      line that their preferences have changed. */
   // prefs_apply_all();
 
-#if 0
   /* Build the column format array */
   build_column_format_array(&cfile.cinfo, prefs_p->num_cols, TRUE);
+#if 0
 
 #ifdef HAVE_MAXMINDDB
   /* mmdbresolve is started from mmdb_resolve_start(), which is called from epan_load_settings via: read_prefs -> (...) uat_load_all -> maxmind_db_post_update_cb.

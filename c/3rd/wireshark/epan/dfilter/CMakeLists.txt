@@ -76,6 +76,11 @@ set(DFILTER_FILES ${DFILTER_NONGENERATED_FILES})
 #
 # We don't enable -Werror on generated code to make the build a
 # little less fragile when configured warnings change.
+set_source_files_properties(
+	${DFILTER_FILES}
+	LANGUAGE CXX
+)
+
 #
 set_source_files_properties(
 	${DFILTER_NONGENERATED_FILES}
@@ -92,10 +97,12 @@ add_library(dfilter STATIC
 	${DFILTER_FILES}
 )
 
-set_target_properties(dfilter PROPERTIES
-	FOLDER "Libs/epan/dfilter"
-	COMPILE_DEFINITIONS "WS_BUILD_DLL"
-)
+set_target_properties(dfilter PROPERTIES LINKER_LANGUAGE CXX)
+
+# set_target_properties(dfilter PROPERTIES
+# 	FOLDER "Libs/epan/dfilter"
+# 	COMPILE_DEFINITIONS "WS_BUILD_DLL"
+# )
 
 # install(FILES ${DFILTER_PUBLIC_HEADERS}
 # 	DESTINATION "${PROJECT_INSTALL_INCLUDEDIR}/epan/dfilter"
