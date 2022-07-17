@@ -61,6 +61,8 @@ INCLUDE = \
 -I./src \
 -I./3rd/wireshark \
 -I./3rd/wireshark/epan \
+-I./3rd/wireshark/tools/lemon \
+-I./3rd/wireshark/dfilter \
 -I./3rd/wireshark-compat \
 -I./3rd/zlib-glib-ffi/include/glib-2.0 \
 -I./3rd/zlib-glib-ffi/lib/glib-2.0/include \
@@ -111,6 +113,21 @@ cmdarg_err.o \
 value_string.o \
 timestamp.o \
 column.o \
+dfilter-macro.o \
+dfilter.o \
+dfunctions.o \
+dfvm.o \
+drange.o \
+gencode.o \
+semcheck.o \
+sttype-function.o \
+sttype-integer.o \
+sttype-pointer.o \
+sttype-range.o \
+sttype-set.o \
+sttype-string.o \
+sttype-test.o \
+syntax-tree.o \
 
 
 # color_filters.o \
@@ -148,7 +165,8 @@ OBJS3_A = $(addprefix build/,$(OBJS3))
 BUILDA = \
 3rd/wireshark/epan/ftypes/build/libftypes.a \
 3rd/wireshark/wiretap/build/libwiretap.a \
-3rd/wireshark/epan/dfilter/build/libdfilter.a \
+
+# 3rd/wireshark/epan/dfilter/build/libdfilter.a \
 
 
 # Fix warning with
@@ -262,6 +280,13 @@ build/%.o: 3rd/wireshark/epan/dissectors/%.c
 	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
+build/%.o: 3rd/wireshark/epan/dfilter/%.c
+	@echo "epan/dfilter match"
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
 build/%.o: 3rd/wireshark/wsutil/%.c
 	@echo "ws util match"
 	emcc $< -c -o $@ \
@@ -338,8 +363,8 @@ build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
 3rd/wireshark/epan/ftypes/build/libftypes.a: $(wildcard 3rd/wireshark/epan/ftypes/*)
 	mkdir -p 3rd/wireshark/epan/ftypes/build && cd 3rd/wireshark/epan/ftypes/build && emcmake cmake .. && make
 
-3rd/wireshark/epan/dfilter/build/libdfilter.a: $(wildcard 3rd/wireshark/epan/dfilter/*)
-	mkdir -p 3rd/wireshark/epan/dfilter/build && cd 3rd/wireshark/epan/dfilter/build && emcmake cmake .. && make
+# 3rd/wireshark/epan/dfilter/build/libdfilter.a: $(wildcard 3rd/wireshark/epan/dfilter/*)
+# 	mkdir -p 3rd/wireshark/epan/dfilter/build && cd 3rd/wireshark/epan/dfilter/build && emcmake cmake .. && make
 
 3rd/wireshark/wiretap/build/libwiretap.a: $(wildcard 3rd/wireshark/wiretap/*)
 	mkdir -p 3rd/wireshark/wiretap/build/ && cd 3rd/wireshark/wiretap/build/ && emcmake cmake .. && make
