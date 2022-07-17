@@ -200,17 +200,18 @@ sharkd_init(int argc, char **argv)
 	if (!_use_stdinout)
 	{
 		/* all good - try to daemonize */
-#ifndef _WIN32
-		pid = fork();
-		if (pid == -1)
-			fprintf(stderr, "cannot go to background fork() failed: %s\n", g_strerror(errno));
+        printf("Above fork (1)\n");
+// #ifndef _WIN32
+// 		pid = fork();
+// 		if (pid == -1)
+// 			fprintf(stderr, "cannot go to background fork() failed: %s\n", g_strerror(errno));
 
-		if (pid != 0)
-		{
-			/* parent */
-			exit(0);
-		}
-#endif
+// 		if (pid != 0)
+// 		{
+// 			/* parent */
+// 			exit(0);
+// 		}
+// #endif
 	}
 
 	return 0;

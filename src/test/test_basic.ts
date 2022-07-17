@@ -50,7 +50,9 @@ test('sync test', () => {
   // crashes
   // registerAll();
 
-  doCall(0); // epan_init
+  // doCall(0); // epan_init
+  
+  doCall(2); // sharkd
 
   // doCall(1);
 
