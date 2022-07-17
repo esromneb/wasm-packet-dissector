@@ -1,0 +1,1 @@
+-I/src/wasm-packet-dissector/c/3rd/wireshark/wiretap -I/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/../../zlib-glib-ffi/include/glib-2.0 -I/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/../../zlib-glib-ffi/lib/glib-2.0/include -I/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/../../wireshark -I/src/wasm-packet-dissector/c/3rd/wireshark/wiretap/../../wireshark-compat 
