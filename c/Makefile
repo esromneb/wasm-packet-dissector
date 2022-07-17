@@ -77,6 +77,7 @@ build/epan.o \
 build/sharkd.o \
 build/frame_tvbuff.o \
 build/cfile.o \
+build/sharkd_daemon.o \
 
 
 
@@ -189,6 +190,13 @@ build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
 
 
 build/sharkd.o: 3rd/wireshark/sharkd.c 3rd/wireshark/sharkd.h
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	'-std=c++2a' \
+	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+
+build/sharkd_daemon.o: $(wildcard 3rd/wireshark/sharkd*) 
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
 	'-std=c++2a' \

@@ -80,23 +80,23 @@ static void read_failure_message(const char *filename, int err);
 static void write_failure_message(const char *filename, int err);
 static void failure_message_cont(const char *msg_format, va_list ap);
 
-static void
-print_current_user(void) {
-  gchar *cur_user, *cur_group;
+// static void
+// print_current_user(void) {
+//   gchar *cur_user, *cur_group;
 
-  if (started_with_special_privs()) {
-    cur_user = get_cur_username();
-    cur_group = get_cur_groupname();
-    fprintf(stderr, "Running as user \"%s\" and group \"%s\".",
-      cur_user, cur_group);
-    g_free(cur_user);
-    g_free(cur_group);
-    if (running_with_special_privs()) {
-      fprintf(stderr, " This could be dangerous.");
-    }
-    fprintf(stderr, "\n");
-  }
-}
+//   if (started_with_special_privs()) {
+//     cur_user = get_cur_username();
+//     cur_group = get_cur_groupname();
+//     fprintf(stderr, "Running as user \"%s\" and group \"%s\".",
+//       cur_user, cur_group);
+//     g_free(cur_user);
+//     g_free(cur_group);
+//     if (running_with_special_privs()) {
+//       fprintf(stderr, " This could be dangerous.");
+//     }
+//     fprintf(stderr, "\n");
+//   }
+// }
 
 int
 sharkd_main(int argc, char *argv[])
@@ -107,16 +107,15 @@ sharkd_main(int argc, char *argv[])
   e_prefs             *prefs_p;
   int                  ret = EXIT_SUCCESS;
   cmdarg_err_init(failure_warning_message, failure_message_cont);
-#if 0
 
   /*
    * Get credential information for later use, and drop privileges
    * before doing anything else.
    * Let the user know if anything happened.
    */
-  init_process_policies();
-  relinquish_special_privs_perm();
-  print_current_user();
+  // init_process_policies();
+  // relinquish_special_privs_perm();
+  // print_current_user();
 
   /*
    * Attempt to get the pathname of the executable file.
@@ -128,9 +127,9 @@ sharkd_main(int argc, char *argv[])
   // }
 
   /* Initialize the version information. */
-  ws_init_version_info("Sharkd (Wireshark)", NULL,
-                       epan_get_compiled_version_info,
-                       epan_get_runtime_version_info);
+  // ws_init_version_info("Sharkd (Wireshark)", NULL,
+                       // epan_get_compiled_version_info,
+                       // epan_get_runtime_version_info);
 
   if (sharkd_init(argc, argv) < 0)
   {
@@ -138,6 +137,7 @@ sharkd_main(int argc, char *argv[])
     ret = INIT_FAILED;
     goto clean_exit;
   }
+#if 0
 
   init_report_message(failure_warning_message, failure_warning_message,
                       open_failure_message, read_failure_message,
@@ -187,13 +187,13 @@ sharkd_main(int argc, char *argv[])
 #endif
 
   ret = sharkd_loop();
-clean_exit:
-  col_cleanup(&cfile.cinfo);
-  free_filter_lists();
-  codecs_cleanup();
-  wtap_cleanup();
-  // free_progdirs();
 #endif
+clean_exit:
+  // col_cleanup(&cfile.cinfo);
+  // free_filter_lists();
+  // codecs_cleanup();
+  // wtap_cleanup();
+  // free_progdirs();
   return ret;
 }
 #if 0

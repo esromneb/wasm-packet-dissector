@@ -42,13 +42,13 @@
 
 #include "sharkd.h"
 
-#ifdef _WIN32
-/* for windows support TCP sockets */
-# define SHARKD_TCP_SUPPORT
-#else
-/* for other system support only local sockets */
-# define SHARKD_UNIX_SUPPORT
-#endif
+// #ifdef _WIN32
+// /* for windows support TCP sockets */
+// # define SHARKD_TCP_SUPPORT
+// #else
+// /* for other system support only local sockets */
+// # define SHARKD_UNIX_SUPPORT
+// #endif
 
 static int _use_stdinout = 0;
 static socket_handle_t _server_fd = INVALID_SOCKET;
