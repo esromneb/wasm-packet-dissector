@@ -813,72 +813,72 @@ get_column_tooltip(const gint col)
 void
 col_finalize(column_info *cinfo)
 {
-  int i;
-  col_item_t* col_item;
+  // int i;
+  // col_item_t* col_item;
 
-  for (i = 0; i < cinfo->num_cols; i++) {
-    col_item = &cinfo->columns[i];
+  // for (i = 0; i < cinfo->num_cols; i++) {
+  //   col_item = &cinfo->columns[i];
 
-    if (col_item->col_fmt == COL_CUSTOM) {
-      if(!dfilter_compile(col_item->col_custom_fields, &col_item->col_custom_dfilter, NULL)) {
-        /* XXX: Should we issue a warning? */
-        g_free(col_item->col_custom_fields);
-        col_item->col_custom_fields = NULL;
-        col_item->col_custom_occurrence = 0;
-        col_item->col_custom_dfilter = NULL;
-      }
-      if (col_item->col_custom_fields) {
-        gchar **fields = g_regex_split(cinfo->prime_regex, col_item->col_custom_fields,
-                                       G_REGEX_MATCH_ANCHORED);
-        guint i_field;
+  //   if (col_item->col_fmt == COL_CUSTOM) {
+  //     if(!dfilter_compile(col_item->col_custom_fields, &col_item->col_custom_dfilter, NULL)) {
+  //       /* XXX: Should we issue a warning? */
+  //       g_free(col_item->col_custom_fields);
+  //       col_item->col_custom_fields = NULL;
+  //       col_item->col_custom_occurrence = 0;
+  //       col_item->col_custom_dfilter = NULL;
+  //     }
+  //     if (col_item->col_custom_fields) {
+  //       gchar **fields = g_regex_split(cinfo->prime_regex, col_item->col_custom_fields,
+  //                                      G_REGEX_MATCH_ANCHORED);
+  //       guint i_field;
 
-        for (i_field = 0; i_field < g_strv_length(fields); i_field++) {
-          if (fields[i_field] && *fields[i_field]) {
-            header_field_info *hfinfo = proto_registrar_get_byname(fields[i_field]);
-            if (hfinfo) {
-              int *idx = g_new(int, 1);
-              *idx = hfinfo->id;
-              col_item->col_custom_fields_ids = g_slist_append(col_item->col_custom_fields_ids, idx);
-            }
-          }
-        }
-        g_strfreev(fields);
-      }
-    } else {
-      col_item->col_custom_fields = NULL;
-      col_item->col_custom_occurrence = 0;
-      col_item->col_custom_dfilter = NULL;
-    }
+  //       for (i_field = 0; i_field < g_strv_length(fields); i_field++) {
+  //         if (fields[i_field] && *fields[i_field]) {
+  //           header_field_info *hfinfo = proto_registrar_get_byname(fields[i_field]);
+  //           if (hfinfo) {
+  //             int *idx = g_new(int, 1);
+  //             *idx = hfinfo->id;
+  //             col_item->col_custom_fields_ids = g_slist_append(col_item->col_custom_fields_ids, idx);
+  //           }
+  //         }
+  //       }
+  //       g_strfreev(fields);
+  //     }
+  //   } else {
+  //     col_item->col_custom_fields = NULL;
+  //     col_item->col_custom_occurrence = 0;
+  //     col_item->col_custom_dfilter = NULL;
+  //   }
 
-    col_item->fmt_matx = (gboolean *) g_malloc0(sizeof(gboolean) * NUM_COL_FMTS);
-    get_column_format_matches(col_item->fmt_matx, col_item->col_fmt);
-    col_item->col_data = NULL;
+  //   col_item->fmt_matx = (gboolean *) g_malloc0(sizeof(gboolean) * NUM_COL_FMTS);
+  //   get_column_format_matches(col_item->fmt_matx, col_item->col_fmt);
+  //   col_item->col_data = NULL;
 
-    if (col_item->col_fmt == COL_INFO)
-      col_item->col_buf = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_INFO_LEN);
-    else
-      col_item->col_buf = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_LEN);
+  //   if (col_item->col_fmt == COL_INFO)
+  //     col_item->col_buf = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_INFO_LEN);
+  //   else
+  //     col_item->col_buf = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_LEN);
 
-    cinfo->col_expr.col_expr[i] = "";
-    cinfo->col_expr.col_expr_val[i] = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_LEN);
-  }
+  //   cinfo->col_expr.col_expr[i] = "";
+  //   cinfo->col_expr.col_expr_val[i] = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_LEN);
+  // }
 
-  cinfo->col_expr.col_expr[i] = NULL;
-  cinfo->col_expr.col_expr_val[i] = NULL;
+  // cinfo->col_expr.col_expr[i] = NULL;
+  // cinfo->col_expr.col_expr_val[i] = NULL;
 
-  for (i = 0; i < cinfo->num_cols; i++) {
-    int j;
+  // for (i = 0; i < cinfo->num_cols; i++) {
+  //   int j;
 
-    for (j = 0; j < NUM_COL_FMTS; j++) {
-      if (!cinfo->columns[i].fmt_matx[j])
-          continue;
+  //   for (j = 0; j < NUM_COL_FMTS; j++) {
+  //     if (!cinfo->columns[i].fmt_matx[j])
+  //         continue;
 
-      if (cinfo->col_first[j] == -1)
-        cinfo->col_first[j] = i;
+  //     if (cinfo->col_first[j] == -1)
+  //       cinfo->col_first[j] = i;
 
-      cinfo->col_last[j] = i;
-    }
-  }
+  //     cinfo->col_last[j] = i;
+  //   }
+  // }
 }
 
 void
@@ -903,7 +903,7 @@ build_column_format_array(column_info *cinfo, const gint num_cols, const gboolea
       col_item->col_fence = 0;
   }
 
-  // col_finalize(cinfo);
+  col_finalize(cinfo);
 }
 
 /*
