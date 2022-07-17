@@ -107,6 +107,7 @@ str_util.o \
 dissectors.o \
 decode_as.o \
 cmdarg_err.o \
+value_string.o \
 
 # strptime.o \
 
