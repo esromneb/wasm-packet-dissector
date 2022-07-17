@@ -53,7 +53,7 @@ json_validate(const guint8 *buf, const size_t len)
         return FALSE;
 
     jsmn_init(&p);
-    rcode = jsmn_parse(&p, buf, len, t, max_tokens);
+    rcode = jsmn_parse(&p, (char*)buf, len, t, max_tokens);
     if (rcode < 0) {
         switch (rcode) {
             case JSMN_ERROR_NOMEM:

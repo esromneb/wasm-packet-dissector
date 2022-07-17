@@ -129,6 +129,11 @@ sttype-set.o \
 sttype-string.o \
 sttype-test.o \
 syntax-tree.o \
+wsjson.o \
+json_dumper.o \
+nstime.o \
+stats_tree.o \
+stat_tap_ui.o \
 
 
 # color_filters.o \

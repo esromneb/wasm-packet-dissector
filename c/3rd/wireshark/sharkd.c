@@ -180,7 +180,6 @@ sharkd_main(int argc, char *argv[])
 
   /* Build the column format array */
   build_column_format_array(&cfile.cinfo, prefs_p->num_cols, TRUE);
-#if 0
 
 #ifdef HAVE_MAXMINDDB
   /* mmdbresolve is started from mmdb_resolve_start(), which is called from epan_load_settings via: read_prefs -> (...) uat_load_all -> maxmind_db_post_update_cb.
@@ -189,6 +188,7 @@ sharkd_main(int argc, char *argv[])
 #endif
 
   ret = sharkd_loop();
+#if 0
 #endif
 clean_exit:
   // col_cleanup(&cfile.cinfo);
@@ -522,7 +522,7 @@ sharkd_get_frame(guint32 framenum)
 {
   return frame_data_sequence_find(cfile.provider.frames, framenum);
 }
-
+#endif
 int
 sharkd_dissect_request(guint32 framenum, guint32 frame_ref_num, guint32 prev_dis_num, sharkd_dissect_func_t cb, guint32 dissect_flags, void *data)
 {
@@ -587,6 +587,7 @@ sharkd_dissect_request(guint32 framenum, guint32 frame_ref_num, guint32 prev_dis
   ws_buffer_free(&buf);
   return 0;
 }
+#if 0
 
 /* based on packet_list_dissect_and_cache_record */
 int

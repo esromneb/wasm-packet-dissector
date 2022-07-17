@@ -121,7 +121,7 @@ struct _ftype_t {
 
 #define FVALUE_CLEANUP(fv)					\
 	{							\
-		register FvalueFreeFunc	free_value;		\
+		FvalueFreeFunc	free_value;		\
 		free_value = (fv)->ftype->free_value;	\
 		if (free_value) {				\
 			free_value((fv));			\
