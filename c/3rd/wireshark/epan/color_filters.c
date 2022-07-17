@@ -19,8 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <wsutil/filesystem.h>
-#include <wsutil/file_util.h>
+// #include <wsutil/filesystem.h>
+// #include <wsutil/file_util.h>
 
 #include <epan/packet.h>
 #include "color_filters.h"

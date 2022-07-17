@@ -109,6 +109,11 @@ dissectors.o \
 decode_as.o \
 cmdarg_err.o \
 value_string.o \
+timestamp.o \
+column.o \
+
+
+# color_filters.o \
 
 # strptime.o \
 

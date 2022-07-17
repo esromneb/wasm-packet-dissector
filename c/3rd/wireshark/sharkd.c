@@ -137,17 +137,17 @@ sharkd_main(int argc, char *argv[])
     ret = INIT_FAILED;
     goto clean_exit;
   }
-#if 0
 
-  init_report_message(failure_warning_message, failure_warning_message,
-                      open_failure_message, read_failure_message,
-                      write_failure_message);
+  // init_report_message(failure_warning_message, failure_warning_message,
+                      // open_failure_message, read_failure_message,
+                      // write_failure_message);
 
   timestamp_set_type(TS_RELATIVE);
   timestamp_set_precision(TS_PREC_AUTO);
   timestamp_set_seconds_type(TS_SECONDS_DEFAULT);
 
-  wtap_init(TRUE);
+  // WWPD disable for now because it opens files
+  // wtap_init(TRUE);
 
   /* Register all dissectors; we must do this before checking for the
      "-G" flag, as the "-G" flag dumps information registered by the
@@ -158,25 +158,27 @@ sharkd_main(int argc, char *argv[])
     goto clean_exit;
   }
 
-  codecs_init();
+  // codecs_init();
 
   /* Load libwireshark settings from the current profile. */
-  prefs_p = epan_load_settings();
+  // prefs_p = epan_load_settings();
 
-  read_filter_list(CFILTER_LIST);
+  // read_filter_list(CFILTER_LIST);
 
-  if (!color_filters_init(&err_msg, NULL)) {
-     fprintf(stderr, "%s\n", err_msg);
-     g_free(err_msg);
-  }
+  // if (!color_filters_init(&err_msg, NULL)) {
+  //    fprintf(stderr, "%s\n", err_msg);
+  //    g_free(err_msg);
+  // }
+  
 
   cap_file_init(&cfile);
 
   /* Notify all registered modules that have had any of their preferences
      changed either from one of the preferences file or from the command
      line that their preferences have changed. */
-  prefs_apply_all();
+  // prefs_apply_all();
 
+#if 0
   /* Build the column format array */
   build_column_format_array(&cfile.cinfo, prefs_p->num_cols, TRUE);
 
