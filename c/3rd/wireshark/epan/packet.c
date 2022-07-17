@@ -217,17 +217,24 @@ packet_init(void)
 void
 packet_cache_proto_handles(void)
 {
+    // printf("1\n");
 	frame_handle = find_dissector("frame");
+    // printf("1a\n");
+    // printf("frame_handle %p\n", frame_handle);
 	g_assert(frame_handle != NULL);
+    // printf("2\n");
 
 	file_handle = find_dissector("file");
 	g_assert(file_handle != NULL);
+    // printf("3\n");
 
 	data_handle = find_dissector("data");
 	g_assert(data_handle != NULL);
+    // printf("4\n");
 
 	proto_malformed = proto_get_id_by_filter_name("_ws.malformed");
 	g_assert(proto_malformed != -1);
+    // printf("5\n");
 }
 
 /* List of routines that are called before we make a pass through a capture file
@@ -3033,6 +3040,7 @@ get_dissector_names(void)
 dissector_handle_t
 find_dissector(const char *name)
 {
+    printf("find_dissector() %s\n", name);
 	return (dissector_handle_t)g_hash_table_lookup(registered_dissectors, name);
 }
 

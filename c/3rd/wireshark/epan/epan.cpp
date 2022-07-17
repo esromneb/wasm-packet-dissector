@@ -289,9 +289,13 @@ epan_init(register_cb cb, gpointer client_data, gboolean load_plugins)
 #ifdef HAVE_PLUGINS
 		g_slist_foreach(epan_plugins, epan_plugin_register_all_tap_listeners, NULL);
 #endif
-		packet_cache_proto_handles();
+	cout << "JJJJJ" << std::endl;
+		// we don't have these (frame_ file_ data_ handle proto_malformed)
+		// packet_cache_proto_handles();
+	cout << "KKKKK" << std::endl;
+	cout << "LLLLL" << std::endl;
 		// dfilter_init();
-		// final_registration_all_protocols();
+		final_registration_all_protocols();
 		// print_cache_field_handles();
 		// expert_packet_init();
 		// export_pdu_init();
