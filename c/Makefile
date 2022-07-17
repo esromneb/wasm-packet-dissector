@@ -113,6 +113,7 @@ cmdarg_err.o \
 value_string.o \
 timestamp.o \
 column.o \
+column-utils.o \
 dfilter-macro.o \
 dfilter.o \
 dfunctions.o \

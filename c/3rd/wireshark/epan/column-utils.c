@@ -437,9 +437,9 @@ col_snprint_port(gchar *buf, gulong buf_siz, port_type typ, guint16 val)
 
   if (gbl_resolv_flags.transport_name &&
         (str = try_serv_name_lookup(typ, val)) != NULL) {
-    ws_snprintf(buf, buf_siz, "%s(%"G_GUINT16_FORMAT")", str, val);
+    ws_snprintf(buf, buf_siz, "%s(%" G_GUINT16_FORMAT")", str, val);
   } else {
-    ws_snprintf(buf, buf_siz, "%"G_GUINT16_FORMAT, val);
+    ws_snprintf(buf, buf_siz, "%" G_GUINT16_FORMAT, val);
   }
 }
 

@@ -562,15 +562,16 @@ get_column_char_width(const gint format)
 gint
 get_column_format(const gint col)
 {
-  GList    *clp = g_list_nth(prefs.col_list, col);
-  fmt_data *cfmt;
-
-  if (!clp)  /* Invalid column requested */
-    return -1;
-
-  cfmt = (fmt_data *) clp->data;
-
-  return(cfmt->fmt);
+//  GList    *clp = g_list_nth(prefs.col_list, col);
+//  fmt_data *cfmt;
+//
+//  if (!clp)  /* Invalid column requested */
+//    return -1;
+//
+//  cfmt = (fmt_data *) clp->data;
+//
+//  return(cfmt->fmt);
+    return 32;
 }
 
 void
@@ -602,15 +603,16 @@ get_column_format_from_str(const gchar *str)
 gchar *
 get_column_title(const gint col)
 {
-  GList    *clp = g_list_nth(prefs.col_list, col);
-  fmt_data *cfmt;
-
-  if (!clp)  /* Invalid column requested */
-    return NULL;
-
-  cfmt = (fmt_data *) clp->data;
-
-  return(cfmt->title);
+//  GList    *clp = g_list_nth(prefs.col_list, col);
+//  fmt_data *cfmt;
+//
+//  if (!clp)  /* Invalid column requested */
+//    return NULL;
+//
+//  cfmt = (fmt_data *) clp->data;
+//
+//  return(cfmt->title);
+    return "get_column_title";
 }
 
 void
@@ -687,15 +689,16 @@ set_column_resolved(const gint col, gboolean resolved)
 const gchar *
 get_column_custom_fields(const gint col)
 {
-  GList    *clp = g_list_nth(prefs.col_list, col);
-  fmt_data *cfmt;
-
-  if (!clp)  /* Invalid column requested */
-    return NULL;
-
-  cfmt = (fmt_data *) clp->data;
-
-  return(cfmt->custom_fields);
+//  GList    *clp = g_list_nth(prefs.col_list, col);
+//  fmt_data *cfmt;
+//
+//  if (!clp)  /* Invalid column requested */
+//    return NULL;
+//
+//  cfmt = (fmt_data *) clp->data;
+//
+//  return(cfmt->custom_fields);
+    return "get_column_custom_fields";
 }
 
 void
@@ -716,15 +719,16 @@ set_column_custom_fields(const gint col, const char *custom_fields)
 gint
 get_column_custom_occurrence(const gint col)
 {
-  GList    *clp = g_list_nth(prefs.col_list, col);
-  fmt_data *cfmt;
-
-  if (!clp)  /* Invalid column requested */
-    return 0;
-
-  cfmt = (fmt_data *) clp->data;
-
-  return(cfmt->custom_occurrence);
+//  GList    *clp = g_list_nth(prefs.col_list, col);
+//  fmt_data *cfmt;
+//
+//  if (!clp)  /* Invalid column requested */
+//    return 0;
+//
+//  cfmt = (fmt_data *) clp->data;
+//
+//  return(cfmt->custom_occurrence);
+    return 1;
 }
 
 void
@@ -899,7 +903,7 @@ build_column_format_array(column_info *cinfo, const gint num_cols, const gboolea
       col_item->col_fence = 0;
   }
 
-  col_finalize(cinfo);
+  // col_finalize(cinfo);
 }
 
 /*
