@@ -97,6 +97,8 @@ register.o \
 guid-utils.o \
 expert.o \
 packet.o \
+str_util.o \
+dissectors.o \
 
 # strptime.o \
 
@@ -187,19 +189,26 @@ build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
 # IF we do do that, we can make 2 build dirs and solve it
 
 build/%.o: 3rd/wireshark/epan/%.c
+	@echo "epan match"
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
 	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
-	echo "epan match"
+
+build/%.o: 3rd/wireshark/epan/dissectors/%.c
+	@echo "epan/dissectors match"
+	emcc $< -c -o $@ \
+	$(INCLUDE) \
+	-x c++ \
+	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 
 build/%.o: 3rd/wireshark/wsutil/%.c
+	@echo "ws util match"
 	emcc $< -c -o $@ \
 	$(INCLUDE) \
 	-x c++ \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
-	echo "ws util match"
 
 
 

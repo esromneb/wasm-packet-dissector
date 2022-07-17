@@ -765,27 +765,111 @@ find_protocol_by_id(const int proto_id)
     return (protocol_t *)hfinfo->strings;
 }
 
-// protocol_t *
-// find_protocol_by_id(const int proto_id)
+
+int
+proto_get_id(const protocol_t *protocol)
+{
+    return protocol->proto_id;
+}
+
+gboolean
+proto_name_already_registered(const gchar *name)
+{
+    DISSECTOR_ASSERT_HINT(name, "No name present");
+
+    if (g_hash_table_lookup(proto_names, name) != NULL)
+        return TRUE;
+    return FALSE;
+}
+
+int
+proto_get_id_by_filter_name(const gchar *filter_name)
+{
+    const protocol_t *protocol = NULL;
+
+    DISSECTOR_ASSERT_HINT(filter_name, "No filter name present");
+
+    protocol = (const protocol_t *)g_hash_table_lookup(proto_filter_names, filter_name);
+
+    if (protocol == NULL)
+        return -1;
+    return protocol->proto_id;
+}
+
+int
+proto_get_id_by_short_name(const gchar *short_name)
+{
+    const protocol_t *protocol = NULL;
+
+    DISSECTOR_ASSERT_HINT(short_name, "No short name present");
+
+    protocol = (const protocol_t *)g_hash_table_lookup(proto_short_names, short_name);
+
+    if (protocol == NULL)
+        return -1;
+    return protocol->proto_id;
+}
+
+const char *
+proto_get_protocol_name(const int proto_id)
+{
+    protocol_t *protocol;
+
+    protocol = find_protocol_by_id(proto_id);
+
+    if (protocol == NULL)
+        return NULL;
+    return protocol->name;
+}
+
+const char *
+proto_get_protocol_short_name(const protocol_t *protocol)
+{
+    if (protocol == NULL)
+        return "(none)";
+    return protocol->short_name;
+}
+
+const char *
+proto_get_protocol_long_name(const protocol_t *protocol)
+{
+    if (protocol == NULL)
+        return "(none)";
+    return protocol->name;
+}
+
+const char *
+proto_get_protocol_filter_name(const int proto_id)
+{
+    protocol_t *protocol;
+
+    protocol = find_protocol_by_id(proto_id);
+    if (protocol == NULL)
+        return "(none)";
+    return protocol->filter_name;
+}
+
+// void proto_add_heuristic_dissector(protocol_t *protocol, const char *short_name)
 // {
-//     // protocol_t* q;
-//     // q = &*(protocols[0]);
+//     heur_dtbl_entry_t* heuristic_dissector;
 
-//     return &*(protocols[0]);
+//     if (protocol == NULL)
+//         return;
 
-//     // return protocols[0];
-//     // header_field_info *hfinfo;
-
-//     // if (proto_id < 0)
-//     //     return NULL;
-
-//     // PROTO_REGISTRAR_GET_NTH(proto_id, hfinfo);
-//     // if (hfinfo->type != FT_PROTOCOL) {
-//     //     DISSECTOR_ASSERT(hfinfo->display & BASE_PROTOCOL_INFO);
-//     // }
-//     // return (protocol_t *)hfinfo->strings;
+//     heuristic_dissector = find_heur_dissector_by_unique_short_name(short_name);
+//     if (heuristic_dissector != NULL)
+//     {
+//         protocol->heur_list = g_list_prepend (protocol->heur_list, heuristic_dissector);
+//     }
 // }
 
+// void proto_heuristic_dissector_foreach(const protocol_t *protocol, GFunc func, gpointer user_data)
+// {
+//     if (protocol == NULL)
+//         return;
+
+//     g_list_foreach(protocol->heur_list, func, user_data);
+// }
 
 
 

@@ -11,6 +11,7 @@
 #include <config.h>
 
 #include "str_util.h"
+#include "ws_diag_control.h"
 
 int
 ws_xton(char ch)
@@ -124,15 +125,15 @@ static const char *thousands_grouping_fmt = NULL;
 
 DIAG_OFF(format)
 static void test_printf_thousands_grouping(void) {
-	/* test whether g_printf works with "'" flag character */
-	gchar *str = g_strdup_printf("%'d", 22);
-	if (g_strcmp0(str, "22") == 0) {
-		thousands_grouping_fmt = "%'"G_GINT64_MODIFIER"d";
-	} else {
-		/* Don't use */
-		thousands_grouping_fmt = "%"G_GINT64_MODIFIER"d";
-	}
-	g_free(str);
+// 	/* test whether g_printf works with "'" flag character */
+// 	gchar *str = g_strdup_printf("%'d", 22);
+// 	if (g_strcmp0(str, "22") == 0) {
+// 		thousands_grouping_fmt = "%'"G_GINT64_MODIFIER"d";
+// 	} else {
+// 		/* Don't use */
+// 		thousands_grouping_fmt = "%"G_GINT64_MODIFIER"d";
+// 	}
+// 	g_free(str);
 }
 DIAG_ON(format)
 

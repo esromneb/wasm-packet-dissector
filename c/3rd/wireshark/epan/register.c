@@ -14,6 +14,9 @@
 #include <glib.h>
 #include "epan/dissectors/dissectors.h"
 
+// const gulong dissector_reg_proto_count = {0};
+// const gulong dissector_reg_handoff_count = {1};
+
 static const char *cur_cb_name = NULL;
 // We could use g_atomic_pointer_set/get instead of a mutex, but that's
 // currently (early 2018) invisible to TSAN.
