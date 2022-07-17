@@ -147,7 +147,7 @@ OBJS3_A = $(addprefix build/,$(OBJS3))
 
 BUILDA = \
 3rd/wireshark/epan/ftypes/build/libftypes.a \
-3rd/wireshark/wiretap/build/libwiretap.a
+3rd/wireshark/wiretap/build/libwiretap.a \
 
 
 # Fix warning with
@@ -337,13 +337,18 @@ build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
 3rd/wireshark/epan/ftypes/build/libftypes.a: $(wildcard 3rd/wireshark/epan/ftypes/*)
 	mkdir -p 3rd/wireshark/epan/ftypes/build && cd 3rd/wireshark/epan/ftypes/build && emcmake cmake .. && make
 
+3rd/wireshark/epan/dfilter/build/libdfilter.a: $(wildcard 3rd/wireshark/epan/dfilter/*)
+	mkdir -p 3rd/wireshark/epan/dfilter/build && cd 3rd/wireshark/epan/dfilter/build && emcmake cmake .. && make
+
 3rd/wireshark/wiretap/build/libwiretap.a: $(wildcard 3rd/wireshark/wiretap/*)
 	mkdir -p 3rd/wireshark/wiretap/build/ && cd 3rd/wireshark/wiretap/build/ && emcmake cmake .. && make
+
 
 clean:
 	rm -rf build/*
 	rm -rf out/*
-	rm -rf 3rd/wireshark/epan/ftypes/build
+	rm -rf 3rd/wireshark/epan/ftypes/build/
 	rm -rf 3rd/wireshark/wiretap/build/
+	rm -rf 3rd/wireshark/epan/dfilter/build/
 
 # 	-sERROR_ON_UNDEFINED_SYMBOLS=0 \

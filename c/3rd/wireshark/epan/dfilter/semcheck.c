@@ -20,6 +20,7 @@
 
 #include <epan/exceptions.h>
 #include <epan/packet.h>
+#include <epan/tfs.h>
 
 #ifdef DEBUG_dfilter
 #include <wsutil/ws_printf.h> /* ws_debug_printf */

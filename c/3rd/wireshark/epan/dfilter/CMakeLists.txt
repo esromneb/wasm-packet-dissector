@@ -10,8 +10,16 @@
 include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_SOURCE_DIR}/epan
-	${CMAKE_SOURCE_DIR}/tools/lemon
+	# ${CMAKE_SOURCE_DIR}/epan
+	# ${CMAKE_SOURCE_DIR}/tools/lemon
+
+	../../../zlib-glib-ffi/include
+	../../../zlib-glib-ffi/include/glib-2.0/
+	../../../zlib-glib-ffi/lib/glib-2.0/include
+	../../../wireshark
+	../../../wireshark/tools/lemon
+	../../../wireshark/epan
+	../../../wireshark-compat
 )
 
 set(DFILTER_PUBLIC_HEADERS
@@ -57,13 +65,13 @@ source_group(dfilter FILES ${DFILTER_NONGENERATED_FILES})
 
 set(DFILTER_FILES ${DFILTER_NONGENERATED_FILES})
 
-add_lex_files(LEX_FILES DFILTER_FILES
-	scanner.l
-)
+# add_lex_files(LEX_FILES DFILTER_FILES
+# 	scanner.l
+# )
 
-add_lemon_files(LEMON_FILES DFILTER_FILES
-	grammar.lemon
-)
+# add_lemon_files(LEMON_FILES DFILTER_FILES
+	# grammar.lemon
+# )
 
 #
 # We don't enable -Werror on generated code to make the build a
@@ -73,9 +81,10 @@ set_source_files_properties(
 	${DFILTER_NONGENERATED_FILES}
 	PROPERTIES
 	COMPILE_FLAGS "${WERROR_COMMON_FLAGS}"
+	LANGUAGE CXX
 )
 
-add_library(dfilter OBJECT
+add_library(dfilter STATIC
 
 	#Included so that Visual Studio can properly put header files in solution
 	${DFILTER_HEADER_FILES}
@@ -88,21 +97,21 @@ set_target_properties(dfilter PROPERTIES
 	COMPILE_DEFINITIONS "WS_BUILD_DLL"
 )
 
-install(FILES ${DFILTER_PUBLIC_HEADERS}
-	DESTINATION "${PROJECT_INSTALL_INCLUDEDIR}/epan/dfilter"
-)
+# install(FILES ${DFILTER_PUBLIC_HEADERS}
+# 	DESTINATION "${PROJECT_INSTALL_INCLUDEDIR}/epan/dfilter"
+# )
 
-CHECKAPI(
-	NAME
-	  dfilter
-	SWITCHES
-	  -g termoutput -build
-	SOURCES
-	  ${DFILTER_NONGENERATED_FILES}
-# LEX files commented out due to use of malloc, free etc.
-#	  ${LEX_FILES}
-	  ${LEMON_FILES}
-)
+# CHECKAPI(
+# 	NAME
+# 	  dfilter
+# 	SWITCHES
+# 	  -g termoutput -build
+# 	SOURCES
+# 	  ${DFILTER_NONGENERATED_FILES}
+# # LEX files commented out due to use of malloc, free etc.
+# #	  ${LEX_FILES}
+# 	  ${LEMON_FILES}
+# )
 
 #
 # Editor modelines  -  https://www.wireshark.org/tools/modelines.html
