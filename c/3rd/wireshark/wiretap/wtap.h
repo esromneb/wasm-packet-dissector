@@ -13,12 +13,12 @@
 #include <time.h>
 #include <wsutil/buffer.h>
 #include <wsutil/nstime.h>
-// #include <wsutil/inet_addr.h>
+#include <wsutil/inet_addr.h>
 #include "wtap_opttypes.h"
 #include "ws_symbol_export.h"
-// #include "ws_attributes.h"
+#include "ws_attributes.h"
 #ifdef HAVE_PLUGINS
-// #include "wsutil/plugins.h"
+#include "wsutil/plugins.h"
 #endif
 
 #ifdef __cplusplus
@@ -1793,9 +1793,9 @@ void wtap_set_cb_new_secrets(wtap *wth, wtap_new_secrets_callback_t add_new_secr
  * if the read succeeded.
  * @return TRUE on success, FALSE on failure.
  */
-// WS_DLL_PUBLIC
-// gboolean wtap_read(wtap *wth, wtap_rec *rec, Buffer *buf, int *err,
-//     gchar **err_info, gint64 *offset);
+WS_DLL_PUBLIC
+gboolean wtap_read(wtap *wth, wtap_rec *rec, Buffer *buf, int *err,
+    gchar **err_info, gint64 *offset);
 
 /** Read the record at a specified offset in a capture file, filling in
  * *phdr and *buf.
@@ -1813,9 +1813,9 @@ void wtap_set_cb_new_secrets(wtap *wth, wtap_new_secrets_callback_t add_new_secr
  * the error
  * @return TRUE on success, FALSE on failure.
  */
-// WS_DLL_PUBLIC
-// gboolean wtap_seek_read(wtap *wth, gint64 seek_off, wtap_rec *rec,
-    // Buffer *buf, int *err, gchar **err_info);
+WS_DLL_PUBLIC
+gboolean wtap_seek_read(wtap *wth, gint64 seek_off, wtap_rec *rec,
+    Buffer *buf, int *err, gchar **err_info);
 
 /*** initialize a wtap_rec structure ***/
 WS_DLL_PUBLIC
@@ -1833,380 +1833,380 @@ typedef enum {
     WTAP_GZIP_COMPRESSED
 } wtap_compression_type;
 
-// WS_DLL_PUBLIC
-// wtap_compression_type wtap_get_compression_type(wtap *wth);
-// WS_DLL_PUBLIC
-// const char *wtap_compression_type_description(wtap_compression_type compression_type);
-// WS_DLL_PUBLIC
-// const char *wtap_compression_type_extension(wtap_compression_type compression_type);
-// WS_DLL_PUBLIC
-// GSList *wtap_get_all_compression_type_extensions_list(void);
+WS_DLL_PUBLIC
+wtap_compression_type wtap_get_compression_type(wtap *wth);
+WS_DLL_PUBLIC
+const char *wtap_compression_type_description(wtap_compression_type compression_type);
+WS_DLL_PUBLIC
+const char *wtap_compression_type_extension(wtap_compression_type compression_type);
+WS_DLL_PUBLIC
+GSList *wtap_get_all_compression_type_extensions_list(void);
 
-// /*** get various information snippets about the current file ***/
+/*** get various information snippets about the current file ***/
 
-// /** Return an approximation of the amount of data we've read sequentially
-//  * from the file so far. */
-// WS_DLL_PUBLIC
-// gint64 wtap_read_so_far(wtap *wth);
-// WS_DLL_PUBLIC
-// gint64 wtap_file_size(wtap *wth, int *err);
-// WS_DLL_PUBLIC
-// guint wtap_snapshot_length(wtap *wth); /* per file */
-// WS_DLL_PUBLIC
-// int wtap_file_type_subtype(wtap *wth);
-// WS_DLL_PUBLIC
-// int wtap_file_encap(wtap *wth);
-// WS_DLL_PUBLIC
-// int wtap_file_tsprec(wtap *wth);
+/** Return an approximation of the amount of data we've read sequentially
+ * from the file so far. */
+WS_DLL_PUBLIC
+gint64 wtap_read_so_far(wtap *wth);
+WS_DLL_PUBLIC
+gint64 wtap_file_size(wtap *wth, int *err);
+WS_DLL_PUBLIC
+guint wtap_snapshot_length(wtap *wth); /* per file */
+WS_DLL_PUBLIC
+int wtap_file_type_subtype(wtap *wth);
+WS_DLL_PUBLIC
+int wtap_file_encap(wtap *wth);
+WS_DLL_PUBLIC
+int wtap_file_tsprec(wtap *wth);
 
-// /**
-//  * @brief Gets existing section header block, not for new file.
-//  * @details Returns the pointer to the existing SHB, without creating a
-//  *          new one. This should only be used for accessing info, not
-//  *          for creating a new file based on existing SHB info. Use
-//  *          wtap_file_get_shb_for_new_file() for that.
-//  *
-//  * @param wth The wiretap session.
-//  * @return The existing section header, which must NOT be g_free'd.
-//  *
-//  * XXX - need to be updated to handle multiple SHBs.
-//  */
-// WS_DLL_PUBLIC
-// wtap_block_t wtap_file_get_shb(wtap *wth);
+/**
+ * @brief Gets existing section header block, not for new file.
+ * @details Returns the pointer to the existing SHB, without creating a
+ *          new one. This should only be used for accessing info, not
+ *          for creating a new file based on existing SHB info. Use
+ *          wtap_file_get_shb_for_new_file() for that.
+ *
+ * @param wth The wiretap session.
+ * @return The existing section header, which must NOT be g_free'd.
+ *
+ * XXX - need to be updated to handle multiple SHBs.
+ */
+WS_DLL_PUBLIC
+wtap_block_t wtap_file_get_shb(wtap *wth);
 
-// /**
-//  * @brief Gets new section header block for new file, based on existing info.
-//  * @details Creates a new wtap_block_t section header block and only
-//  *          copies appropriate members of the SHB for a new file. In
-//  *          particular, the comment string is copied, and any custom options
-//  *          which should be copied are copied. The os, hardware, and
-//  *          application strings are *not* copied.
-//  *
-//  * @note Use wtap_free_shb() to free the returned section header.
-//  *
-//  * @param wth The wiretap session.
-//  * @return The new section header, which must be wtap_free_shb'd.
-//  */
-// // WS_DLL_PUBLIC
-// // GArray* wtap_file_get_shb_for_new_file(wtap *wth);
+/**
+ * @brief Gets new section header block for new file, based on existing info.
+ * @details Creates a new wtap_block_t section header block and only
+ *          copies appropriate members of the SHB for a new file. In
+ *          particular, the comment string is copied, and any custom options
+ *          which should be copied are copied. The os, hardware, and
+ *          application strings are *not* copied.
+ *
+ * @note Use wtap_free_shb() to free the returned section header.
+ *
+ * @param wth The wiretap session.
+ * @return The new section header, which must be wtap_free_shb'd.
+ */
+WS_DLL_PUBLIC
+GArray* wtap_file_get_shb_for_new_file(wtap *wth);
 
-// /**
-//  * @brief Sets or replaces the section header comment.
-//  * @details The passed-in comment string is set to be the comment
-//  *          for the section header block. The passed-in string's
-//  *          ownership will be owned by the block, so it should be
-//  *          duplicated before passing into this function.
-//  *
-//  * @param wth The wiretap session.
-//  * @param comment The comment string.
-//  */
-// WS_DLL_PUBLIC
-// void wtap_write_shb_comment(wtap *wth, gchar *comment);
+/**
+ * @brief Sets or replaces the section header comment.
+ * @details The passed-in comment string is set to be the comment
+ *          for the section header block. The passed-in string's
+ *          ownership will be owned by the block, so it should be
+ *          duplicated before passing into this function.
+ *
+ * @param wth The wiretap session.
+ * @param comment The comment string.
+ */
+WS_DLL_PUBLIC
+void wtap_write_shb_comment(wtap *wth, gchar *comment);
 
-// /**
-//  * @brief Gets existing interface descriptions.
-//  * @details Returns a new struct containing a pointer to the existing
-//  *          description, without creating new descriptions internally.
-//  * @note The returned pointer must be g_free'd, but its internal
-//  *       interface_data must not.
-//  *
-//  * @param wth The wiretap session.
-//  * @return A new struct of the existing section descriptions, which must be g_free'd.
-//  */
-// WS_DLL_PUBLIC
-// wtapng_iface_descriptions_t *wtap_file_get_idb_info(wtap *wth);
+/**
+ * @brief Gets existing interface descriptions.
+ * @details Returns a new struct containing a pointer to the existing
+ *          description, without creating new descriptions internally.
+ * @note The returned pointer must be g_free'd, but its internal
+ *       interface_data must not.
+ *
+ * @param wth The wiretap session.
+ * @return A new struct of the existing section descriptions, which must be g_free'd.
+ */
+WS_DLL_PUBLIC
+wtapng_iface_descriptions_t *wtap_file_get_idb_info(wtap *wth);
 
-// /**
-//  * @brief Free's a interface description block and all of its members.
-//  *
-//  * @details This free's all of the interface descriptions inside the passed-in
-//  *     struct, including their members (e.g., comments); and then free's the
-//  *     passed-in struct as well.
-//  *
-//  * @warning Do not use this for the struct returned by
-//  *     wtap_file_get_idb_info(), as that one did not create the internal
-//  *     interface descriptions; for that case you can simply g_free() the new
-//  *     struct.
-//  */
-// WS_DLL_PUBLIC
-// void wtap_free_idb_info(wtapng_iface_descriptions_t *idb_info);
+/**
+ * @brief Free's a interface description block and all of its members.
+ *
+ * @details This free's all of the interface descriptions inside the passed-in
+ *     struct, including their members (e.g., comments); and then free's the
+ *     passed-in struct as well.
+ *
+ * @warning Do not use this for the struct returned by
+ *     wtap_file_get_idb_info(), as that one did not create the internal
+ *     interface descriptions; for that case you can simply g_free() the new
+ *     struct.
+ */
+WS_DLL_PUBLIC
+void wtap_free_idb_info(wtapng_iface_descriptions_t *idb_info);
 
-// /**
-//  * @brief Gets a debug string of an interface description.
-//  * @details Returns a newly allocated string of debug information about
-//  *          the given interface descrption, useful for debugging.
-//  * @note The returned pointer must be g_free'd.
-//  *
-//  * @param if_descr The interface description.
-//  * @param indent Number of spaces to indent each line by.
-//  * @param line_end A string to append to each line (e.g., "\n" or ", ").
-//  * @return A newly allocated gcahr array string, which must be g_free'd.
-//  */
-// WS_DLL_PUBLIC
-// gchar *wtap_get_debug_if_descr(const wtap_block_t if_descr,
-//                                const int indent,
-//                                const char* line_end);
+/**
+ * @brief Gets a debug string of an interface description.
+ * @details Returns a newly allocated string of debug information about
+ *          the given interface descrption, useful for debugging.
+ * @note The returned pointer must be g_free'd.
+ *
+ * @param if_descr The interface description.
+ * @param indent Number of spaces to indent each line by.
+ * @param line_end A string to append to each line (e.g., "\n" or ", ").
+ * @return A newly allocated gcahr array string, which must be g_free'd.
+ */
+WS_DLL_PUBLIC
+gchar *wtap_get_debug_if_descr(const wtap_block_t if_descr,
+                               const int indent,
+                               const char* line_end);
 
-// /**
-//  * @brief Gets existing name resolution block, not for new file.
-//  * @details Returns the pointer to the existing NRB, without creating a
-//  *          new one. This should only be used for accessing info, not
-//  *          for creating a new file based on existing NRB info. Use
-//  *          wtap_file_get_nrb_for_new_file() for that.
-//  *
-//  * @param wth The wiretap session.
-//  * @return The existing section header, which must NOT be g_free'd.
-//  *
-//  * XXX - need to be updated to handle multiple NRBs.
-//  */
-// WS_DLL_PUBLIC
-// wtap_block_t wtap_file_get_nrb(wtap *wth);
+/**
+ * @brief Gets existing name resolution block, not for new file.
+ * @details Returns the pointer to the existing NRB, without creating a
+ *          new one. This should only be used for accessing info, not
+ *          for creating a new file based on existing NRB info. Use
+ *          wtap_file_get_nrb_for_new_file() for that.
+ *
+ * @param wth The wiretap session.
+ * @return The existing section header, which must NOT be g_free'd.
+ *
+ * XXX - need to be updated to handle multiple NRBs.
+ */
+WS_DLL_PUBLIC
+wtap_block_t wtap_file_get_nrb(wtap *wth);
 
-// /**
-//  * @brief Gets new name resolution info for new file, based on existing info.
-//  * @details Creates a new wtap_block_t of name resolution info and only
-//  *          copies appropriate members for a new file.
-//  *
-//  * @note Use wtap_free_nrb() to free the returned pointer.
-//  *
-//  * @param wth The wiretap session.
-//  * @return The new name resolution info, which must be freed.
-//  */
-// WS_DLL_PUBLIC
-// GArray* wtap_file_get_nrb_for_new_file(wtap *wth);
+/**
+ * @brief Gets new name resolution info for new file, based on existing info.
+ * @details Creates a new wtap_block_t of name resolution info and only
+ *          copies appropriate members for a new file.
+ *
+ * @note Use wtap_free_nrb() to free the returned pointer.
+ *
+ * @param wth The wiretap session.
+ * @return The new name resolution info, which must be freed.
+ */
+WS_DLL_PUBLIC
+GArray* wtap_file_get_nrb_for_new_file(wtap *wth);
 
-// /*** close the file descriptors for the current file ***/
-// WS_DLL_PUBLIC
-// void wtap_fdclose(wtap *wth);
+/*** close the file descriptors for the current file ***/
+WS_DLL_PUBLIC
+void wtap_fdclose(wtap *wth);
 
-// /*** reopen the random file descriptor for the current file ***/
-// WS_DLL_PUBLIC
-// gboolean wtap_fdreopen(wtap *wth, const char *filename, int *err);
+/*** reopen the random file descriptor for the current file ***/
+WS_DLL_PUBLIC
+gboolean wtap_fdreopen(wtap *wth, const char *filename, int *err);
 
-// /** Close only the sequential side, freeing up memory it uses. */
-// WS_DLL_PUBLIC
-// void wtap_sequential_close(wtap *wth);
+/** Close only the sequential side, freeing up memory it uses. */
+WS_DLL_PUBLIC
+void wtap_sequential_close(wtap *wth);
 
-// /** Closes any open file handles and frees the memory associated with wth. */
-// WS_DLL_PUBLIC
-// void wtap_close(wtap *wth);
+/** Closes any open file handles and frees the memory associated with wth. */
+WS_DLL_PUBLIC
+void wtap_close(wtap *wth);
 
-// /*** dump packets into a capture file ***/
-// WS_DLL_PUBLIC
-// gboolean wtap_dump_can_open(int filetype);
+/*** dump packets into a capture file ***/
+WS_DLL_PUBLIC
+gboolean wtap_dump_can_open(int filetype);
 
-// /**
-//  * Given a GArray of WTAP_ENCAP_ types, return the per-file encapsulation
-//  * type that would be needed to write out a file with those types.
-//  */
-// WS_DLL_PUBLIC
-// int wtap_dump_file_encap_type(const GArray *file_encaps);
+/**
+ * Given a GArray of WTAP_ENCAP_ types, return the per-file encapsulation
+ * type that would be needed to write out a file with those types.
+ */
+WS_DLL_PUBLIC
+int wtap_dump_file_encap_type(const GArray *file_encaps);
 
-// /**
-//  * Return TRUE if we can write this capture file format out in
-//  * compressed form, FALSE if not.
-//  */
-// WS_DLL_PUBLIC
-// gboolean wtap_dump_can_compress(int filetype);
+/**
+ * Return TRUE if we can write this capture file format out in
+ * compressed form, FALSE if not.
+ */
+WS_DLL_PUBLIC
+gboolean wtap_dump_can_compress(int filetype);
 
-// /**
-//  * Return TRUE if this capture file format supports storing name
-//  * resolution information in it, FALSE if not.
-//  */
-// WS_DLL_PUBLIC
-// gboolean wtap_dump_has_name_resolution(int filetype);
+/**
+ * Return TRUE if this capture file format supports storing name
+ * resolution information in it, FALSE if not.
+ */
+WS_DLL_PUBLIC
+gboolean wtap_dump_has_name_resolution(int filetype);
 
-// /**
-//  * Return TRUE if this capture file format supports all the comment
-//  * types specified, FALSE if not.
-//  */
-// WS_DLL_PUBLIC
-// gboolean wtap_dump_supports_comment_types(int filetype, guint32 comment_types);
+/**
+ * Return TRUE if this capture file format supports all the comment
+ * types specified, FALSE if not.
+ */
+WS_DLL_PUBLIC
+gboolean wtap_dump_supports_comment_types(int filetype, guint32 comment_types);
 
-// /**
-//  * Initialize the per-file information based on an existing file. Its
-//  * contents must be freed according to the requirements of wtap_dump_params.
-//  * If wth does not remain valid for the duration of the session, dsbs_growing
-//  * MUST be cleared after this function.
-//  *
-//  * @param params The parameters for wtap_dump_* to initialize.
-//  * @param wth The wiretap session.
-//  */
-// WS_DLL_PUBLIC
-// void wtap_dump_params_init(wtap_dump_params *params, wtap *wth);
+/**
+ * Initialize the per-file information based on an existing file. Its
+ * contents must be freed according to the requirements of wtap_dump_params.
+ * If wth does not remain valid for the duration of the session, dsbs_growing
+ * MUST be cleared after this function.
+ *
+ * @param params The parameters for wtap_dump_* to initialize.
+ * @param wth The wiretap session.
+ */
+WS_DLL_PUBLIC
+void wtap_dump_params_init(wtap_dump_params *params, wtap *wth);
 
-// /**
-//  * Remove any decryption secret information from the per-file information;
-//  * used if we're stripping decryption secrets as we write the file.
-//  *
-//  * @param params The parameters for wtap_dump_* from which to remove the
-//  * decryption secrets..
-//  */
-// WS_DLL_PUBLIC
-// void wtap_dump_params_discard_decryption_secrets(wtap_dump_params *params);
+/**
+ * Remove any decryption secret information from the per-file information;
+ * used if we're stripping decryption secrets as we write the file.
+ *
+ * @param params The parameters for wtap_dump_* from which to remove the
+ * decryption secrets..
+ */
+WS_DLL_PUBLIC
+void wtap_dump_params_discard_decryption_secrets(wtap_dump_params *params);
 
-// /**
-//  * Free memory associated with the wtap_dump_params when it is no longer in
-//  * use by wtap_dumper.
-//  *
-//  * @param params The parameters as initialized by wtap_dump_params_init.
-//  */
-// WS_DLL_PUBLIC
-// void wtap_dump_params_cleanup(wtap_dump_params *params);
+/**
+ * Free memory associated with the wtap_dump_params when it is no longer in
+ * use by wtap_dumper.
+ *
+ * @param params The parameters as initialized by wtap_dump_params_init.
+ */
+WS_DLL_PUBLIC
+void wtap_dump_params_cleanup(wtap_dump_params *params);
 
-// /**
-//  * @brief Opens a new capture file for writing.
-//  *
-//  * @param filename The new file's name.
-//  * @param file_type_subtype The WTAP_FILE_TYPE_SUBTYPE_XXX file type.
-//  * @param compression_type Type of compression to use when writing, if any
-//  * @param params The per-file information for this file.
-//  * @param[out] err Will be set to an error code on failure.
-//  * @return The newly created dumper object, or NULL on failure.
-//  */
-// WS_DLL_PUBLIC
-// wtap_dumper* wtap_dump_open(const char *filename, int file_type_subtype,
-//     wtap_compression_type compression_type, const wtap_dump_params *params,
-//     int *err);
+/**
+ * @brief Opens a new capture file for writing.
+ *
+ * @param filename The new file's name.
+ * @param file_type_subtype The WTAP_FILE_TYPE_SUBTYPE_XXX file type.
+ * @param compression_type Type of compression to use when writing, if any
+ * @param params The per-file information for this file.
+ * @param[out] err Will be set to an error code on failure.
+ * @return The newly created dumper object, or NULL on failure.
+ */
+WS_DLL_PUBLIC
+wtap_dumper* wtap_dump_open(const char *filename, int file_type_subtype,
+    wtap_compression_type compression_type, const wtap_dump_params *params,
+    int *err);
 
-// /**
-//  * @brief Creates a dumper for a temporary file.
-//  *
-//  * @param filenamep Points to a pointer that's set to point to the
-//  *        pathname of the temporary file; it's allocated with g_malloc()
-//  * @param pfx A string to be used as the prefix for the temporary file name
-//  * @param file_type_subtype The WTAP_FILE_TYPE_SUBTYPE_XXX file type.
-//  * @param compression_type Type of compression to use when writing, if any
-//  * @param params The per-file information for this file.
-//  * @param[out] err Will be set to an error code on failure.
-//  * @return The newly created dumper object, or NULL on failure.
-//  */
-// WS_DLL_PUBLIC
-// wtap_dumper* wtap_dump_open_tempfile(char **filenamep, const char *pfx,
-//     int file_type_subtype, wtap_compression_type compression_type,
-//     const wtap_dump_params *params, int *err);
+/**
+ * @brief Creates a dumper for a temporary file.
+ *
+ * @param filenamep Points to a pointer that's set to point to the
+ *        pathname of the temporary file; it's allocated with g_malloc()
+ * @param pfx A string to be used as the prefix for the temporary file name
+ * @param file_type_subtype The WTAP_FILE_TYPE_SUBTYPE_XXX file type.
+ * @param compression_type Type of compression to use when writing, if any
+ * @param params The per-file information for this file.
+ * @param[out] err Will be set to an error code on failure.
+ * @return The newly created dumper object, or NULL on failure.
+ */
+WS_DLL_PUBLIC
+wtap_dumper* wtap_dump_open_tempfile(char **filenamep, const char *pfx,
+    int file_type_subtype, wtap_compression_type compression_type,
+    const wtap_dump_params *params, int *err);
 
-// /**
-//  * @brief Creates a dumper for an existing file descriptor.
-//  *
-//  * @param fd The file descriptor for which the dumper should be created.
-//  * @param file_type_subtype The WTAP_FILE_TYPE_SUBTYPE_XXX file type.
-//  * @param compression_type Type of compression to use when writing, if any
-//  * @param params The per-file information for this file.
-//  * @param[out] err Will be set to an error code on failure.
-//  * @return The newly created dumper object, or NULL on failure.
-//  */
-// WS_DLL_PUBLIC
-// wtap_dumper* wtap_dump_fdopen(int fd, int file_type_subtype,
-//     wtap_compression_type compression_type, const wtap_dump_params *params,
-//     int *err);
+/**
+ * @brief Creates a dumper for an existing file descriptor.
+ *
+ * @param fd The file descriptor for which the dumper should be created.
+ * @param file_type_subtype The WTAP_FILE_TYPE_SUBTYPE_XXX file type.
+ * @param compression_type Type of compression to use when writing, if any
+ * @param params The per-file information for this file.
+ * @param[out] err Will be set to an error code on failure.
+ * @return The newly created dumper object, or NULL on failure.
+ */
+WS_DLL_PUBLIC
+wtap_dumper* wtap_dump_fdopen(int fd, int file_type_subtype,
+    wtap_compression_type compression_type, const wtap_dump_params *params,
+    int *err);
 
-// /**
-//  * @brief Creates a dumper for the standard output.
-//  *
-//  * @param file_type_subtype The WTAP_FILE_TYPE_SUBTYPE_XXX file type.
-//  * @param compression_type Type of compression to use when writing, if any
-//  * @param params The per-file information for this file.
-//  * @param[out] err Will be set to an error code on failure.
-//  * @return The newly created dumper object, or NULL on failure.
-//  */
-// WS_DLL_PUBLIC
-// wtap_dumper* wtap_dump_open_stdout(int file_type_subtype,
-//     wtap_compression_type compression_type, const wtap_dump_params *params,
-//     int *err);
+/**
+ * @brief Creates a dumper for the standard output.
+ *
+ * @param file_type_subtype The WTAP_FILE_TYPE_SUBTYPE_XXX file type.
+ * @param compression_type Type of compression to use when writing, if any
+ * @param params The per-file information for this file.
+ * @param[out] err Will be set to an error code on failure.
+ * @return The newly created dumper object, or NULL on failure.
+ */
+WS_DLL_PUBLIC
+wtap_dumper* wtap_dump_open_stdout(int file_type_subtype,
+    wtap_compression_type compression_type, const wtap_dump_params *params,
+    int *err);
 
-// WS_DLL_PUBLIC
-// gboolean wtap_dump(wtap_dumper *, const wtap_rec *, const guint8 *,
-//      int *err, gchar **err_info);
-// WS_DLL_PUBLIC
-// void wtap_dump_flush(wtap_dumper *);
-// WS_DLL_PUBLIC
-// gint64 wtap_get_bytes_dumped(wtap_dumper *);
-// WS_DLL_PUBLIC
-// void wtap_set_bytes_dumped(wtap_dumper *wdh, gint64 bytes_dumped);
-// struct addrinfo;
-// WS_DLL_PUBLIC
-// gboolean wtap_addrinfo_list_empty(addrinfo_lists_t *addrinfo_lists);
-// WS_DLL_PUBLIC
-// gboolean wtap_dump_set_addrinfo_list(wtap_dumper *wdh, addrinfo_lists_t *addrinfo_lists);
-// WS_DLL_PUBLIC
-// gboolean wtap_dump_get_needs_reload(wtap_dumper *wdh);
-// WS_DLL_PUBLIC
-// void wtap_dump_discard_decryption_secrets(wtap_dumper *wdh);
+WS_DLL_PUBLIC
+gboolean wtap_dump(wtap_dumper *, const wtap_rec *, const guint8 *,
+     int *err, gchar **err_info);
+WS_DLL_PUBLIC
+void wtap_dump_flush(wtap_dumper *);
+WS_DLL_PUBLIC
+gint64 wtap_get_bytes_dumped(wtap_dumper *);
+WS_DLL_PUBLIC
+void wtap_set_bytes_dumped(wtap_dumper *wdh, gint64 bytes_dumped);
+struct addrinfo;
+WS_DLL_PUBLIC
+gboolean wtap_addrinfo_list_empty(addrinfo_lists_t *addrinfo_lists);
+WS_DLL_PUBLIC
+gboolean wtap_dump_set_addrinfo_list(wtap_dumper *wdh, addrinfo_lists_t *addrinfo_lists);
+WS_DLL_PUBLIC
+gboolean wtap_dump_get_needs_reload(wtap_dumper *wdh);
+WS_DLL_PUBLIC
+void wtap_dump_discard_decryption_secrets(wtap_dumper *wdh);
 
-// /**
-//  * Closes open file handles and frees memory associated with wdh. Note that
-//  * shb_hdr, idb_inf and nrb_hdr are not freed by this routine.
-//  */
-// WS_DLL_PUBLIC
-// gboolean wtap_dump_close(wtap_dumper *wdh, int *err);
+/**
+ * Closes open file handles and frees memory associated with wdh. Note that
+ * shb_hdr, idb_inf and nrb_hdr are not freed by this routine.
+ */
+WS_DLL_PUBLIC
+gboolean wtap_dump_close(wtap_dumper *wdh, int *err);
 
-// /**
-//  * Return TRUE if we can write a file out with the given GArray of file
-//  * encapsulations and the given bitmask of comment types.
-//  */
-// WS_DLL_PUBLIC
-// gboolean wtap_dump_can_write(const GArray *file_encaps, guint32 required_comment_types);
+/**
+ * Return TRUE if we can write a file out with the given GArray of file
+ * encapsulations and the given bitmask of comment types.
+ */
+WS_DLL_PUBLIC
+gboolean wtap_dump_can_write(const GArray *file_encaps, guint32 required_comment_types);
 
-// /**
-//  * Get a GArray of WTAP_FILE_TYPE_SUBTYPE_ values for file types/subtypes
-//  * that can be used to save a file of a given type with a given GArray of
-//  * WTAP_ENCAP_ types and the given bitmask of comment types.
-//  */
-// WS_DLL_PUBLIC
-// GArray *wtap_get_savable_file_types_subtypes(int file_type,
-//     const GArray *file_encaps, guint32 required_comment_types);
+/**
+ * Get a GArray of WTAP_FILE_TYPE_SUBTYPE_ values for file types/subtypes
+ * that can be used to save a file of a given type with a given GArray of
+ * WTAP_ENCAP_ types and the given bitmask of comment types.
+ */
+WS_DLL_PUBLIC
+GArray *wtap_get_savable_file_types_subtypes(int file_type,
+    const GArray *file_encaps, guint32 required_comment_types);
 
-// /*** various string converter functions ***/
-// WS_DLL_PUBLIC
-// const char *wtap_file_type_subtype_string(int file_type_subtype);
-// WS_DLL_PUBLIC
-// const char *wtap_file_type_subtype_short_string(int file_type_subtype);
-// WS_DLL_PUBLIC
-// int wtap_short_string_to_file_type_subtype(const char *short_name);
+/*** various string converter functions ***/
+WS_DLL_PUBLIC
+const char *wtap_file_type_subtype_string(int file_type_subtype);
+WS_DLL_PUBLIC
+const char *wtap_file_type_subtype_short_string(int file_type_subtype);
+WS_DLL_PUBLIC
+int wtap_short_string_to_file_type_subtype(const char *short_name);
 
-// /*** various file extension functions ***/
-// WS_DLL_PUBLIC
-// GSList *wtap_get_all_capture_file_extensions_list(void);
-// WS_DLL_PUBLIC
-// const char *wtap_default_file_extension(int filetype);
-// WS_DLL_PUBLIC
-// GSList *wtap_get_file_extensions_list(int filetype, gboolean include_compressed);
-// WS_DLL_PUBLIC
-// GSList *wtap_get_all_file_extensions_list(void);
-// WS_DLL_PUBLIC
-// void wtap_free_extensions_list(GSList *extensions);
+/*** various file extension functions ***/
+WS_DLL_PUBLIC
+GSList *wtap_get_all_capture_file_extensions_list(void);
+WS_DLL_PUBLIC
+const char *wtap_default_file_extension(int filetype);
+WS_DLL_PUBLIC
+GSList *wtap_get_file_extensions_list(int filetype, gboolean include_compressed);
+WS_DLL_PUBLIC
+GSList *wtap_get_all_file_extensions_list(void);
+WS_DLL_PUBLIC
+void wtap_free_extensions_list(GSList *extensions);
 
-// WS_DLL_PUBLIC
-// const char *wtap_encap_name(int encap);
-// WS_DLL_PUBLIC
-// const char *wtap_encap_description(int encap);
-// WS_DLL_PUBLIC
-// int wtap_name_to_encap(const char *short_name);
+WS_DLL_PUBLIC
+const char *wtap_encap_name(int encap);
+WS_DLL_PUBLIC
+const char *wtap_encap_description(int encap);
+WS_DLL_PUBLIC
+int wtap_name_to_encap(const char *short_name);
 
-// WS_DLL_PUBLIC
-// const char* wtap_tsprec_string(int tsprec);
+WS_DLL_PUBLIC
+const char* wtap_tsprec_string(int tsprec);
 
-// WS_DLL_PUBLIC
-// const char *wtap_strerror(int err);
+WS_DLL_PUBLIC
+const char *wtap_strerror(int err);
 
-// /*** get available number of file types and encapsulations ***/
-// WS_DLL_PUBLIC
-// int wtap_get_num_file_type_extensions(void);
-// WS_DLL_PUBLIC
-// int wtap_get_num_encap_types(void);
-// WS_DLL_PUBLIC
-// int wtap_get_num_file_types_subtypes(void);
+/*** get available number of file types and encapsulations ***/
+WS_DLL_PUBLIC
+int wtap_get_num_file_type_extensions(void);
+WS_DLL_PUBLIC
+int wtap_get_num_encap_types(void);
+WS_DLL_PUBLIC
+int wtap_get_num_file_types_subtypes(void);
 
-// /*** get information for file type extension ***/
-// WS_DLL_PUBLIC
-// const char *wtap_get_file_extension_type_name(int extension_type);
-// WS_DLL_PUBLIC
-// GSList *wtap_get_file_extension_type_extensions(guint extension_type);
+/*** get information for file type extension ***/
+WS_DLL_PUBLIC
+const char *wtap_get_file_extension_type_name(int extension_type);
+WS_DLL_PUBLIC
+GSList *wtap_get_file_extension_type_extensions(guint extension_type);
 
-// /*** dynamically register new file types and encapsulations ***/
-// WS_DLL_PUBLIC
-// void wtap_register_file_type_extension(const struct file_extension_info *ei);
+/*** dynamically register new file types and encapsulations ***/
+WS_DLL_PUBLIC
+void wtap_register_file_type_extension(const struct file_extension_info *ei);
 
 #ifdef HAVE_PLUGINS
 typedef struct {
@@ -2217,26 +2217,26 @@ WS_DLL_PUBLIC
 void wtap_register_plugin(const wtap_plugin *plug);
 #endif
 
-// WS_DLL_PUBLIC
-// void wtap_register_open_info(struct open_info *oi, const gboolean first_routine);
-// WS_DLL_PUBLIC
-// gboolean wtap_has_open_info(const gchar *name);
-// WS_DLL_PUBLIC
-// void wtap_deregister_open_info(const gchar *name);
+WS_DLL_PUBLIC
+void wtap_register_open_info(struct open_info *oi, const gboolean first_routine);
+WS_DLL_PUBLIC
+gboolean wtap_has_open_info(const gchar *name);
+WS_DLL_PUBLIC
+void wtap_deregister_open_info(const gchar *name);
 
-// WS_DLL_PUBLIC
-// unsigned int open_info_name_to_type(const char *name);
-// WS_DLL_PUBLIC
-// int wtap_register_file_type_subtypes(const struct file_type_subtype_info* fi, const int subtype);
-// WS_DLL_PUBLIC
-// void wtap_deregister_file_type_subtype(const int file_type_subtype);
+WS_DLL_PUBLIC
+unsigned int open_info_name_to_type(const char *name);
+WS_DLL_PUBLIC
+int wtap_register_file_type_subtypes(const struct file_type_subtype_info* fi, const int subtype);
+WS_DLL_PUBLIC
+void wtap_deregister_file_type_subtype(const int file_type_subtype);
 
-// WS_DLL_PUBLIC
-// int wtap_register_encap_type(const char *description, const char *name);
+WS_DLL_PUBLIC
+int wtap_register_encap_type(const char *description, const char *name);
 
-// /*** Cleanup the interal library structures */
-// WS_DLL_PUBLIC
-// void wtap_cleanup(void);
+/*** Cleanup the interal library structures */
+WS_DLL_PUBLIC
+void wtap_cleanup(void);
 
 /**
  * Wiretap error codes.
