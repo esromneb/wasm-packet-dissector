@@ -134,6 +134,7 @@ json_dumper.o \
 nstime.o \
 stats_tree.o \
 stat_tap_ui.o \
+buffer.o \
 
 
 # color_filters.o \
