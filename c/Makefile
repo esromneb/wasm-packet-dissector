@@ -135,6 +135,8 @@ nstime.o \
 stats_tree.o \
 stat_tap_ui.o \
 buffer.o \
+unit_strings.o \
+in_cksum.o \
 
 
 # color_filters.o \
