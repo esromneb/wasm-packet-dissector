@@ -1,1 +1,0 @@
-/emsdk/upstream/emscripten/emcc    @CMakeFiles/wmem_test.dir/objects1.rsp  -o wmem_test.js @CMakeFiles/wmem_test.dir/linklibs.rsp

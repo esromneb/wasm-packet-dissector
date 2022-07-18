@@ -1,8 +1,0 @@
-/src/wireshark/epan/wmem/CMakeFiles/install/strip.dir
-/src/wireshark/epan/wmem/CMakeFiles/install/local.dir
-/src/wireshark/epan/wmem/CMakeFiles/install.dir
-/src/wireshark/epan/wmem/CMakeFiles/list_install_components.dir
-/src/wireshark/epan/wmem/CMakeFiles/rebuild_cache.dir
-/src/wireshark/epan/wmem/CMakeFiles/edit_cache.dir
-/src/wireshark/epan/wmem/CMakeFiles/wmem_test.dir
-/src/wireshark/epan/wmem/CMakeFiles/wmem.dir
