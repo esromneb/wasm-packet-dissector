@@ -7,16 +7,15 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 
-
-
 include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	../
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/include/glib-2.0/
-	/src/wasm-packet-dissector/c/3rd/zlib-glib-ffi/lib/glib-2.0/include
-	/src/wireshark
+	../../../zlib-glib-ffi/include
+	../../../zlib-glib-ffi/include/glib-2.0/
+	../../../zlib-glib-ffi/lib/glib-2.0/include
+	../../../wireshark
+	../../../wireshark/epan
+	../../../wireshark-compat
 )
 
 set(WMEM_PUBLIC_HEADERS
@@ -73,6 +72,7 @@ set_source_files_properties(
 	${WMEM_FILES}
 	PROPERTIES
 	COMPILE_FLAGS "${WERROR_COMMON_FLAGS}"
+	LANGUAGE CXX
 )
 
 add_library(wmem STATIC
@@ -87,19 +87,19 @@ set_target_properties(wmem PROPERTIES
 	COMPILE_DEFINITIONS "WS_BUILD_DLL"
 )
 
-add_executable(wmem_test EXCLUDE_FROM_ALL wmem_test.c $<TARGET_OBJECTS:wmem>)
+# add_executable(wmem_test EXCLUDE_FROM_ALL wmem_test.c $<TARGET_OBJECTS:wmem>)
 
-target_link_libraries(wmem_test ${GLIB2_LIBRARIES} wsutil)
+# target_link_libraries(wmem_test ${GLIB2_LIBRARIES} wsutil)
 
-set_target_properties(wmem_test PROPERTIES
-	FOLDER "Tests"
-	EXCLUDE_FROM_DEFAULT_BUILD True
-	COMPILE_DEFINITIONS "WS_BUILD_DLL"
-)
+# set_target_properties(wmem_test PROPERTIES
+# 	FOLDER "Tests"
+# 	EXCLUDE_FROM_DEFAULT_BUILD True
+# 	COMPILE_DEFINITIONS "WS_BUILD_DLL"
+# )
 
-install(FILES ${WMEM_PUBLIC_HEADERS}
-	DESTINATION "${PROJECT_INSTALL_INCLUDEDIR}/epan/wmem"
-)
+# install(FILES ${WMEM_PUBLIC_HEADERS}
+# 	DESTINATION "${PROJECT_INSTALL_INCLUDEDIR}/epan/wmem"
+# )
 
 # CHECKAPI(
 # 	NAME

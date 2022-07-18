@@ -171,6 +171,7 @@ OBJS3_A = $(addprefix build/,$(OBJS3))
 BUILDA = \
 3rd/wireshark/epan/ftypes/build/libftypes.a \
 3rd/wireshark/wiretap/build/libwiretap.a \
+3rd/wireshark/epan/wmem/build/libwmem.a \
 
 # 3rd/wireshark/epan/dfilter/build/libdfilter.a \
 
@@ -190,7 +191,6 @@ $(WASM_OUT): $(OBJS) $(OBJS3_A) $(TEMPLATE_FILE) $(JS_TEMPLATE_FILE) $(BUILDA) M
 	-sLLD_REPORT_UNDEFINED \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS) \
 	-L./3rd/zlib-glib-ffi/lib -lglib-2.0 \
-	-L./3rd/ -lwmem \
 	$(BUILDA) \
 	$(OBJS) \
 	$(OBJS3_A)
@@ -375,6 +375,9 @@ build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
 3rd/wireshark/wiretap/build/libwiretap.a: $(wildcard 3rd/wireshark/wiretap/*)
 	mkdir -p 3rd/wireshark/wiretap/build/ && cd 3rd/wireshark/wiretap/build/ && emcmake cmake .. && make
 
+3rd/wireshark/epan/wmem/build/libwmem.a: $(wildcard 3rd/wireshark/epan/wmem/*)
+	mkdir -p 3rd/wireshark/epan/wmem/build/ && cd 3rd/wireshark/epan/wmem/build/ && emcmake cmake .. && make
+
 
 clean:
 	rm -rf build/*
@@ -382,5 +385,6 @@ clean:
 	rm -rf 3rd/wireshark/epan/ftypes/build/
 	rm -rf 3rd/wireshark/wiretap/build/
 	rm -rf 3rd/wireshark/epan/dfilter/build/
+	rm -rf 3rd/wireshark/epan/wmem/build/
 
 # 	-sERROR_ON_UNDEFINED_SYMBOLS=0 \
