@@ -376,7 +376,7 @@ build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
 3rd/wireshark/wiretap/build/libwiretap.a: $(wildcard 3rd/wireshark/wiretap/*)
 	mkdir -p 3rd/wireshark/wiretap/build/ && cd 3rd/wireshark/wiretap/build/ && emcmake cmake .. && make
 
-3rd/wireshark/epan/wmem/build/libwmem.a: $(wildcard 3rd/wireshark/epan/wmem/*)
+3rd/wireshark/epan/wmem/build/libwmem.a: $(wildcard 3rd/wireshark/epan/wmem/*h) $(wildcard 3rd/wireshark/epan/wmem/*c)
 	mkdir -p 3rd/wireshark/epan/wmem/build/ && cd 3rd/wireshark/epan/wmem/build/ && emcmake cmake .. && make
 
 
