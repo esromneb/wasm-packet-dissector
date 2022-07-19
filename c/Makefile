@@ -141,6 +141,16 @@ tfs.o \
 tvbuff_subset.o \
 color_filters.o \
 frame_data_sequence.o \
+conversation_table.o \
+sequence_analysis.o \
+export_object.o \
+srt_table.o \
+rtd_table.o \
+follow.o \
+tap.o \
+strtoi.o \
+tap-rtp-common.o \
+proto_data.o \
 
 
 # color_filters.o \

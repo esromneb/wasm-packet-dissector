@@ -70,7 +70,7 @@ typedef struct _frame_data {
   /* These two are pointers, meaning 64-bit on LP64 (64-bit UN*X) and
      LLP64 (64-bit Windows) platforms.  Put them here, one after the
      other, so they don't require padding between them. */
-  // GSList      *pfd;          /**< Per frame proto data */
+  GSList      *pfd;          /**< Per frame proto data */
   const struct _color_filter *color_filter;  /**< Per-packet matching color_filter_t object */
   guint16      subnum;       /**< subframe number, for protocols that require this */
   /* Keep the bitfields below to 16 bits, so this plus the previous field
