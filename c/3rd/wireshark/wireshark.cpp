@@ -22,3 +22,6 @@ int pthread_attr_setinheritsched(pthread_attr_t *attr,
 
     return 0;
 }
+
+// compat stuff
+bool prefs_display_byte_fields_with_spaces = true;

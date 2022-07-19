@@ -46,6 +46,7 @@
 #include "register-int.h"
 #include "unit_strings.h"
 #include "tfs.h"
+#include "wireshark.h" // WWPD
 
 // #include <wsutil/ws_printf.h> /* ws_debug_printf */
 // #include <wsutil/crash_info.h>
@@ -1086,7 +1087,7 @@ hfinfo_format_bytes(wmem_allocator_t *scope, const header_field_info *hfinfo,
             break;
         case BASE_NONE:
         default:
-            if (prefs.display_byte_fields_with_spaces) {
+            if (prefs_display_byte_fields_with_spaces) {
                 str = bytestring_to_str(scope, bytes, length, ' ');
             } else {
                 str = bytes_to_str(scope, bytes, length);

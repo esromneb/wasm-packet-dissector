@@ -198,7 +198,6 @@ clean_exit:
   // free_progdirs();
   return ret;
 }
-#if 0
 static const nstime_t *
 sharkd_get_frame_ts(struct packet_provider_data *prov, guint32 frame_num)
 {
@@ -219,6 +218,7 @@ sharkd_get_frame_ts(struct packet_provider_data *prov, guint32 frame_num)
 
   return NULL;
 }
+#if 0
 
 static epan_t *
 sharkd_epan_new(capture_file *cf)
@@ -517,12 +517,12 @@ sharkd_load_cap_file(void)
   return load_cap_file(&cfile, 0, 0);
 }
 
+#endif
 frame_data *
 sharkd_get_frame(guint32 framenum)
 {
   return frame_data_sequence_find(cfile.provider.frames, framenum);
 }
-#endif
 int
 sharkd_dissect_request(guint32 framenum, guint32 frame_ref_num, guint32 prev_dis_num, sharkd_dissect_func_t cb, guint32 dissect_flags, void *data)
 {
@@ -802,6 +802,7 @@ sharkd_set_user_comment(frame_data *fd, const gchar *new_comment)
   cap_file_provider_set_user_comment(&cfile.provider, fd, new_comment);
   return 0;
 }
+#endif
 
 #include "version.h"
 const char *sharkd_version(void)
@@ -826,4 +827,3 @@ const char *sharkd_version(void)
  * vi: set shiftwidth=2 tabstop=8 expandtab:
  * :indentSize=2:tabSize=8:noTabs=true:
  */
-#endif

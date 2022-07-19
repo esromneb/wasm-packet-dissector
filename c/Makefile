@@ -140,6 +140,7 @@ in_cksum.o \
 tfs.o \
 tvbuff_subset.o \
 color_filters.o \
+frame_data_sequence.o \
 
 
 # color_filters.o \
