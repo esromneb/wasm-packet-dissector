@@ -85,6 +85,9 @@ build/sharkd_session.o \
 
 
 # These use a target with a % below
+# dfilter-macro.o
+# dfilter.o
+# stats_tree.o
 OBJS3 = \
 except.o \
 tvbuff_real.o \
@@ -114,8 +117,6 @@ value_string.o \
 timestamp.o \
 column.o \
 column-utils.o \
-dfilter-macro.o \
-dfilter.o \
 dfunctions.o \
 dfvm.o \
 drange.o \
@@ -132,7 +133,6 @@ syntax-tree.o \
 wsjson.o \
 json_dumper.o \
 nstime.o \
-stats_tree.o \
 stat_tap_ui.o \
 buffer.o \
 unit_strings.o \
@@ -155,6 +155,7 @@ tap-rtp-analysis.o \
 proto_data.o \
 rtp_stream_id.o \
 io_graph_item.o \
+packet-rtp.o \
 
 
 # color_filters.o \

@@ -57,10 +57,16 @@
 #include <epan/reassemble.h>
 #include <epan/tap.h>
 #include <epan/prefs.h>
+#include <epan/tvbuff.h>
+#include <epan/time_fmt.h>
+#include <epan/tfs.h>
 
 /* un-comment the following as well as this line in conversation.c, to enable debug printing */
 /* #define DEBUG_CONVERSATION */
-#include "conversation_debug.h"
+// #include "conversation_debug.h"
+#define DPRINT(arg)
+#define DINDENT()
+#define DENDENT()
 
 /* uncomment this to enable debugging of fragment reassembly */
 /* #define DEBUG   1 */
@@ -1192,7 +1198,7 @@ dissect_rtp_heur_common(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, voi
     version = RTP_VERSION( octet1 );
 
     if (version == 0) {
-        if (!(tvb_memeql(tvb, 4, "ZRTP", 4)))
+        if (!(tvb_memeql(tvb, 4, (const guint8 *)"ZRTP", 4)))
         {
             call_dissector_only(zrtp_handle, tvb, pinfo, tree, NULL);
             return TRUE;
@@ -1875,7 +1881,7 @@ dissect_rtp( tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void *data _U_
             return tvb_captured_length(tvb);
 
         case RTP0_INVALID:
-            if (!(tvb_memeql(tvb, 4, "ZRTP", 4)))
+            if (!(tvb_memeql(tvb, 4, (const guint8 *)"ZRTP", 4)))
             {
                 call_dissector(zrtp_handle, tvb,pinfo, tree);
                 return tvb_captured_length(tvb);

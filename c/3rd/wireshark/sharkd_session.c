@@ -447,20 +447,20 @@ sharkd_session_process_info(void)
 
 	sharkd_json_array_open("stats");
 	{
-		GList *cfg_list = stats_tree_get_cfg_list();
-		GList *l;
-
-		for (l = cfg_list; l; l = l->next)
-		{
-			stats_tree_cfg *cfg = (stats_tree_cfg *) l->data;
-
-			json_dumper_begin_object(&dumper);
-				sharkd_json_value_string("name", cfg->name);
-				sharkd_json_value_stringf("tap", "stat:%s", cfg->abbr);
-			json_dumper_end_object(&dumper);
-		}
-
-		g_list_free(cfg_list);
+//		GList *cfg_list = stats_tree_get_cfg_list();
+//		GList *l;
+//
+//		for (l = cfg_list; l; l = l->next)
+//		{
+//			stats_tree_cfg *cfg = (stats_tree_cfg *) l->data;
+//
+//			json_dumper_begin_object(&dumper);
+//				sharkd_json_value_string("name", cfg->name);
+//				sharkd_json_value_stringf("tap", "stat:%s", cfg->abbr);
+//			json_dumper_end_object(&dumper);
+//		}
+//
+//		g_list_free(cfg_list);
 	}
 	sharkd_json_array_close();
 
@@ -1019,26 +1019,26 @@ sharkd_session_process_tap_stats_node_cb(const stat_node *n)
 static void
 sharkd_session_process_tap_stats_cb(void *psp)
 {
-	stats_tree *st = (stats_tree *) psp;
-
-	json_dumper_begin_object(&dumper);
-
-	sharkd_json_value_stringf("tap", "stats:%s", st->cfg->abbr);
-	sharkd_json_value_string("type", "stats");
-	sharkd_json_value_string("name", st->cfg->name);
-
-	sharkd_json_value_anyf("stats", NULL);
-	sharkd_session_process_tap_stats_node_cb(&st->root);
-
-	json_dumper_end_object(&dumper);
+// 	stats_tree *st = (stats_tree *) psp;
+// 
+// 	json_dumper_begin_object(&dumper);
+// 
+// 	sharkd_json_value_stringf("tap", "stats:%s", st->cfg->abbr);
+// 	sharkd_json_value_string("type", "stats");
+// 	sharkd_json_value_string("name", st->cfg->name);
+// 
+// 	sharkd_json_value_anyf("stats", NULL);
+// 	sharkd_session_process_tap_stats_node_cb(&st->root);
+// 
+// 	json_dumper_end_object(&dumper);
 }
 
 static void
 sharkd_session_free_tap_stats_cb(void *psp)
 {
-	stats_tree *st = (stats_tree *) psp;
+// 	stats_tree *st = (stats_tree *) psp;
 
-	stats_tree_free(st);
+// 	stats_tree_free(st);
 }
 
 struct sharkd_expert_tap
@@ -2202,24 +2202,24 @@ sharkd_session_process_tap(char *buf, const jsmntok_t *tokens, int count)
 
 		if (!strncmp(tok_tap, "stat:", 5))
 		{
-			stats_tree_cfg *cfg = stats_tree_get_cfg_by_abbr(tok_tap + 5);
-			stats_tree *st;
+// 			stats_tree_cfg *cfg = stats_tree_get_cfg_by_abbr(tok_tap + 5);
+// 			stats_tree *st;
 
-			if (!cfg)
+// 			if (!cfg)
 			{
-				fprintf(stderr, "sharkd_session_process_tap() stat %s not found\n", tok_tap + 5);
-				continue;
+// 				fprintf(stderr, "sharkd_session_process_tap() stat %s not found\n", tok_tap + 5);
+// 				continue;
 			}
 
-			st = stats_tree_new(cfg, NULL, tap_filter);
+// 			st = stats_tree_new(cfg, NULL, tap_filter);
 
-			tap_error = register_tap_listener(st->cfg->tapname, st, st->filter, st->cfg->flags, stats_tree_reset, stats_tree_packet, sharkd_session_process_tap_stats_cb, NULL);
+// 			tap_error = register_tap_listener(st->cfg->tapname, st, st->filter, st->cfg->flags, stats_tree_reset, stats_tree_packet, sharkd_session_process_tap_stats_cb, NULL);
 
-			if (!tap_error && cfg->init)
-				cfg->init(st);
+// 			if (!tap_error && cfg->init)
+// 				cfg->init(st);
 
-			tap_data = st;
-			tap_free = sharkd_session_free_tap_stats_cb;
+// 			tap_data = st;
+// 			tap_free = sharkd_session_free_tap_stats_cb;
 		}
 		else if (!strcmp(tok_tap, "expert"))
 		{
@@ -3349,43 +3349,43 @@ sharkd_session_process_frame(char *buf, const jsmntok_t *tokens, int count)
 static int
 sharkd_session_process_check(char *buf, const jsmntok_t *tokens, int count)
 {
-	const char *tok_filter = json_find_attr(buf, tokens, count, "filter");
-	const char *tok_field = json_find_attr(buf, tokens, count, "field");
-
-	json_dumper_begin_object(&dumper);
-	sharkd_json_value_anyf("err", "0");
-
-	if (tok_filter != NULL)
-	{
-		char *err_msg = NULL;
-		dfilter_t *dfp;
-
-		if (dfilter_compile(tok_filter, &dfp, &err_msg))
-		{
-			const char *s = "ok";
-
-			if (dfp && dfilter_deprecated_tokens(dfp))
-				s = "warn";
-
-			sharkd_json_value_string("filter", s);
-			dfilter_free(dfp);
-		}
-		else
-		{
-			sharkd_json_value_string("filter", err_msg);
-			g_free(err_msg);
-		}
-	}
-
-	if (tok_field != NULL)
-	{
-		header_field_info *hfi = proto_registrar_get_byname(tok_field);
-
-		sharkd_json_value_string("field", (hfi) ? "ok" : "notfound");
-	}
-
-	json_dumper_end_object(&dumper);
-	json_dumper_finish(&dumper);
+// 	const char *tok_filter = json_find_attr(buf, tokens, count, "filter");
+// 	const char *tok_field = json_find_attr(buf, tokens, count, "field");
+// 
+// 	json_dumper_begin_object(&dumper);
+// 	sharkd_json_value_anyf("err", "0");
+// 
+// 	if (tok_filter != NULL)
+// 	{
+// 		char *err_msg = NULL;
+// 		dfilter_t *dfp;
+// 
+// 		if (dfilter_compile(tok_filter, &dfp, &err_msg))
+// 		{
+// 			const char *s = "ok";
+// 
+// 			if (dfp && dfilter_deprecated_tokens(dfp))
+// 				s = "warn";
+// 
+// 			sharkd_json_value_string("filter", s);
+// 			dfilter_free(dfp);
+// 		}
+// 		else
+// 		{
+// 			sharkd_json_value_string("filter", err_msg);
+// 			g_free(err_msg);
+// 		}
+// 	}
+// 
+// 	if (tok_field != NULL)
+// 	{
+// 		header_field_info *hfi = proto_registrar_get_byname(tok_field);
+// 
+// 		sharkd_json_value_string("field", (hfi) ? "ok" : "notfound");
+// 	}
+// 
+// 	json_dumper_end_object(&dumper);
+// 	json_dumper_finish(&dumper);
 
 	return 0;
 }
