@@ -139,6 +139,7 @@ unit_strings.o \
 in_cksum.o \
 tfs.o \
 tvbuff_subset.o \
+color_filters.o \
 
 
 # color_filters.o \

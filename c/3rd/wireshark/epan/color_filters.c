@@ -273,49 +273,50 @@ color_filter_list_clone(GSList *cfl)
 static gboolean
 color_filters_get(gchar** err_msg, color_filter_add_cb_func add_cb)
 {
-    gchar    *path;
-    FILE     *f;
-    int       ret;
+ //    gchar    *path;
+ //    FILE     *f;
+ //    int       ret;
 
-    /* start the list with the temporary colorizing rules */
-    color_filters_add_tmp(&color_filter_list);
+ //    /* start the list with the temporary colorizing rules */
+ //    color_filters_add_tmp(&color_filter_list);
 
-    /*
-     * Try to get the user's filters.
-     *
-     * Get the path for the file that would have their filters, and
-     * try to open it.
-     */
-    path = get_persconffile_path(COLORFILTERS_FILE_NAME, TRUE);
-    if ((f = ws_fopen(path, "r")) == NULL) {
-        if (errno != ENOENT) {
-            /* Error trying to open the file; give up. */
-            *err_msg = g_strdup_printf("Could not open filter file\n\"%s\": %s.", path,
-                                       g_strerror(errno));
-            g_free(path);
-            return FALSE;
-	}
-        /* They don't have any filters; try to read the global filters */
-        g_free(path);
-        return color_filters_read_globals(&color_filter_list, err_msg, add_cb);
-    }
+ //    /*
+ //     * Try to get the user's filters.
+ //     *
+ //     * Get the path for the file that would have their filters, and
+ //     * try to open it.
+ //     */
+ //    path = get_persconffile_path(COLORFILTERS_FILE_NAME, TRUE);
+ //    if ((f = ws_fopen(path, "r")) == NULL) {
+ //        if (errno != ENOENT) {
+ //            /* Error trying to open the file; give up. */
+ //            *err_msg = g_strdup_printf("Could not open filter file\n\"%s\": %s.", path,
+ //                                       g_strerror(errno));
+ //            g_free(path);
+ //            return FALSE;
+	// }
+ //        /* They don't have any filters; try to read the global filters */
+ //        g_free(path);
+ //        return color_filters_read_globals(&color_filter_list, err_msg, add_cb);
+ //    }
 
-    /*
-     * We've opened it; try to read it.
-     */
-    ret = read_filters_file(path, f, &color_filter_list, add_cb);
-    if (ret != 0) {
-        *err_msg = g_strdup_printf("Error reading filter file\n\"%s\": %s.",
-                                   path, g_strerror(errno));
-        fclose(f);
-        g_free(path);
-        return FALSE;
-    }
+ //    /*
+ //     * We've opened it; try to read it.
+ //     */
+ //    ret = read_filters_file(path, f, &color_filter_list, add_cb);
+ //    if (ret != 0) {
+ //        *err_msg = g_strdup_printf("Error reading filter file\n\"%s\": %s.",
+ //                                   path, g_strerror(errno));
+ //        fclose(f);
+ //        g_free(path);
+ //        return FALSE;
+ //    }
 
-    /* Success. */
-    fclose(f);
-    g_free(path);
-    return TRUE;
+ //    /* Success. */
+ //    fclose(f);
+ //    g_free(path);
+ //    return TRUE;
+    return FALSE;
 }
 
 /* Initialize the filter structures (reading from file) for general running, including app startup */
@@ -518,203 +519,204 @@ color_filters_colorize_packet(epan_dissect_t *edt)
 static int
 read_filters_file(const gchar *path, FILE *f, gpointer user_data, color_filter_add_cb_func add_cb)
 {
-#define INIT_BUF_SIZE 128
-    gchar    *name             = NULL;
-    gchar    *filter_exp       = NULL;
-    guint32   name_len         = INIT_BUF_SIZE;
-    guint32   filter_exp_len   = INIT_BUF_SIZE;
-    guint32   i                = 0;
-    int       c;
-    guint16   fg_r, fg_g, fg_b, bg_r, bg_g, bg_b;
-    gboolean  disabled         = FALSE;
-    gboolean  skip_end_of_line = FALSE;
-    int       ret = 0;
-
-    name = (gchar *)g_malloc(name_len + 1);
-    filter_exp = (gchar *)g_malloc(filter_exp_len + 1);
-
-    prefs.unknown_colorfilters = FALSE;
-
-    while (1) {
-
-        if (skip_end_of_line) {
-            do {
-                c = ws_getc_unlocked(f);
-            } while (c != EOF && c != '\n');
-            if (c == EOF)
-                break;
-            disabled = FALSE;
-            skip_end_of_line = FALSE;
-        }
-
-        while ((c = ws_getc_unlocked(f)) != EOF && g_ascii_isspace(c)) {
-            if (c == '\n') {
-                continue;
-            }
-        }
-
-        if (c == EOF)
-            break;
-
-        if (c == '!') {
-            disabled = TRUE;
-            continue;
-        }
-
-        /* skip # comments and invalid lines */
-        if (c != '@') {
-            skip_end_of_line = TRUE;
-            continue;
-        }
-
-        /* we get the @ delimiter.
-         * Format is:
-         * @name@filter expression@[background r,g,b][foreground r,g,b]
-         */
-
-        /* retrieve name */
-        i = 0;
-        while (1) {
-            c = ws_getc_unlocked(f);
-            if (c == EOF || c == '@')
-                break;
-            if (i >= name_len) {
-                /* buffer isn't long enough; double its length.*/
-                name_len *= 2;
-                name = (gchar *)g_realloc(name, name_len + 1);
-            }
-            name[i++] = c;
-        }
-        name[i] = '\0';
-
-        if (c == EOF) {
-            break;
-        } else if (i == 0) {
-            skip_end_of_line = TRUE;
-            continue;
-        }
-
-        /* retrieve filter expression */
-        i = 0;
-        while (1) {
-            c = ws_getc_unlocked(f);
-            if (c == EOF || c == '@')
-                break;
-            if (i >= filter_exp_len) {
-                /* buffer isn't long enough; double its length.*/
-                filter_exp_len *= 2;
-                filter_exp = (gchar *)g_realloc(filter_exp, filter_exp_len + 1);
-            }
-            filter_exp[i++] = c;
-        }
-        filter_exp[i] = '\0';
-
-        if (c == EOF) {
-            break;
-        } else if (i == 0) {
-            skip_end_of_line = TRUE;
-            continue;
-        }
-
-        /* retrieve background and foreground colors */
-        if (fscanf(f,"[%hu,%hu,%hu][%hu,%hu,%hu]",
-                   &bg_r, &bg_g, &bg_b, &fg_r, &fg_g, &fg_b) == 6) {
-
-            /* we got a complete color filter */
-
-            color_t bg_color, fg_color;
-            color_filter_t *colorf;
-            dfilter_t *temp_dfilter = NULL;
-            gchar *local_err_msg = NULL;
-
-            if (!disabled && !dfilter_compile(filter_exp, &temp_dfilter, &local_err_msg)) {
-                g_warning("Could not compile \"%s\" in colorfilters file \"%s\".\n%s",
-                          name, path, local_err_msg);
-                g_free(local_err_msg);
-                prefs.unknown_colorfilters = TRUE;
-
-                /* skip_end_of_line = TRUE; */
-                disabled = TRUE;
-            }
-
-            fg_color.red = fg_r;
-            fg_color.green = fg_g;
-            fg_color.blue = fg_b;
-
-            bg_color.red = bg_r;
-            bg_color.green = bg_g;
-            bg_color.blue = bg_b;
-
-            colorf = color_filter_new(name, filter_exp, &bg_color,
-                                      &fg_color, disabled);
-            if(user_data == &color_filter_list) {
-                GSList **cfl = (GSList **)user_data;
-
-                /* internal call */
-                colorf->c_colorfilter = temp_dfilter;
-                *cfl = g_slist_append(*cfl, colorf);
-            } else {
-                /* external call */
-                /* just editing, don't need the compiled filter */
-                dfilter_free(temp_dfilter);
-                add_cb(colorf, user_data);
-            }
-        }    /* if sscanf */
-
-        skip_end_of_line = TRUE;
-    }
-
-    if (ferror(f))
-        ret = errno;
-
-    g_free(name);
-    g_free(filter_exp);
-    return ret;
+// #define INIT_BUF_SIZE 128
+//     gchar    *name             = NULL;
+//     gchar    *filter_exp       = NULL;
+//     guint32   name_len         = INIT_BUF_SIZE;
+//     guint32   filter_exp_len   = INIT_BUF_SIZE;
+//     guint32   i                = 0;
+//     int       c;
+//     guint16   fg_r, fg_g, fg_b, bg_r, bg_g, bg_b;
+//     gboolean  disabled         = FALSE;
+//     gboolean  skip_end_of_line = FALSE;
+//     int       ret = 0;
+// 
+//     name = (gchar *)g_malloc(name_len + 1);
+//     filter_exp = (gchar *)g_malloc(filter_exp_len + 1);
+// 
+//     prefs.unknown_colorfilters = FALSE;
+// 
+//     while (1) {
+// 
+//         if (skip_end_of_line) {
+//             do {
+//                 c = ws_getc_unlocked(f);
+//             } while (c != EOF && c != '\n');
+//             if (c == EOF)
+//                 break;
+//             disabled = FALSE;
+//             skip_end_of_line = FALSE;
+//         }
+// 
+//         while ((c = ws_getc_unlocked(f)) != EOF && g_ascii_isspace(c)) {
+//             if (c == '\n') {
+//                 continue;
+//             }
+//         }
+// 
+//         if (c == EOF)
+//             break;
+// 
+//         if (c == '!') {
+//             disabled = TRUE;
+//             continue;
+//         }
+// 
+//         /* skip # comments and invalid lines */
+//         if (c != '@') {
+//             skip_end_of_line = TRUE;
+//             continue;
+//         }
+// 
+//         /* we get the @ delimiter.
+//          * Format is:
+//          * @name@filter expression@[background r,g,b][foreground r,g,b]
+//          */
+// 
+//         /* retrieve name */
+//         i = 0;
+//         while (1) {
+//             c = ws_getc_unlocked(f);
+//             if (c == EOF || c == '@')
+//                 break;
+//             if (i >= name_len) {
+//                 /* buffer isn't long enough; double its length.*/
+//                 name_len *= 2;
+//                 name = (gchar *)g_realloc(name, name_len + 1);
+//             }
+//             name[i++] = c;
+//         }
+//         name[i] = '\0';
+// 
+//         if (c == EOF) {
+//             break;
+//         } else if (i == 0) {
+//             skip_end_of_line = TRUE;
+//             continue;
+//         }
+// 
+//         /* retrieve filter expression */
+//         i = 0;
+//         while (1) {
+//             c = ws_getc_unlocked(f);
+//             if (c == EOF || c == '@')
+//                 break;
+//             if (i >= filter_exp_len) {
+//                 /* buffer isn't long enough; double its length.*/
+//                 filter_exp_len *= 2;
+//                 filter_exp = (gchar *)g_realloc(filter_exp, filter_exp_len + 1);
+//             }
+//             filter_exp[i++] = c;
+//         }
+//         filter_exp[i] = '\0';
+// 
+//         if (c == EOF) {
+//             break;
+//         } else if (i == 0) {
+//             skip_end_of_line = TRUE;
+//             continue;
+//         }
+// 
+//         /* retrieve background and foreground colors */
+//         if (fscanf(f,"[%hu,%hu,%hu][%hu,%hu,%hu]",
+//                    &bg_r, &bg_g, &bg_b, &fg_r, &fg_g, &fg_b) == 6) {
+// 
+//             /* we got a complete color filter */
+// 
+//             color_t bg_color, fg_color;
+//             color_filter_t *colorf;
+//             dfilter_t *temp_dfilter = NULL;
+//             gchar *local_err_msg = NULL;
+// 
+//             if (!disabled && !dfilter_compile(filter_exp, &temp_dfilter, &local_err_msg)) {
+//                 g_warning("Could not compile \"%s\" in colorfilters file \"%s\".\n%s",
+//                           name, path, local_err_msg);
+//                 g_free(local_err_msg);
+//                 prefs.unknown_colorfilters = TRUE;
+// 
+//                 /* skip_end_of_line = TRUE; */
+//                 disabled = TRUE;
+//             }
+// 
+//             fg_color.red = fg_r;
+//             fg_color.green = fg_g;
+//             fg_color.blue = fg_b;
+// 
+//             bg_color.red = bg_r;
+//             bg_color.green = bg_g;
+//             bg_color.blue = bg_b;
+// 
+//             colorf = color_filter_new(name, filter_exp, &bg_color,
+//                                       &fg_color, disabled);
+//             if(user_data == &color_filter_list) {
+//                 GSList **cfl = (GSList **)user_data;
+// 
+//                 /* internal call */
+//                 colorf->c_colorfilter = temp_dfilter;
+//                 *cfl = g_slist_append(*cfl, colorf);
+//             } else {
+//                 /* external call */
+//                 /* just editing, don't need the compiled filter */
+//                 dfilter_free(temp_dfilter);
+//                 add_cb(colorf, user_data);
+//             }
+//         }    /* if sscanf */
+// 
+//         skip_end_of_line = TRUE;
+//     }
+// 
+//     if (ferror(f))
+//         ret = errno;
+// 
+//     g_free(name);
+//     g_free(filter_exp);
+//     return ret;
+    return 0;
 }
 
 /* read filters from the filter file */
 gboolean
 color_filters_read_globals(gpointer user_data, gchar** err_msg, color_filter_add_cb_func add_cb)
 {
-    gchar    *path;
-    FILE     *f;
-    int       ret;
-
-    /*
-     * Try to get the global filters.
-     *
-     * Get the path for the file that would have the global filters, and
-     * try to open it.
-     */
-    path = get_datafile_path(COLORFILTERS_FILE_NAME);
-    if ((f = ws_fopen(path, "r")) == NULL) {
-        if (errno != ENOENT) {
-            /* Error trying to open the file; give up. */
-            *err_msg = g_strdup_printf("Could not open global filter file\n\"%s\": %s.", path,
-                                       g_strerror(errno));
-            g_free(path);
-            return FALSE;
-        }
-
-        /*
-         * There is no global filter file; treat that as equivalent to
-         * that file existing bug being empty, and say we succeeded.
-         */
-        g_free(path);
-        return TRUE;
-    }
-
-    ret = read_filters_file(path, f, user_data, add_cb);
-    if (ret != 0) {
-        *err_msg = g_strdup_printf("Error reading global filter file\n\"%s\": %s.",
-                                   path, g_strerror(errno));
-        fclose(f);
-        g_free(path);
-        return FALSE;
-    }
-
-    fclose(f);
-    g_free(path);
+//     gchar    *path;
+//     FILE     *f;
+//     int       ret;
+// 
+//     /*
+//      * Try to get the global filters.
+//      *
+//      * Get the path for the file that would have the global filters, and
+//      * try to open it.
+//      */
+//     path = get_datafile_path(COLORFILTERS_FILE_NAME);
+//     if ((f = ws_fopen(path, "r")) == NULL) {
+//         if (errno != ENOENT) {
+//             /* Error trying to open the file; give up. */
+//             *err_msg = g_strdup_printf("Could not open global filter file\n\"%s\": %s.", path,
+//                                        g_strerror(errno));
+//             g_free(path);
+//             return FALSE;
+//         }
+// 
+//         /*
+//          * There is no global filter file; treat that as equivalent to
+//          * that file existing bug being empty, and say we succeeded.
+//          */
+//         g_free(path);
+//         return TRUE;
+//     }
+// 
+//     ret = read_filters_file(path, f, user_data, add_cb);
+//     if (ret != 0) {
+//         *err_msg = g_strdup_printf("Error reading global filter file\n\"%s\": %s.",
+//                                    path, g_strerror(errno));
+//         fclose(f);
+//         g_free(path);
+//         return FALSE;
+//     }
+// 
+//     fclose(f);
+//     g_free(path);
     return TRUE;
 }
 
@@ -722,24 +724,24 @@ color_filters_read_globals(gpointer user_data, gchar** err_msg, color_filter_add
 gboolean
 color_filters_import(const gchar *path, gpointer user_data, gchar **err_msg, color_filter_add_cb_func add_cb)
 {
-    FILE     *f;
-    int       ret;
-
-    if ((f = ws_fopen(path, "r")) == NULL) {
-        *err_msg = g_strdup_printf("Could not open filter file\n%s\nfor reading: %s.",
-                      path, g_strerror(errno));
-        return FALSE;
-    }
-
-    ret = read_filters_file(path, f, user_data, add_cb);
-    if (ret != 0) {
-        *err_msg = g_strdup_printf("Error reading filter file\n\"%s\": %s.",
-                                   path, g_strerror(errno));
-        fclose(f);
-        return FALSE;
-    }
-
-    fclose(f);
+//     FILE     *f;
+//     int       ret;
+// 
+//     if ((f = ws_fopen(path, "r")) == NULL) {
+//         *err_msg = g_strdup_printf("Could not open filter file\n%s\nfor reading: %s.",
+//                       path, g_strerror(errno));
+//         return FALSE;
+//     }
+// 
+//     ret = read_filters_file(path, f, user_data, add_cb);
+//     if (ret != 0) {
+//         *err_msg = g_strdup_printf("Error reading filter file\n\"%s\": %s.",
+//                                    path, g_strerror(errno));
+//         fclose(f);
+//         return FALSE;
+//     }
+// 
+//     fclose(f);
     return TRUE;
 }
 
@@ -790,29 +792,29 @@ write_filters_file(GSList *cfl, FILE *f, gboolean only_selected)
 gboolean
 color_filters_write(GSList *cfl, gchar** err_msg)
 {
-    gchar *pf_dir_path;
-    gchar *path;
-    FILE  *f;
-
-    /* Create the directory that holds personal configuration files,
-       if necessary.  */
-    if (create_persconffile_dir(&pf_dir_path) == -1) {
-        *err_msg = g_strdup_printf("Can't create directory\n\"%s\"\nfor color files: %s.",
-                      pf_dir_path, g_strerror(errno));
-        g_free(pf_dir_path);
-        return FALSE;
-    }
-
-    path = get_persconffile_path(COLORFILTERS_FILE_NAME, TRUE);
-    if ((f = ws_fopen(path, "w+")) == NULL) {
-        *err_msg = g_strdup_printf("Could not open\n%s\nfor writing: %s.",
-                      path, g_strerror(errno));
-        g_free(path);
-        return FALSE;
-    }
-    g_free(path);
-    write_filters_file(cfl, f, FALSE);
-    fclose(f);
+//     gchar *pf_dir_path;
+//     gchar *path;
+//     FILE  *f;
+// 
+//     /* Create the directory that holds personal configuration files,
+//        if necessary.  */
+//     if (create_persconffile_dir(&pf_dir_path) == -1) {
+//         *err_msg = g_strdup_printf("Can't create directory\n\"%s\"\nfor color files: %s.",
+//                       pf_dir_path, g_strerror(errno));
+//         g_free(pf_dir_path);
+//         return FALSE;
+//     }
+// 
+//     path = get_persconffile_path(COLORFILTERS_FILE_NAME, TRUE);
+//     if ((f = ws_fopen(path, "w+")) == NULL) {
+//         *err_msg = g_strdup_printf("Could not open\n%s\nfor writing: %s.",
+//                       path, g_strerror(errno));
+//         g_free(path);
+//         return FALSE;
+//     }
+//     g_free(path);
+//     write_filters_file(cfl, f, FALSE);
+//     fclose(f);
     return TRUE;
 }
 
@@ -820,15 +822,15 @@ color_filters_write(GSList *cfl, gchar** err_msg)
 gboolean
 color_filters_export(const gchar *path, GSList *cfl, gboolean only_marked, gchar** err_msg)
 {
-    FILE *f;
-
-    if ((f = ws_fopen(path, "w+")) == NULL) {
-        *err_msg = g_strdup_printf("Could not open\n%s\nfor writing: %s.",
-                      path, g_strerror(errno));
-        return FALSE;
-    }
-    write_filters_file(cfl, f, only_marked);
-    fclose(f);
+//     FILE *f;
+// 
+//     if ((f = ws_fopen(path, "w+")) == NULL) {
+//         *err_msg = g_strdup_printf("Could not open\n%s\nfor writing: %s.",
+//                       path, g_strerror(errno));
+//         return FALSE;
+//     }
+//     write_filters_file(cfl, f, only_marked);
+//     fclose(f);
     return TRUE;
 }
 
