@@ -156,6 +156,7 @@ proto_data.o \
 rtp_stream_id.o \
 io_graph_item.o \
 packet-rtp.o \
+jsmn.o \
 
 
 # color_filters.o \

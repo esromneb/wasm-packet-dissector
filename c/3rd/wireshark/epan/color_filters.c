@@ -124,53 +124,53 @@ color_filters_find_by_name_cb(gconstpointer arg1, gconstpointer arg2)
 gboolean
 color_filters_set_tmp(guint8 filt_nr, const gchar *filter, gboolean disabled, gchar **err_msg)
 {
-    gchar          *name = NULL;
-    const gchar    *tmpfilter = NULL;
-    GSList         *cfl;
-    color_filter_t *colorf;
-    dfilter_t      *compiled_filter;
-    guint8         i;
-    gchar          *local_err_msg = NULL;
-    /* Go through the temporary filters and look for the same filter string.
-     * If found, clear it so that a filter can be "moved" up and down the list
-     */
-    for ( i=1 ; i<=10 ; i++ ) {
-        /* If we need to reset the temporary filter (filter==NULL), don't look
-         * for other rules with the same filter string
-         */
-        if( i!=filt_nr && filter==NULL )
-            continue;
+    // gchar          *name = NULL;
+    // const gchar    *tmpfilter = NULL;
+    // GSList         *cfl;
+    // color_filter_t *colorf;
+    // dfilter_t      *compiled_filter;
+    // guint8         i;
+    // gchar          *local_err_msg = NULL;
+    // /* Go through the temporary filters and look for the same filter string.
+    //  * If found, clear it so that a filter can be "moved" up and down the list
+    //  */
+    // for ( i=1 ; i<=10 ; i++ ) {
+    //     /* If we need to reset the temporary filter (filter==NULL), don't look
+    //      * for other rules with the same filter string
+    //      */
+    //     if( i!=filt_nr && filter==NULL )
+    //         continue;
 
-        name = g_strdup_printf("%s%02d",CONVERSATION_COLOR_PREFIX,i);
-        cfl = g_slist_find_custom(color_filter_list, name, color_filters_find_by_name_cb);
-        colorf = (color_filter_t *)cfl->data;
+    //     name = g_strdup_printf("%s%02d",CONVERSATION_COLOR_PREFIX,i);
+    //     cfl = g_slist_find_custom(color_filter_list, name, color_filters_find_by_name_cb);
+    //     colorf = (color_filter_t *)cfl->data;
 
-        /* Only change the filter rule if this is the rule to change or if
-         * a matching filter string has been found
-         */
-        if(colorf && ( (i==filt_nr) || (!strcmp(filter, colorf->filter_text)) ) ) {
-            /* set filter string to "frame" if we are resetting the rules
-             * or if we found a matching filter string which need to be cleared
-             */
-            tmpfilter = ( (filter==NULL) || (i!=filt_nr) ) ? "frame" : filter;
-            if (!dfilter_compile(tmpfilter, &compiled_filter, &local_err_msg)) {
-                *err_msg = g_strdup_printf( "Could not compile color filter name: \"%s\" text: \"%s\".\n%s", name, filter, local_err_msg);
-                g_free(local_err_msg);
-                g_free(name);
-                return FALSE;
-            } else {
-                g_free(colorf->filter_text);
-                dfilter_free(colorf->c_colorfilter);
-                colorf->filter_text = g_strdup(tmpfilter);
-                colorf->c_colorfilter = compiled_filter;
-                colorf->disabled = ((i!=filt_nr) ? TRUE : disabled);
-                /* Remember that there are now temporary coloring filters set */
-                if( filter )
-                    tmp_colors_set = TRUE;
-            }
-        }
-        g_free(name);
-    }
+    //     /* Only change the filter rule if this is the rule to change or if
+    //      * a matching filter string has been found
+    //      */
+    //     if(colorf && ( (i==filt_nr) || (!strcmp(filter, colorf->filter_text)) ) ) {
+    //         /* set filter string to "frame" if we are resetting the rules
+    //          * or if we found a matching filter string which need to be cleared
+    //          */
+    //         tmpfilter = ( (filter==NULL) || (i!=filt_nr) ) ? "frame" : filter;
+    //         if (!dfilter_compile(tmpfilter, &compiled_filter, &local_err_msg)) {
+    //             *err_msg = g_strdup_printf( "Could not compile color filter name: \"%s\" text: \"%s\".\n%s", name, filter, local_err_msg);
+    //             g_free(local_err_msg);
+    //             g_free(name);
+    //             return FALSE;
+    //         } else {
+    //             g_free(colorf->filter_text);
+    //             dfilter_free(colorf->c_colorfilter);
+    //             colorf->filter_text = g_strdup(tmpfilter);
+    //             colorf->c_colorfilter = compiled_filter;
+    //             colorf->disabled = ((i!=filt_nr) ? TRUE : disabled);
+    //             /* Remember that there are now temporary coloring filters set */
+    //             if( filter )
+    //                 tmp_colors_set = TRUE;
+    //         }
+    //     }
+    //     g_free(name);
+    // }
     return TRUE;
 }
 
@@ -211,7 +211,7 @@ color_filter_delete(color_filter_t *colorf)
 {
     g_free(colorf->filter_name);
     g_free(colorf->filter_text);
-    dfilter_free(colorf->c_colorfilter);
+    // dfilter_free(colorf->c_colorfilter);
     g_free(colorf);
 }
 
@@ -378,45 +378,45 @@ color_filters_clone(gpointer user_data, color_filter_add_cb_func add_cb)
 static void
 color_filter_compile_cb(gpointer filter_arg, gpointer err)
 {
-    color_filter_t *colorf = (color_filter_t *)filter_arg;
-    gchar **err_msg = (gchar**)err;
-    gchar *local_err_msg = NULL;
-
-    g_assert(colorf->c_colorfilter == NULL);
-
-    /* If the filter is disabled it doesn't matter if it compiles or not. */
-    if (colorf->disabled) return;
-
-    if (!dfilter_compile(colorf->filter_text, &colorf->c_colorfilter, &local_err_msg)) {
-        *err_msg = g_strdup_printf("Could not compile color filter name: \"%s\" text: \"%s\".\n%s",
-                      colorf->filter_name, colorf->filter_text, local_err_msg);
-        g_free(local_err_msg);
-        /* this filter was compilable before, so this should never happen */
-        /* except if the OK button of the parent window has been clicked */
-        /* so don't use g_assert_not_reached() but check the filters again */
-    }
+//     color_filter_t *colorf = (color_filter_t *)filter_arg;
+//     gchar **err_msg = (gchar**)err;
+//     gchar *local_err_msg = NULL;
+// 
+//     g_assert(colorf->c_colorfilter == NULL);
+// 
+//     /* If the filter is disabled it doesn't matter if it compiles or not. */
+//     if (colorf->disabled) return;
+// 
+//     if (!dfilter_compile(colorf->filter_text, &colorf->c_colorfilter, &local_err_msg)) {
+//         *err_msg = g_strdup_printf("Could not compile color filter name: \"%s\" text: \"%s\".\n%s",
+//                       colorf->filter_name, colorf->filter_text, local_err_msg);
+//         g_free(local_err_msg);
+//         /* this filter was compilable before, so this should never happen */
+//         /* except if the OK button of the parent window has been clicked */
+//         /* so don't use g_assert_not_reached() but check the filters again */
+//     }
 }
 
 static void
 color_filter_validate_cb(gpointer filter_arg, gpointer err)
 {
-    color_filter_t *colorf = (color_filter_t *)filter_arg;
-    gchar **err_msg = (gchar**)err;
-    gchar *local_err_msg;
-
-    g_assert(colorf->c_colorfilter == NULL);
-
-    /* If the filter is disabled it doesn't matter if it compiles or not. */
-    if (colorf->disabled) return;
-
-    if (!dfilter_compile(colorf->filter_text, &colorf->c_colorfilter, &local_err_msg)) {
-        *err_msg = g_strdup_printf("Disabling color filter name: \"%s\" filter: \"%s\".\n%s",
-                      colorf->filter_name, colorf->filter_text, local_err_msg);
-        g_free(local_err_msg);
-
-        /* Disable the color filter in the list of color filters. */
-        colorf->disabled = TRUE;
-    }
+//     color_filter_t *colorf = (color_filter_t *)filter_arg;
+//     gchar **err_msg = (gchar**)err;
+//     gchar *local_err_msg;
+// 
+//     g_assert(colorf->c_colorfilter == NULL);
+// 
+//     /* If the filter is disabled it doesn't matter if it compiles or not. */
+//     if (colorf->disabled) return;
+// 
+//     if (!dfilter_compile(colorf->filter_text, &colorf->c_colorfilter, &local_err_msg)) {
+//         *err_msg = g_strdup_printf("Disabling color filter name: \"%s\" filter: \"%s\".\n%s",
+//                       colorf->filter_name, colorf->filter_text, local_err_msg);
+//         g_free(local_err_msg);
+// 
+//         /* Disable the color filter in the list of color filters. */
+//         colorf->disabled = TRUE;
+//     }
 }
 
 /* apply changes from the edit list */
@@ -475,8 +475,8 @@ prime_edt(gpointer data, gpointer user_data)
     color_filter_t *colorf = (color_filter_t *)data;
     epan_dissect_t *edt    = (epan_dissect_t *)user_data;
 
-    if (colorf->c_colorfilter != NULL)
-        epan_dissect_prime_with_dfilter(edt, colorf->c_colorfilter);
+    // if (colorf->c_colorfilter != NULL)
+        // epan_dissect_prime_with_dfilter(edt, colorf->c_colorfilter);
 }
 
 /* Prime the epan_dissect_t with all the compiler

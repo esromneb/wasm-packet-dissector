@@ -96,7 +96,7 @@ col_cleanup(column_info *cinfo)
     g_free(col_item->fmt_matx);
     g_free(col_item->col_title);
     g_free(col_item->col_custom_fields);
-    dfilter_free(col_item->col_custom_dfilter);
+    // dfilter_free(col_item->col_custom_dfilter);
     /* col_item->col_data points to col_buf or static memory */
     g_free(col_item->col_buf);
     g_free(cinfo->col_expr.col_expr_val[i]);
@@ -373,7 +373,7 @@ col_custom_prime_edt(epan_dissect_t *edt, column_info *cinfo)
 
     if (col_item->fmt_matx[COL_CUSTOM] &&
         col_item->col_custom_dfilter) {
-      epan_dissect_prime_with_dfilter(edt, col_item->col_custom_dfilter);
+      // epan_dissect_prime_with_dfilter(edt, col_item->col_custom_dfilter);
     }
   }
 }

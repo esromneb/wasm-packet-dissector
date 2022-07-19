@@ -498,7 +498,7 @@ free_tap_listener(tap_listener_t *tl)
 	if (tl->finish) {
 		tl->finish(tl->tapdata);
 	}
-	dfilter_free(tl->code);
+	// dfilter_free(tl->code);
 	g_free(tl->fstring);
 	g_free(tl);
 }
@@ -532,15 +532,15 @@ register_tap_listener(const char *tapname, void *tapdata, const char *fstring,
 	tl->failed=FALSE;
 	tl->flags=flags;
 	if(fstring){
-		if(!dfilter_compile(fstring, &code, &err_msg)){
-			error_string = g_string_new("");
-			g_string_printf(error_string,
-			    "Filter \"%s\" is invalid - %s",
-			    fstring, err_msg);
-			g_free(err_msg);
-			free_tap_listener(tl);
-			return error_string;
-		}
+		// if(!dfilter_compile(fstring, &code, &err_msg)){
+		// 	error_string = g_string_new("");
+		// 	g_string_printf(error_string,
+		// 	    "Filter \"%s\" is invalid - %s",
+		// 	    fstring, err_msg);
+		// 	g_free(err_msg);
+		// 	free_tap_listener(tl);
+		// 	return error_string;
+		// }
 	}
 	tl->fstring=g_strdup(fstring);
 	tl->code=code;
@@ -586,7 +586,7 @@ set_tap_dfilter(void *tapdata, const char *fstring)
 
 	if(tl){
 		if(tl->code){
-			dfilter_free(tl->code);
+			// dfilter_free(tl->code);
 			tl->code=NULL;
 		}
 		tl->needs_redraw=TRUE;
@@ -614,28 +614,28 @@ set_tap_dfilter(void *tapdata, const char *fstring)
 void
 tap_listeners_dfilter_recompile(void)
 {
-	tap_listener_t *tl;
-	dfilter_t *code;
-	gchar *err_msg;
+	// tap_listener_t *tl;
+	// dfilter_t *code;
+	// gchar *err_msg;
 
-	for(tl=tap_listener_queue;tl;tl=tl->next){
-		if(tl->code){
-			dfilter_free(tl->code);
-			tl->code=NULL;
-		}
-		tl->needs_redraw=TRUE;
-		code=NULL;
-		if(tl->fstring){
-			if(!dfilter_compile(tl->fstring, &code, &err_msg)){
-				g_free(err_msg);
-				err_msg = NULL;
-				/* Not valid, make a dfilter matching no packets */
-				if (!dfilter_compile("frame.number == 0", &code, &err_msg))
-					g_free(err_msg);
-			}
-		}
-		tl->code=code;
-	}
+	// for(tl=tap_listener_queue;tl;tl=tl->next){
+	// 	if(tl->code){
+	// 		dfilter_free(tl->code);
+	// 		tl->code=NULL;
+	// 	}
+	// 	tl->needs_redraw=TRUE;
+	// 	code=NULL;
+	// 	if(tl->fstring){
+	// 		if(!dfilter_compile(tl->fstring, &code, &err_msg)){
+	// 			g_free(err_msg);
+	// 			err_msg = NULL;
+	// 			/* Not valid, make a dfilter matching no packets */
+	// 			if (!dfilter_compile("frame.number == 0", &code, &err_msg))
+	// 				g_free(err_msg);
+	// 		}
+	// 	}
+	// 	tl->code=code;
+	// }
 }
 
 /* this function removes a tap listener
