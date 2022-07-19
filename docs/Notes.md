@@ -54,6 +54,7 @@ createMyModule(/* optional default settings */).then(function(Module) {
 
 
 # Sharkd
+Use like `sharkd -`
 ```json
 {"req":"load", "file":"/src/wireshark/py/foo_flags.pcapng"}
 {"req":"frame", "frame":4, "proto":"true"}
