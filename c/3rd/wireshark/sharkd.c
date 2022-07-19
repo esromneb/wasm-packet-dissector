@@ -587,7 +587,6 @@ sharkd_dissect_request(guint32 framenum, guint32 frame_ref_num, guint32 prev_dis
   ws_buffer_free(&buf);
   return 0;
 }
-#if 0
 
 /* based on packet_list_dissect_and_cache_record */
 int
@@ -648,61 +647,61 @@ sharkd_dissect_columns(frame_data *fdata, guint32 frame_ref_num, guint32 prev_di
 int
 sharkd_retap(void)
 {
-  guint32          framenum;
-  frame_data      *fdata;
-  Buffer           buf;
-  wtap_rec         rec;
-  int err;
-  char *err_info = NULL;
-
-  guint         tap_flags;
-  gboolean      create_proto_tree;
-  epan_dissect_t edt;
-  column_info   *cinfo;
-
-  /* Get the union of the flags for all tap listeners. */
-  tap_flags = union_of_tap_listener_flags();
-
-  /* If any tap listeners require the columns, construct them. */
-  cinfo = (tap_flags & TL_REQUIRES_COLUMNS) ? &cfile.cinfo : NULL;
-
-  /*
-   * Determine whether we need to create a protocol tree.
-   * We do if:
-   *
-   *    one of the tap listeners is going to apply a filter;
-   *
-   *    one of the tap listeners requires a protocol tree.
-   */
-  create_proto_tree =
-    (have_filtering_tap_listeners() || (tap_flags & TL_REQUIRES_PROTO_TREE));
-
-  wtap_rec_init(&rec);
-  ws_buffer_init(&buf, 1514);
-  epan_dissect_init(&edt, cfile.epan, create_proto_tree, FALSE);
-
-  reset_tap_listeners();
-
-  for (framenum = 1; framenum <= cfile.count; framenum++) {
-    fdata = sharkd_get_frame(framenum);
-
-    if (!wtap_seek_read(cfile.provider.wth, fdata->file_off, &rec, &buf, &err, &err_info))
-      break;
-
-    fdata->ref_time = FALSE;
-    fdata->frame_ref_num = (framenum != 1) ? 1 : 0;
-    fdata->prev_dis_num = framenum - 1;
-    epan_dissect_run_with_taps(&edt, cfile.cd_t, &rec,
-                               frame_tvbuff_new_buffer(&cfile.provider, fdata, &buf),
-                               fdata, cinfo);
-    epan_dissect_reset(&edt);
-  }
-
-  wtap_rec_cleanup(&rec);
-  ws_buffer_free(&buf);
-  epan_dissect_cleanup(&edt);
-
-  draw_tap_listeners(TRUE);
+//   guint32          framenum;
+//   frame_data      *fdata;
+//   Buffer           buf;
+//   wtap_rec         rec;
+//   int err;
+//   char *err_info = NULL;
+// 
+//   guint         tap_flags;
+//   gboolean      create_proto_tree;
+//   epan_dissect_t edt;
+//   column_info   *cinfo;
+// 
+//   /* Get the union of the flags for all tap listeners. */
+//   tap_flags = union_of_tap_listener_flags();
+// 
+//   /* If any tap listeners require the columns, construct them. */
+//   cinfo = (tap_flags & TL_REQUIRES_COLUMNS) ? &cfile.cinfo : NULL;
+// 
+//   /*
+//    * Determine whether we need to create a protocol tree.
+//    * We do if:
+//    *
+//    *    one of the tap listeners is going to apply a filter;
+//    *
+//    *    one of the tap listeners requires a protocol tree.
+//    */
+//   create_proto_tree =
+//     (have_filtering_tap_listeners() || (tap_flags & TL_REQUIRES_PROTO_TREE));
+// 
+//   wtap_rec_init(&rec);
+//   ws_buffer_init(&buf, 1514);
+//   epan_dissect_init(&edt, cfile.epan, create_proto_tree, FALSE);
+// 
+//   reset_tap_listeners();
+// 
+//   for (framenum = 1; framenum <= cfile.count; framenum++) {
+//     fdata = sharkd_get_frame(framenum);
+// 
+//     if (!wtap_seek_read(cfile.provider.wth, fdata->file_off, &rec, &buf, &err, &err_info))
+//       break;
+// 
+//     fdata->ref_time = FALSE;
+//     fdata->frame_ref_num = (framenum != 1) ? 1 : 0;
+//     fdata->prev_dis_num = framenum - 1;
+//     epan_dissect_run_with_taps(&edt, cfile.cd_t, &rec,
+//                                frame_tvbuff_new_buffer(&cfile.provider, fdata, &buf),
+//                                fdata, cinfo);
+//     epan_dissect_reset(&edt);
+//   }
+// 
+//   wtap_rec_cleanup(&rec);
+//   ws_buffer_free(&buf);
+//   epan_dissect_cleanup(&edt);
+// 
+//   draw_tap_listeners(TRUE);
 
   return 0;
 }
@@ -710,99 +709,102 @@ sharkd_retap(void)
 int
 sharkd_filter(const char *dftext, guint8 **result)
 {
-  dfilter_t  *dfcode = NULL;
-
-  guint32 framenum, prev_dis_num = 0;
-  guint32 frames_count;
-  Buffer buf;
-  wtap_rec rec;
-  int err;
-  char *err_info = NULL;
-
-  guint8 *result_bits;
-  guint8  passed_bits;
-
-  epan_dissect_t edt;
-
-  if (!dfilter_compile(dftext, &dfcode, &err_info)) {
-    g_free(err_info);
-    return -1;
-  }
-
-  /* if dfilter_compile() success, but (dfcode == NULL) all frames are matching */
-  if (dfcode == NULL) {
-    *result = NULL;
+//   dfilter_t  *dfcode = NULL;
+// 
+//   guint32 framenum, prev_dis_num = 0;
+//   guint32 frames_count;
+//   Buffer buf;
+//   wtap_rec rec;
+//   int err;
+//   char *err_info = NULL;
+// 
+//   guint8 *result_bits;
+//   guint8  passed_bits;
+// 
+//   epan_dissect_t edt;
+// 
+//   if (!dfilter_compile(dftext, &dfcode, &err_info)) {
+//     g_free(err_info);
+//     return -1;
+//   }
+// 
+//   /* if dfilter_compile() success, but (dfcode == NULL) all frames are matching */
+//   if (dfcode == NULL) {
+//     *result = NULL;
+//     return 0;
+//   }
+// 
+//   frames_count = cfile.count;
+// 
+//   wtap_rec_init(&rec);
+//   ws_buffer_init(&buf, 1514);
+//   epan_dissect_init(&edt, cfile.epan, TRUE, FALSE);
+// 
+//   passed_bits = 0;
+//   result_bits = (guint8 *) g_malloc(2 + (frames_count / 8));
+// 
+//   for (framenum = 1; framenum <= frames_count; framenum++) {
+//     frame_data *fdata = sharkd_get_frame(framenum);
+// 
+//     if ((framenum & 7) == 0) {
+//       result_bits[(framenum / 8) - 1] = passed_bits;
+//       passed_bits = 0;
+//     }
+// 
+//     if (!wtap_seek_read(cfile.provider.wth, fdata->file_off, &rec, &buf, &err, &err_info))
+//       break;
+// 
+//     /* frame_data_set_before_dissect */
+//     epan_dissect_prime_with_dfilter(&edt, dfcode);
+// 
+//     fdata->ref_time = FALSE;
+//     fdata->frame_ref_num = (framenum != 1) ? 1 : 0;
+//     fdata->prev_dis_num = prev_dis_num;
+//     epan_dissect_run(&edt, cfile.cd_t, &rec,
+//                      frame_tvbuff_new_buffer(&cfile.provider, fdata, &buf),
+//                      fdata, NULL);
+// 
+//     if (dfilter_apply_edt(dfcode, &edt)) {
+//       passed_bits |= (1 << (framenum % 8));
+//       prev_dis_num = framenum;
+//     }
+// 
+//     /* if passed or ref -> frame_data_set_after_dissect */
+// 
+//     epan_dissect_reset(&edt);
+//   }
+// 
+//   if ((framenum & 7) == 0)
+//       framenum--;
+//   result_bits[framenum / 8] = passed_bits;
+// 
+//   wtap_rec_cleanup(&rec);
+//   ws_buffer_free(&buf);
+//   epan_dissect_cleanup(&edt);
+// 
+//   dfilter_free(dfcode);
+// 
+//   *result = result_bits;
+// 
+//   return framenum;
     return 0;
-  }
-
-  frames_count = cfile.count;
-
-  wtap_rec_init(&rec);
-  ws_buffer_init(&buf, 1514);
-  epan_dissect_init(&edt, cfile.epan, TRUE, FALSE);
-
-  passed_bits = 0;
-  result_bits = (guint8 *) g_malloc(2 + (frames_count / 8));
-
-  for (framenum = 1; framenum <= frames_count; framenum++) {
-    frame_data *fdata = sharkd_get_frame(framenum);
-
-    if ((framenum & 7) == 0) {
-      result_bits[(framenum / 8) - 1] = passed_bits;
-      passed_bits = 0;
-    }
-
-    if (!wtap_seek_read(cfile.provider.wth, fdata->file_off, &rec, &buf, &err, &err_info))
-      break;
-
-    /* frame_data_set_before_dissect */
-    epan_dissect_prime_with_dfilter(&edt, dfcode);
-
-    fdata->ref_time = FALSE;
-    fdata->frame_ref_num = (framenum != 1) ? 1 : 0;
-    fdata->prev_dis_num = prev_dis_num;
-    epan_dissect_run(&edt, cfile.cd_t, &rec,
-                     frame_tvbuff_new_buffer(&cfile.provider, fdata, &buf),
-                     fdata, NULL);
-
-    if (dfilter_apply_edt(dfcode, &edt)) {
-      passed_bits |= (1 << (framenum % 8));
-      prev_dis_num = framenum;
-    }
-
-    /* if passed or ref -> frame_data_set_after_dissect */
-
-    epan_dissect_reset(&edt);
-  }
-
-  if ((framenum & 7) == 0)
-      framenum--;
-  result_bits[framenum / 8] = passed_bits;
-
-  wtap_rec_cleanup(&rec);
-  ws_buffer_free(&buf);
-  epan_dissect_cleanup(&edt);
-
-  dfilter_free(dfcode);
-
-  *result = result_bits;
-
-  return framenum;
 }
 
 const char *
 sharkd_get_user_comment(const frame_data *fd)
 {
-  return cap_file_provider_get_user_comment(&cfile.provider, fd);
+    return "";
+  // return cap_file_provider_get_user_comment(&cfile.provider, fd);
 }
 
+#if 0
+#endif
 int
 sharkd_set_user_comment(frame_data *fd, const gchar *new_comment)
 {
-  cap_file_provider_set_user_comment(&cfile.provider, fd, new_comment);
+  // cap_file_provider_set_user_comment(&cfile.provider, fd, new_comment);
   return 0;
 }
-#endif
 
 #include "version.h"
 const char *sharkd_version(void)

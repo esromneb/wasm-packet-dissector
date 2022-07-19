@@ -27,8 +27,8 @@
 #include <epan/epan_dissect.h>
 #include <epan/exceptions.h>
 #include <epan/color_filters.h>
-#include <epan/prefs.h>
-#include <epan/prefs-int.h>
+// #include <epan/prefs.h>
+// #include <epan/prefs-int.h>
 #include <epan/uat-int.h>
 #include <wiretap/wtap.h>
 
@@ -535,35 +535,36 @@ sharkd_session_process_info(void)
  * Output object with attributes:
  *   (m) err - error code
  */
+// WWPD - replace or elimiate
 static void
 sharkd_session_process_load(const char *buf, const jsmntok_t *tokens, int count)
 {
-	const char *tok_file = json_find_attr(buf, tokens, count, "file");
-	int err = 0;
-
-	fprintf(stderr, "load: filename=%s\n", tok_file);
-
-	if (!tok_file)
-		return;
-
-	if (sharkd_cf_open(tok_file, WTAP_TYPE_AUTO, FALSE, &err) != CF_OK)
-	{
-		sharkd_json_simple_reply(err, NULL);
-		return;
-	}
-
-	TRY
-	{
-		err = sharkd_load_cap_file();
-	}
-	CATCH(OutOfMemoryError)
-	{
-		fprintf(stderr, "load: OutOfMemoryError\n");
-		err = ENOMEM;
-	}
-	ENDTRY;
-
-	sharkd_json_simple_reply(err, NULL);
+// 	const char *tok_file = json_find_attr(buf, tokens, count, "file");
+// 	int err = 0;
+// 
+// 	fprintf(stderr, "load: filename=%s\n", tok_file);
+// 
+// 	if (!tok_file)
+// 		return;
+// 
+// 	if (sharkd_cf_open(tok_file, WTAP_TYPE_AUTO, FALSE, &err) != CF_OK)
+// 	{
+// 		sharkd_json_simple_reply(err, NULL);
+// 		return;
+// 	}
+// 
+// 	TRY
+// 	{
+// 		err = sharkd_load_cap_file();
+// 	}
+// 	CATCH(OutOfMemoryError)
+// 	{
+// 		fprintf(stderr, "load: OutOfMemoryError\n");
+// 		err = ENOMEM;
+// 	}
+// 	ENDTRY;
+// 
+	// sharkd_json_simple_reply(err, NULL);
 }
 
 /**
@@ -939,59 +940,59 @@ sharkd_session_process_frames(const char *buf, const jsmntok_t *tokens, int coun
 static void
 sharkd_session_process_tap_stats_node_cb(const stat_node *n)
 {
-	stat_node *node;
-
-	sharkd_json_array_open(NULL);
-	for (node = n->children; node; node = node->next)
-	{
-		json_dumper_begin_object(&dumper);
-
-		/* code based on stats_tree_get_values_from_node() */
-		sharkd_json_value_string("name", node->name);
-		sharkd_json_value_anyf("count", "%d", node->counter);
-		if (node->counter && ((node->st_flags & ST_FLG_AVERAGE) || node->rng))
-		{
-			switch(node->datatype)
-			{
-			case STAT_DT_INT:
-				sharkd_json_value_anyf("avg", "%.2f", ((float)node->total.int_total) / node->counter);
-				sharkd_json_value_anyf("min", "%d", node->minvalue.int_min);
-				sharkd_json_value_anyf("max", "%d", node->maxvalue.int_max);
-				break;
-			case STAT_DT_FLOAT:
-				sharkd_json_value_anyf("avg", "%.2f", node->total.float_total / node->counter);
-				sharkd_json_value_anyf("min", "%f", node->minvalue.float_min);
-				sharkd_json_value_anyf("max", "%f", node->maxvalue.float_max);
-				break;
-			}
-		}
-
-		if (node->st->elapsed)
-			sharkd_json_value_anyf("rate", "%.4f", ((float)node->counter) / node->st->elapsed);
-
-		if (node->parent && node->parent->counter)
-			sharkd_json_value_anyf("perc", "%.2f", (node->counter * 100.0) / node->parent->counter);
-		else if (node->parent == &(node->st->root))
-			sharkd_json_value_anyf("perc", "100");
-
-		if (prefs.st_enable_burstinfo && node->max_burst)
-		{
-			if (prefs.st_burst_showcount)
-				sharkd_json_value_anyf("burstcount", "%d", node->max_burst);
-			else
-				sharkd_json_value_anyf("burstrate", "%.4f", ((double)node->max_burst) / prefs.st_burst_windowlen);
-
-			sharkd_json_value_anyf("bursttime", "%.3f", (node->burst_time / 1000.0));
-		}
-
-		if (node->children)
-		{
-			sharkd_json_value_anyf("sub", NULL);
-			sharkd_session_process_tap_stats_node_cb(node);
-		}
-		json_dumper_end_object(&dumper);
-	}
-	sharkd_json_array_close();
+// 	stat_node *node;
+// 
+// 	sharkd_json_array_open(NULL);
+// 	for (node = n->children; node; node = node->next)
+// 	{
+// 		json_dumper_begin_object(&dumper);
+// 
+// 		/* code based on stats_tree_get_values_from_node() */
+// 		sharkd_json_value_string("name", node->name);
+// 		sharkd_json_value_anyf("count", "%d", node->counter);
+// 		if (node->counter && ((node->st_flags & ST_FLG_AVERAGE) || node->rng))
+// 		{
+// 			switch(node->datatype)
+// 			{
+// 			case STAT_DT_INT:
+// 				sharkd_json_value_anyf("avg", "%.2f", ((float)node->total.int_total) / node->counter);
+// 				sharkd_json_value_anyf("min", "%d", node->minvalue.int_min);
+// 				sharkd_json_value_anyf("max", "%d", node->maxvalue.int_max);
+// 				break;
+// 			case STAT_DT_FLOAT:
+// 				sharkd_json_value_anyf("avg", "%.2f", node->total.float_total / node->counter);
+// 				sharkd_json_value_anyf("min", "%f", node->minvalue.float_min);
+// 				sharkd_json_value_anyf("max", "%f", node->maxvalue.float_max);
+// 				break;
+// 			}
+// 		}
+// 
+// 		if (node->st->elapsed)
+// 			sharkd_json_value_anyf("rate", "%.4f", ((float)node->counter) / node->st->elapsed);
+// 
+// 		if (node->parent && node->parent->counter)
+// 			sharkd_json_value_anyf("perc", "%.2f", (node->counter * 100.0) / node->parent->counter);
+// 		else if (node->parent == &(node->st->root))
+// 			sharkd_json_value_anyf("perc", "100");
+// 
+// 		if (prefs.st_enable_burstinfo && node->max_burst)
+// 		{
+// 			if (prefs.st_burst_showcount)
+// 				sharkd_json_value_anyf("burstcount", "%d", node->max_burst);
+// 			else
+// 				sharkd_json_value_anyf("burstrate", "%.4f", ((double)node->max_burst) / prefs.st_burst_windowlen);
+// 
+// 			sharkd_json_value_anyf("bursttime", "%.3f", (node->burst_time / 1000.0));
+// 		}
+// 
+// 		if (node->children)
+// 		{
+// 			sharkd_json_value_anyf("sub", NULL);
+// 			sharkd_session_process_tap_stats_node_cb(node);
+// 		}
+// 		json_dumper_end_object(&dumper);
+// 	}
+// 	sharkd_json_array_close();
 }
 
 /**
@@ -3398,15 +3399,15 @@ struct sharkd_session_process_complete_pref_data
 static guint
 sharkd_session_process_complete_pref_cb(module_t *module, gpointer d)
 {
-	struct sharkd_session_process_complete_pref_data *data = (struct sharkd_session_process_complete_pref_data *) d;
-
-	if (strncmp(data->pref, module->name, strlen(data->pref)) != 0)
-		return 0;
-
-	json_dumper_begin_object(&dumper);
-	sharkd_json_value_string("f", module->name);
-	sharkd_json_value_string("d", module->title);
-	json_dumper_end_object(&dumper);
+// 	struct sharkd_session_process_complete_pref_data *data = (struct sharkd_session_process_complete_pref_data *) d;
+// 
+// 	if (strncmp(data->pref, module->name, strlen(data->pref)) != 0)
+// 		return 0;
+// 
+// 	json_dumper_begin_object(&dumper);
+// 	sharkd_json_value_string("f", module->name);
+// 	sharkd_json_value_string("d", module->title);
+// 	json_dumper_end_object(&dumper);
 
 	return 0;
 }
@@ -3414,17 +3415,17 @@ sharkd_session_process_complete_pref_cb(module_t *module, gpointer d)
 static guint
 sharkd_session_process_complete_pref_option_cb(pref_t *pref, gpointer d)
 {
-	struct sharkd_session_process_complete_pref_data *data = (struct sharkd_session_process_complete_pref_data *) d;
-	const char *pref_name = prefs_get_name(pref);
-	const char *pref_title = prefs_get_title(pref);
-
-	if (strncmp(data->pref, pref_name, strlen(data->pref)) != 0)
-		return 0;
-
-	json_dumper_begin_object(&dumper);
-	sharkd_json_value_stringf("f", "%s.%s", data->module, pref_name);
-	sharkd_json_value_string("d", pref_title);
-	json_dumper_end_object(&dumper);
+// 	struct sharkd_session_process_complete_pref_data *data = (struct sharkd_session_process_complete_pref_data *) d;
+// 	const char *pref_name = prefs_get_name(pref);
+// 	const char *pref_title = prefs_get_title(pref);
+// 
+// 	if (strncmp(data->pref, pref_name, strlen(data->pref)) != 0)
+// 		return 0;
+// 
+// 	json_dumper_begin_object(&dumper);
+// 	sharkd_json_value_stringf("f", "%s.%s", data->module, pref_name);
+// 	sharkd_json_value_string("d", pref_title);
+// 	json_dumper_end_object(&dumper);
 
 	return 0; /* continue */
 }
@@ -3523,31 +3524,31 @@ sharkd_session_process_complete(char *buf, const jsmntok_t *tokens, int count)
 
 	if (tok_pref != NULL && tok_pref[0])
 	{
-		struct sharkd_session_process_complete_pref_data data;
-		char *dot_sepa;
-
-		data.module = tok_pref;
-		data.pref = tok_pref;
-
-		sharkd_json_array_open("pref");
-		if ((dot_sepa = (char*)strchr(tok_pref, '.')))
-		{
-			module_t *pref_mod;
-
-			*dot_sepa = '\0'; /* XXX, C abuse: discarding-const */
-			data.pref = dot_sepa + 1;
-
-			pref_mod = prefs_find_module(data.module);
-			if (pref_mod)
-				prefs_pref_foreach(pref_mod, sharkd_session_process_complete_pref_option_cb, &data);
-
-			*dot_sepa = '.';
-		}
-		else
-		{
-			prefs_modules_foreach(sharkd_session_process_complete_pref_cb, &data);
-		}
-		sharkd_json_array_close();
+// 		struct sharkd_session_process_complete_pref_data data;
+// 		char *dot_sepa;
+// 
+// 		data.module = tok_pref;
+// 		data.pref = tok_pref;
+// 
+// 		sharkd_json_array_open("pref");
+// 		if ((dot_sepa = (char*)strchr(tok_pref, '.')))
+// 		{
+// 			module_t *pref_mod;
+// 
+// 			*dot_sepa = '\0'; /* XXX, C abuse: discarding-const */
+// 			data.pref = dot_sepa + 1;
+// 
+// 			pref_mod = prefs_find_module(data.module);
+// 			if (pref_mod)
+// 				prefs_pref_foreach(pref_mod, sharkd_session_process_complete_pref_option_cb, &data);
+// 
+// 			*dot_sepa = '.';
+// 		}
+// 		else
+// 		{
+// 			prefs_modules_foreach(sharkd_session_process_complete_pref_cb, &data);
+// 		}
+// 		sharkd_json_array_close();
 	}
 
 	json_dumper_end_object(&dumper);
@@ -3605,22 +3606,22 @@ sharkd_session_process_setcomment(char *buf, const jsmntok_t *tokens, int count)
 static void
 sharkd_session_process_setconf(char *buf, const jsmntok_t *tokens, int count)
 {
-	const char *tok_name = json_find_attr(buf, tokens, count, "name");
-	const char *tok_value = json_find_attr(buf, tokens, count, "value");
-	char pref[4096];
-	char *errmsg = NULL;
-
-	prefs_set_pref_e ret;
-
-	if (!tok_name || tok_name[0] == '\0' || !tok_value)
-		return;
-
-	ws_snprintf(pref, sizeof(pref), "%s:%s", tok_name, tok_value);
-
-	ret = prefs_set_pref(pref, &errmsg);
-
-	sharkd_json_simple_reply(ret, errmsg);
-	g_free(errmsg);
+// 	const char *tok_name = json_find_attr(buf, tokens, count, "name");
+// 	const char *tok_value = json_find_attr(buf, tokens, count, "value");
+// 	char pref[4096];
+// 	char *errmsg = NULL;
+// 
+// 	prefs_set_pref_e ret;
+// 
+// 	if (!tok_name || tok_name[0] == '\0' || !tok_value)
+// 		return;
+// 
+// 	ws_snprintf(pref, sizeof(pref), "%s:%s", tok_name, tok_value);
+// 
+// 	ret = prefs_set_pref(pref, &errmsg);
+// 
+// 	sharkd_json_simple_reply(ret, errmsg);
+// 	g_free(errmsg);
 }
 
 struct sharkd_session_process_dumpconf_data
@@ -3631,106 +3632,106 @@ struct sharkd_session_process_dumpconf_data
 static guint
 sharkd_session_process_dumpconf_cb(pref_t *pref, gpointer d)
 {
-	struct sharkd_session_process_dumpconf_data *data = (struct sharkd_session_process_dumpconf_data *) d;
-	const char *pref_name = prefs_get_name(pref);
-
-	char json_pref_key[512];
-
-	snprintf(json_pref_key, sizeof(json_pref_key), "%s.%s", data->module->name, pref_name);
-	json_dumper_set_member_name(&dumper, json_pref_key);
-	json_dumper_begin_object(&dumper);
-
-	switch (prefs_get_type(pref))
-	{
-		case PREF_UINT:
-		case PREF_DECODE_AS_UINT:
-			sharkd_json_value_anyf("u", "%u", prefs_get_uint_value_real(pref, pref_current));
-			if (prefs_get_uint_base(pref) != 10)
-				sharkd_json_value_anyf("ub", "%u", prefs_get_uint_base(pref));
-			break;
-
-		case PREF_BOOL:
-			sharkd_json_value_anyf("b", prefs_get_bool_value(pref, pref_current) ? "1" : "0");
-			break;
-
-		case PREF_STRING:
-		case PREF_SAVE_FILENAME:
-		case PREF_OPEN_FILENAME:
-		case PREF_DIRNAME:
-			sharkd_json_value_string("s", prefs_get_string_value(pref, pref_current));
-			break;
-
-		case PREF_ENUM:
-		{
-			const enum_val_t *enums;
-
-			sharkd_json_array_open("e");
-			for (enums = prefs_get_enumvals(pref); enums->name; enums++)
-			{
-				json_dumper_begin_object(&dumper);
-
-				sharkd_json_value_anyf("v", "%d", enums->value);
-
-				if (enums->value == prefs_get_enum_value(pref, pref_current))
-					sharkd_json_value_anyf("s", "1");
-
-				sharkd_json_value_string("d", enums->description);
-
-				json_dumper_end_object(&dumper);
-			}
-			sharkd_json_array_close();
-			break;
-		}
-
-		case PREF_RANGE:
-		case PREF_DECODE_AS_RANGE:
-		{
-			char *range_str = range_convert_range(NULL, prefs_get_range_value_real(pref, pref_current));
-			sharkd_json_value_string("r", range_str);
-			wmem_free(NULL, range_str);
-			break;
-		}
-
-		case PREF_UAT:
-		{
-			uat_t *uat = prefs_get_uat_value(pref);
-			guint idx;
-
-			sharkd_json_array_open("t");
-			for (idx = 0; idx < uat->raw_data->len; idx++)
-			{
-				void *rec = UAT_INDEX_PTR(uat, idx);
-				guint colnum;
-
-				sharkd_json_array_open(NULL);
-				for (colnum = 0; colnum < uat->ncols; colnum++)
-				{
-					char *str = uat_fld_tostr(rec, &(uat->fields[colnum]));
-
-					sharkd_json_value_string(NULL, str);
-					g_free(str);
-				}
-
-				sharkd_json_array_close();
-			}
-
-			sharkd_json_array_close();
-			break;
-		}
-
-		case PREF_COLOR:
-		case PREF_CUSTOM:
-		case PREF_STATIC_TEXT:
-		case PREF_OBSOLETE:
-			/* TODO */
-			break;
-	}
-
-#if 0
-	sharkd_json_value_string("t", prefs_get_title(pref));
-#endif
-
-	json_dumper_end_object(&dumper);
+// 	struct sharkd_session_process_dumpconf_data *data = (struct sharkd_session_process_dumpconf_data *) d;
+// 	const char *pref_name = prefs_get_name(pref);
+// 
+// 	char json_pref_key[512];
+// 
+// 	snprintf(json_pref_key, sizeof(json_pref_key), "%s.%s", data->module->name, pref_name);
+// 	json_dumper_set_member_name(&dumper, json_pref_key);
+// 	json_dumper_begin_object(&dumper);
+// 
+// 	switch (prefs_get_type(pref))
+// 	{
+// 		case PREF_UINT:
+// 		case PREF_DECODE_AS_UINT:
+// 			sharkd_json_value_anyf("u", "%u", prefs_get_uint_value_real(pref, pref_current));
+// 			if (prefs_get_uint_base(pref) != 10)
+// 				sharkd_json_value_anyf("ub", "%u", prefs_get_uint_base(pref));
+// 			break;
+// 
+// 		case PREF_BOOL:
+// 			sharkd_json_value_anyf("b", prefs_get_bool_value(pref, pref_current) ? "1" : "0");
+// 			break;
+// 
+// 		case PREF_STRING:
+// 		case PREF_SAVE_FILENAME:
+// 		case PREF_OPEN_FILENAME:
+// 		case PREF_DIRNAME:
+// 			sharkd_json_value_string("s", prefs_get_string_value(pref, pref_current));
+// 			break;
+// 
+// 		case PREF_ENUM:
+// 		{
+// 			const enum_val_t *enums;
+// 
+// 			sharkd_json_array_open("e");
+// 			for (enums = prefs_get_enumvals(pref); enums->name; enums++)
+// 			{
+// 				json_dumper_begin_object(&dumper);
+// 
+// 				sharkd_json_value_anyf("v", "%d", enums->value);
+// 
+// 				if (enums->value == prefs_get_enum_value(pref, pref_current))
+// 					sharkd_json_value_anyf("s", "1");
+// 
+// 				sharkd_json_value_string("d", enums->description);
+// 
+// 				json_dumper_end_object(&dumper);
+// 			}
+// 			sharkd_json_array_close();
+// 			break;
+// 		}
+// 
+// 		case PREF_RANGE:
+// 		case PREF_DECODE_AS_RANGE:
+// 		{
+// 			char *range_str = range_convert_range(NULL, prefs_get_range_value_real(pref, pref_current));
+// 			sharkd_json_value_string("r", range_str);
+// 			wmem_free(NULL, range_str);
+// 			break;
+// 		}
+// 
+// 		case PREF_UAT:
+// 		{
+// 			uat_t *uat = prefs_get_uat_value(pref);
+// 			guint idx;
+// 
+// 			sharkd_json_array_open("t");
+// 			for (idx = 0; idx < uat->raw_data->len; idx++)
+// 			{
+// 				void *rec = UAT_INDEX_PTR(uat, idx);
+// 				guint colnum;
+// 
+// 				sharkd_json_array_open(NULL);
+// 				for (colnum = 0; colnum < uat->ncols; colnum++)
+// 				{
+// 					char *str = uat_fld_tostr(rec, &(uat->fields[colnum]));
+// 
+// 					sharkd_json_value_string(NULL, str);
+// 					g_free(str);
+// 				}
+// 
+// 				sharkd_json_array_close();
+// 			}
+// 
+// 			sharkd_json_array_close();
+// 			break;
+// 		}
+// 
+// 		case PREF_COLOR:
+// 		case PREF_CUSTOM:
+// 		case PREF_STATIC_TEXT:
+// 		case PREF_OBSOLETE:
+// 			/* TODO */
+// 			break;
+// 	}
+// 
+// #if 0
+// 	sharkd_json_value_string("t", prefs_get_title(pref));
+// #endif
+// 
+	// json_dumper_end_object(&dumper);
 
 	return 0; /* continue */
 }
@@ -3768,75 +3769,75 @@ sharkd_session_process_dumpconf_mod_cb(module_t *module, gpointer d)
 static void
 sharkd_session_process_dumpconf(char *buf, const jsmntok_t *tokens, int count)
 {
-	const char *tok_pref = json_find_attr(buf, tokens, count, "pref");
-	module_t *pref_mod;
-	char *dot_sepa;
-
-	if (!tok_pref)
-	{
-		struct sharkd_session_process_dumpconf_data data;
-
-		data.module = NULL;
-
-		json_dumper_begin_object(&dumper);
-
-		sharkd_json_value_anyf("prefs", NULL);
-		json_dumper_begin_object(&dumper);
-		prefs_modules_foreach(sharkd_session_process_dumpconf_mod_cb, &data);
-		json_dumper_end_object(&dumper);
-
-		json_dumper_end_object(&dumper);
-		json_dumper_finish(&dumper);
-		return;
-	}
-
-	if ((dot_sepa = (char*)strchr(tok_pref, '.')))
-	{
-		pref_t *pref = NULL;
-
-		*dot_sepa = '\0'; /* XXX, C abuse: discarding-const */
-		pref_mod = prefs_find_module(tok_pref);
-		if (pref_mod)
-			pref = prefs_find_preference(pref_mod, dot_sepa + 1);
-		*dot_sepa = '.';
-
-		if (pref)
-		{
-			struct sharkd_session_process_dumpconf_data data;
-
-			data.module = pref_mod;
-
-			json_dumper_begin_object(&dumper);
-
-			sharkd_json_value_anyf("prefs", NULL);
-			json_dumper_begin_object(&dumper);
-			sharkd_session_process_dumpconf_cb(pref, &data);
-			json_dumper_end_object(&dumper);
-
-			json_dumper_end_object(&dumper);
-			json_dumper_finish(&dumper);
-		}
-
-		return;
-	}
-
-	pref_mod = prefs_find_module(tok_pref);
-	if (pref_mod)
-	{
-		struct sharkd_session_process_dumpconf_data data;
-
-		data.module = pref_mod;
-
-		json_dumper_begin_object(&dumper);
-
-		sharkd_json_value_anyf("prefs", NULL);
-		json_dumper_begin_object(&dumper);
-		prefs_pref_foreach(pref_mod, sharkd_session_process_dumpconf_cb, &data);
-		json_dumper_end_object(&dumper);
-
-		json_dumper_end_object(&dumper);
-		json_dumper_finish(&dumper);
-	}
+// 	const char *tok_pref = json_find_attr(buf, tokens, count, "pref");
+// 	module_t *pref_mod;
+// 	char *dot_sepa;
+// 
+// 	if (!tok_pref)
+// 	{
+// 		struct sharkd_session_process_dumpconf_data data;
+// 
+// 		data.module = NULL;
+// 
+// 		json_dumper_begin_object(&dumper);
+// 
+// 		sharkd_json_value_anyf("prefs", NULL);
+// 		json_dumper_begin_object(&dumper);
+// 		prefs_modules_foreach(sharkd_session_process_dumpconf_mod_cb, &data);
+// 		json_dumper_end_object(&dumper);
+// 
+// 		json_dumper_end_object(&dumper);
+// 		json_dumper_finish(&dumper);
+// 		return;
+// 	}
+// 
+// 	if ((dot_sepa = (char*)strchr(tok_pref, '.')))
+// 	{
+// 		pref_t *pref = NULL;
+// 
+// 		*dot_sepa = '\0'; /* XXX, C abuse: discarding-const */
+// 		pref_mod = prefs_find_module(tok_pref);
+// 		if (pref_mod)
+// 			pref = prefs_find_preference(pref_mod, dot_sepa + 1);
+// 		*dot_sepa = '.';
+// 
+// 		if (pref)
+// 		{
+// 			struct sharkd_session_process_dumpconf_data data;
+// 
+// 			data.module = pref_mod;
+// 
+// 			json_dumper_begin_object(&dumper);
+// 
+// 			sharkd_json_value_anyf("prefs", NULL);
+// 			json_dumper_begin_object(&dumper);
+// 			sharkd_session_process_dumpconf_cb(pref, &data);
+// 			json_dumper_end_object(&dumper);
+// 
+// 			json_dumper_end_object(&dumper);
+// 			json_dumper_finish(&dumper);
+// 		}
+// 
+// 		return;
+// 	}
+// 
+// 	pref_mod = prefs_find_module(tok_pref);
+// 	if (pref_mod)
+// 	{
+// 		struct sharkd_session_process_dumpconf_data data;
+// 
+// 		data.module = pref_mod;
+// 
+// 		json_dumper_begin_object(&dumper);
+// 
+// 		sharkd_json_value_anyf("prefs", NULL);
+// 		json_dumper_begin_object(&dumper);
+// 		prefs_pref_foreach(pref_mod, sharkd_session_process_dumpconf_cb, &data);
+// 		json_dumper_end_object(&dumper);
+// 
+// 		json_dumper_end_object(&dumper);
+// 		json_dumper_finish(&dumper);
+// 	}
 }
 
 struct sharkd_download_rtp

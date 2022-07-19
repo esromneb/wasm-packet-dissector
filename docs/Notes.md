@@ -58,4 +58,5 @@ Use like `sharkd -`
 ```json
 {"req":"load", "file":"/src/wireshark/py/foo_flags.pcapng"}
 {"req":"frame", "frame":4, "proto":"true"}
+{"req":"dumpconf"}
 ```

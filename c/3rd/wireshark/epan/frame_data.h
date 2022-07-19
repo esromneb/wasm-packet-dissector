@@ -13,7 +13,7 @@
 
 #include <ws_diag_control.h>
 #include <ws_symbol_export.h>
-// #include <wsutil/nstime.h>
+#include <wsutil/nstime.h>
 
 #include <wiretap/wtap.h>
 
