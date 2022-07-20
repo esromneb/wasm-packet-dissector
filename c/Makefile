@@ -34,6 +34,12 @@ EXPORT_STRING = \
 "_doCall", \
 "_wrapper_wireshark_shared",
 
+DEBUG_SOURCE_MAP_FLAG=-g -fdebug-compilation-dir='..'
+
+ifdef NODEBUG
+  DEBUG_SOURCE_MAP_FLAG=
+endif
+
 
 # warning and error flags
 CLANG_WARN_FLAGS = \
@@ -43,7 +49,9 @@ CLANG_WARN_FLAGS = \
 -Wno-unused-parameter \
 -Wno-unused-variable \
 -Werror=return-type \
--Wno-c++11-narrowing
+-Wno-c++11-narrowing \
+$(DEBUG_SOURCE_MAP_FLAG)
+
 # -Wconversion
 # -Wshadow
 
