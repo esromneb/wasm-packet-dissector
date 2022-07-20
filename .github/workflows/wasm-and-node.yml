@@ -5,12 +5,13 @@ on:
 
 jobs:
   build:
+    timeout-minutes: 10
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x, 17.x]
+        node-version: [16.x, 17.x, 18.x]
 
     steps:
     - uses: actions/checkout@v3
