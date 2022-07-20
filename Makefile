@@ -42,11 +42,11 @@ DOCKER_RUN=docker run --rm  -v $(PWD):/src -u `id -u`:`id -g` $(EMSDK_DOCKER)
 
 .PHONY: wasm noopt-wasm clean-wasm wasm-noopt
 wasm:
-	$(DOCKER_RUN) make -C c wasm
+	$(DOCKER_RUN) make -C c wasm -j8
 
 wasm-noopt: noopt-wasm
 noopt-wasm:
-	$(DOCKER_RUN) /bin/bash -c 'NOOPT=1 make -C c wasm'
+	$(DOCKER_RUN) /bin/bash -c 'NOOPT=1 make -C c wasm -j8'
 
 
 # no need to fire up docker, clean can work on host here
