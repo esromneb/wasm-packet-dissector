@@ -82,7 +82,6 @@ OBJS = \
 build/main.o \
 build/wireshark.o \
 build/packet-foo.o \
-build/proto.o \
 build/epan.o \
 build/sharkd.o \
 build/frame_tvbuff.o \
@@ -165,6 +164,7 @@ rtp_stream_id.o \
 io_graph_item.o \
 packet-rtp.o \
 jsmn.o \
+proto.o \
 
 
 # color_filters.o \
@@ -389,12 +389,12 @@ build/%.o: 3rd/wireshark/wsutil/%.c
 # 	'-std=c++2a' \
 # 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
-	emcc \
-	3rd/wireshark-compat/proto-compat.cpp -c -o build/proto.o \
-	$(INCLUDE) \
-	'-std=c++2a' \
-	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+# build/proto.o: 3rd/wireshark-compat/proto-compat.cpp 3rd/wireshark/epan/proto.h
+# 	emcc \
+# 	3rd/wireshark-compat/proto-compat.cpp -c -o build/proto.o \
+# 	$(INCLUDE) \
+# 	'-std=c++2a' \
+# 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 
 3rd/wireshark/epan/ftypes/build/libftypes.a: $(wildcard 3rd/wireshark/epan/ftypes/*)
