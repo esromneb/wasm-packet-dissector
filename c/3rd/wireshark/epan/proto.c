@@ -540,7 +540,7 @@ proto_init(GSList *register_all_plugin_protocols_list,
 #endif
 
     /* sort the protocols by protocol name */
-    protocols = g_list_sort(protocols, proto_compare_name);
+    // protocols = g_list_sort(protocols, proto_compare_name);
 
     /* We've assigned all the subtree type values; allocate the array
        for them, and zero it out. */
