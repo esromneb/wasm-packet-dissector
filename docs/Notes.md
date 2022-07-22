@@ -62,3 +62,10 @@ Use like `sharkd -`
 {"req":"dumpconf"}
 {"req":"bye"}
 ```
+
+
+
+# wireshark
+```bash
+cmake -DCMAKE_INSTALL_PREFIX=`realpath install` -DBUILD_androiddump=OFF -DBUILD_capinfos=OFF -DBUILD_captype=OFF -DBUILD_ciscodump=OFF -DBUILD_corbaidl2wrs=OFF -DBUILD_dcerpcidl2wrs=OFF -DBUILD_dftest=OFF -DBUILD_dpauxmon=OFF -DBUILD_dumpcap=OFF -DBUILD_editcap=OFF -DBUILD_fuzzshark=OFF -DBUILD_mergecap=OFF -DBUILD_mmdbresolve=OFF -DBUILD_randpkt=OFF -DBUILD_randpktdump=OFF -DBUILD_rawshark=OFF -DBUILD_reordercap=OFF -DBUILD_sdjournal=OFF -DBUILD_sshdump=OFF -DBUILD_text2pcap=OFF -DBUILD_tfshark=OFF -DBUILD_tshark=OFF -DBUILD_udpdump=OFF -DBUILD_xxx2deb=OFF -DBUILD_wireshark=OFF ..
+```
