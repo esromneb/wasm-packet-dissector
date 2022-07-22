@@ -82,7 +82,6 @@ OBJS = \
 build/main.o \
 build/wireshark.o \
 build/packet-foo.o \
-build/epan.o \
 build/sharkd.o \
 build/frame_tvbuff.o \
 build/cfile.o \
@@ -165,6 +164,7 @@ io_graph_item.o \
 packet-rtp.o \
 jsmn.o \
 proto.o \
+epan.o \
 
 
 # color_filters.o \
@@ -245,11 +245,11 @@ build/packet-foo.o: src/plugins/foo/packet-foo.cpp
 	'-std=c++2a' \
 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
-build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
-	emcc $< -c -o $@ \
-	$(INCLUDE) \
-	'-std=c++2a' \
-	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
+# build/epan.o: 3rd/wireshark/epan/epan.cpp 3rd/wireshark/epan/epan.h
+# 	emcc $< -c -o $@ \
+# 	$(INCLUDE) \
+# 	'-std=c++2a' \
+# 	$(CLANG_O_FLAG) $(CLANG_WARN_FLAGS)
 
 
 build/sharkd.o: 3rd/wireshark/sharkd.c 3rd/wireshark/sharkd.h
