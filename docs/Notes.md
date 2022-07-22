@@ -50,7 +50,8 @@ createMyModule(/* optional default settings */).then(function(Module) {
 * https://emscripten.org/docs/getting_started/FAQ.html
 
 
-
+# WASM debug
+https://developer.chrome.com/blog/wasm-debugging-2020/
 
 
 # Sharkd
@@ -59,4 +60,5 @@ Use like `sharkd -`
 {"req":"load", "file":"/src/wireshark/py/foo_flags.pcapng"}
 {"req":"frame", "frame":4, "proto":"true"}
 {"req":"dumpconf"}
+{"req":"bye"}
 ```
