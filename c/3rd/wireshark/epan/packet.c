@@ -233,7 +233,7 @@ packet_cache_proto_handles(void)
     // printf("4\n");
 
 	proto_malformed = proto_get_id_by_filter_name("_ws.malformed");
-	g_assert(proto_malformed != -1);
+	// g_assert(proto_malformed != -1);
     // printf("5\n");
 }
 
